@@ -49,6 +49,7 @@
 			<Add directory="$(OGRE_HOME)\include\OGRE" />
 			<Add directory="$(OGRE_HOME)\boost_1_42" />
 			<Add directory="C:\bullet-2.78\src" />
+			<Add directory="$(OGRE_HOME)\boost_1_44" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
