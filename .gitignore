@@ -1,0 +1,10 @@
+bin/
+obj/
+plugins/
+*.save
+Stormfighter.depend
+Stormfighter.layout
+*.dll
+ogre.cfg
+media/
+*.log
