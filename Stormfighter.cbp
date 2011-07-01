@@ -61,6 +61,10 @@
 			<Add directory="$(OGRE_HOME)\bin\$(TARGET_NAME)" />
 			<Add directory="C:\bullet-2.78\lib\lib" />
 		</Linker>
+		<Unit filename="Component.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GameObject.h" />
 		<Unit filename="OgreFramework.cc" />
 		<Unit filename="OgreFramework.h" />
 		<Unit filename="StormfighterApp.cc" />
