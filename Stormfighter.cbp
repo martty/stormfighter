@@ -18,6 +18,7 @@
 				<Linker>
 					<Add library="OgreMain_d" />
 					<Add library="OIS_d" />
+					<Add library="OgreTerrain_d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -33,6 +34,7 @@
 					<Add option="-s" />
 					<Add library="OgreMain" />
 					<Add library="OIS" />
+					<Add library="OgreTerrain" />
 				</Linker>
 			</Target>
 		</Build>

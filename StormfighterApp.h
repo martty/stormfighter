@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "Terrain.h"
 
 class StormfighterApp : public OIS::KeyListener {
  public:
@@ -20,8 +21,7 @@ class StormfighterApp : public OIS::KeyListener {
   void setupStormfighterScene();
   void runStormfighter();
 
-  Ogre::SceneNode* m_pCubeNode;
-  Ogre::Entity* m_pCubeEntity;
+  Ogre::TerrainGlobalOptions* terrainGlobals_;
   bool	 m_bShutdown;
 };
 

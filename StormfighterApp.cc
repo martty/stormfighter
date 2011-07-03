@@ -1,8 +1,7 @@
 #include "StormfighterApp.h"
 
 StormfighterApp::StormfighterApp(){
-    m_pCubeNode	= 0;
-    m_pCubeEntity = 0;
+    terrainGlobals_ = NULL;
 }
 StormfighterApp::~StormfighterApp(){
     delete OgreFramework::getSingletonPtr();
@@ -12,6 +11,11 @@ void StormfighterApp::startStormfighter(){
     if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0", this, 0))
         return;
     m_bShutdown = false;
+    terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
+    // global terrain settings cfg
+    terrainGlobals_->setMaxPixelError(8);
+    // testing composite map
+    terrainGlobals_->setCompositeMapDistance(3000);
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Stormfighter initialized!");
     setupStormfighterScene();
     runStormfighter();
@@ -20,11 +24,11 @@ void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
   OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
 
-  GameObject terrain();
-  //GameObject.addComponent(new Transform());
+  GameObject* terrain = new GameObject();
+  terrain->addComponent(new STerrain());
   //terrain.addComponent(new MyPlane());
 
-  //terrain.sendInit(this);
+  terrain->sendInit(this);
   GameObject* sampleMesh = new GameObject();
   sampleMesh->addComponent(new SMesh("robot.mesh"));
   sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,10));
@@ -36,7 +40,7 @@ void StormfighterApp::setupStormfighterScene(){
   c->setNearClipDistance(1);
   c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
   c->activate();
-  cam->transform()->setPosition(Ogre::Vector3(0,60,60));
+  cam->transform()->setPosition(Ogre::Vector3(0,160,60));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
   GameObject* sampleMesh3 = new GameObject();
   GameObject* sampleMesh4 = new GameObject("a");
