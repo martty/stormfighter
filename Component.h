@@ -23,7 +23,7 @@ class Component{
   virtual ~Component(){return;}
 
   /// returns type of component as string
-  MyString const virtual type() const = 0;
+  SString const virtual type() const = 0;
 
   /// to be called before each frame is rendered
   virtual void onUpdate(){}

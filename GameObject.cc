@@ -29,12 +29,12 @@ void GameObject::addComponent(Component* cmp){
   components_[cmp->type()] = cmp ;
 }
 
-Component* const GameObject::component(MyString name){
+Component* const GameObject::component(SString name){
   // if ( !hasComponent(name) ) FIXME Exception
   return components_[name] ;
 }
 
-bool GameObject::hasComponent(MyString name) const{
+bool GameObject::hasComponent(SString name) const{
   return ( components_.find(name) != components_.end() );
 }
 

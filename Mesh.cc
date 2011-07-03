@@ -7,7 +7,7 @@ SMesh::SMesh(){
   meshname_ = "";
 }
 
-SMesh::SMesh(MyString meshname){
+SMesh::SMesh(SString meshname){
   entity_ = NULL;
   meshname_ = meshname;
 }

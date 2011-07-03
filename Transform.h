@@ -28,7 +28,7 @@ class STransform : public Component {
   ~STransform();
 
   /// The Transform component's type string is @b "Transform"
-  MyString const type() const { return "Transform"; }
+  SString const type() const { return "Transform"; }
 
   // POSITION, ORIENTATION, SCALE
   Ogre::Vector3 const position(){return node_->getPosition();}

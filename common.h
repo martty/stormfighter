@@ -11,7 +11,7 @@
 #define NULL 0
 #endif
 
-typedef std::string MyString;
+typedef std::string SString;
 
 class GameObject;
 class Component;

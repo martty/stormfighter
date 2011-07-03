@@ -7,7 +7,7 @@
 #include "Transform.h"
 
 // Nem szeretek sokat irni
-typedef std::map<MyString, Component*> ComponentMap ;
+typedef std::map<SString, Component*> ComponentMap ;
 
 /**
  *@brief Generic parent class for all GameObject
@@ -27,10 +27,10 @@ class GameObject {
   void addComponent(Component* component);
 
   /// Returns component with given type
-  Component* const component(MyString name);
+  Component* const component(SString name);
 
   /// Returns true if GameObject has component with type "name"
-  bool hasComponent(MyString name) const;
+  bool hasComponent(SString name) const;
 
   /// Returns the transform component of the GameObject, alias for component("Transform")
   STransform* const transform();
