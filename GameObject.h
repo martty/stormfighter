@@ -6,19 +6,41 @@
 #include "Component.h"
 #include "Transform.h"
 
+// Nem szeretek sokat irni
+typedef std::map<MyString, Component*> ComponentMap ;
+
+/**
+ *@brief Generic parent class for all GameObject
+ *
+ * Suggested abbroviation: GO, :)
+ */
 class GameObject {
- public:
+  public:
+
+  /// Initialize GameObject with empty component map
   GameObject();
+
+  /// Delete GameObject
   ~GameObject();
 
+  /// Add's component to GameObject's component map
   void addComponent(Component* component);
-  Component* const component(MyString name);
-  bool hasComponent(MyString name);
 
+  /// Returns component with given type
+  Component* const component(MyString name);
+
+  /// Returns true if GameObject has component with type "name"
+  bool hasComponent(MyString name) const;
+
+  /// Returns the transform component of the GameObject, alias for component("Transform")
   Transform* const transform();
 
+  void sendInit(StormfighterApp* app) ;
+
  private:
-  std::map<MyString, Component*> components_;
+  void init();
+
+  ComponentMap components_;
   Transform* transform_;
 };
 

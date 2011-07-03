@@ -5,6 +5,14 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 typedef std::string MyString;
+
+class GameObject;
+class Component;
+class StormfighterApp;
 
 #endif

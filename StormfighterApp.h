@@ -15,8 +15,8 @@ class StormfighterApp : public OIS::KeyListener {
     void setupStormfighterScene();
     void runStormfighter();
 
-    Ogre::SceneNode*	 m_pCubeNode;
-    Ogre::Entity*	 m_pCubeEntity;
+    Ogre::SceneNode* m_pCubeNode;
+    Ogre::Entity* m_pCubeEntity;
     bool	 m_bShutdown;
 };
 

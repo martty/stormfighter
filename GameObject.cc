@@ -1,0 +1,53 @@
+#include "GameObject.h"
+#include "Transform.h"
+
+using namespace Ogre;
+
+GameObject::GameObject(){
+  transform_ = NULL;
+  init();
+}
+
+void GameObject::init(){
+  // FIXME untested
+  if( transform_ != NULL ) delete transform_ ;
+  components_.clear();
+
+  transform_ = new Transform();
+  addComponent(transform_);
+}
+
+GameObject::~GameObject(){
+  components_.clear ();
+}
+
+void GameObject::addComponent(Component* cmp){
+  if (components_.find(cmp->type()) != components_.end()){
+      // FIXME throw sajat exception
+      return;
+  }
+  components_[cmp->type()] = cmp ;
+}
+
+Component* const GameObject::component(MyString name){
+  // if ( !hasComponent(name) ) FIXME Exception
+  return components_[name] ;
+}
+
+bool GameObject::hasComponent(MyString name) const{
+  return ( components_.find(name) != components_.end() );
+}
+
+Transform* const GameObject::transform(){
+  return transform_;
+}
+
+void GameObject::sendInit(StormfighterApp* app){
+  for (ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->setInterface(this, app);
+  }
+
+  for (ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->onInit();
+  }
+}

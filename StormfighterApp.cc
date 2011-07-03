@@ -17,11 +17,14 @@ void StormfighterApp::startStormfighter(){
     runStormfighter();
 }
 void StormfighterApp::setupStormfighterScene(){
-    OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-    OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
-    m_pCubeEntity = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity("Cube", "ogrehead.mesh");
-    m_pCubeNode = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode()->createChildSceneNode("CubeNode");
-    m_pCubeNode->attachObject(m_pCubeEntity);
+  OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+  OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
+
+  GameObject terrain();
+  //GameObject.addComponent(new Transform());
+  //terrain.addComponent(new MyPlane());
+
+  //terrain.sendInit(this);
 }
 void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop...");
