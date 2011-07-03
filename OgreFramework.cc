@@ -11,9 +11,9 @@ OgreFramework::OgreFramework(){
     m_iNumScreenShots	 = 0;
     m_pRoot	 = 0;
     m_pSceneMgr	 = 0;
-    m_pRenderWnd	 = 0;
-    m_pCamera	 = 0;
-    m_pViewport	 = 0;
+    renderWindow_	 = 0;
+    defaultCamera_	 = 0;
+    viewPort_	 = 0;
     m_pLog	 = 0;
     m_pTimer	 = 0;
     m_pInputMgr	 = 0;
@@ -36,26 +36,22 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     #endif
     m_pRoot = new Ogre::Root(m_PluginsCfg);
     if(!m_pRoot->showConfigDialog()) return false;
-    m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
+    renderWindow_ = m_pRoot->initialise(true, wndTitle);
     m_pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, "SceneManager");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
-    m_pCamera = m_pSceneMgr->createCamera("Camera");
-    m_pCamera->setPosition(Vector3(0, 60, 60));
-    m_pCamera->lookAt(Vector3(0, 0, 0));
-    m_pCamera->setNearClipDistance(1);
-    m_pViewport = m_pRenderWnd->addViewport(m_pCamera);
-    m_pViewport->setBackgroundColour(ColourValue(0.8f, 0.7f, 0.6f, 1.0f));
-    m_pCamera->setAspectRatio(Real(m_pViewport->getActualWidth()) / Real(m_pViewport->getActualHeight()));
-    m_pViewport->setCamera(m_pCamera);
+    defaultCamera_ = m_pSceneMgr->createCamera("Camera");
+    viewPort_ = renderWindow_->addViewport(defaultCamera_);
+    viewPort_->setBackgroundColour(ColourValue(0.8f, 0.7f, 0.6f, 1.0f));
+    viewPort_->setCamera(defaultCamera_);
     unsigned long hWnd = 0;
     OIS::ParamList paramList;
-    m_pRenderWnd->getCustomAttribute("WINDOW", &hWnd);
+    renderWindow_->getCustomAttribute("WINDOW", &hWnd);
     paramList.insert(OIS::ParamList::value_type("WINDOW", Ogre::StringConverter::toString(hWnd)));
     m_pInputMgr = OIS::InputManager::createInputSystem(paramList);
     m_pKeyboard = static_cast<OIS::Keyboard*>(m_pInputMgr->createInputObject(OIS::OISKeyboard, true));
     m_pMouse = static_cast<OIS::Mouse*>(m_pInputMgr->createInputObject(OIS::OISMouse, true));
-    m_pMouse->getMouseState().height = m_pRenderWnd->getHeight();
-    m_pMouse->getMouseState().width	 = m_pRenderWnd->getWidth();
+    m_pMouse->getMouseState().height = renderWindow_->getHeight();
+    m_pMouse->getMouseState().width	 = renderWindow_->getWidth();
     if(pKeyListener == 0)
         m_pKeyboard->setEventCallback(this);
     else
@@ -84,11 +80,11 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
     m_pTimer = new Ogre::Timer();
     m_pTimer->reset();
-    m_pTrayMgr = new OgreBites::SdkTrayManager("TrayMgr", m_pRenderWnd, m_pMouse, this);
+    m_pTrayMgr = new OgreBites::SdkTrayManager("TrayMgr", renderWindow_, m_pMouse, this);
     m_pTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     m_pTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     m_pTrayMgr->hideCursor();
-    m_pRenderWnd->setActive(true);
+    renderWindow_->setActive(true);
     return true;
 }
 
@@ -106,7 +102,7 @@ bool OgreFramework::keyPressed(const OIS::KeyEvent &keyEventRef){
     }
     if(m_pKeyboard->isKeyDown(OIS::KC_SYSRQ))
     {
-        m_pRenderWnd->writeContentsToTimestampedFile("BOF_Screenshot_", ".png");
+        renderWindow_->writeContentsToTimestampedFile("BOF_Screenshot_", ".png");
         return true;
     }
     if(m_pKeyboard->isKeyDown(OIS::KC_M))
@@ -114,17 +110,17 @@ bool OgreFramework::keyPressed(const OIS::KeyEvent &keyEventRef){
         static int mode = 0;
         if(mode == 2)
         {
-            m_pCamera->setPolygonMode(PM_SOLID);
+            activeCamera()->setPolygonMode(PM_SOLID);
             mode = 0;
         }
         else if(mode == 0)
         {
-            m_pCamera->setPolygonMode(PM_WIREFRAME);
+            activeCamera()->setPolygonMode(PM_WIREFRAME);
             mode = 1;
         }
         else if(mode == 1)
         {
-            m_pCamera->setPolygonMode(PM_POINTS);
+            activeCamera()->setPolygonMode(PM_POINTS);
             mode = 2;
         }
     }
@@ -149,8 +145,8 @@ bool OgreFramework::keyReleased(const OIS::KeyEvent &keyEventRef){
 }
 
 bool OgreFramework::mouseMoved(const OIS::MouseEvent &evt){
-    m_pCamera->yaw(Degree(evt.state.X.rel * -0.1f));
-    m_pCamera->pitch(Degree(evt.state.Y.rel * -0.1f));
+    activeCamera()->yaw(Degree(evt.state.X.rel * -0.1f));
+    activeCamera()->pitch(Degree(evt.state.Y.rel * -0.1f));
     return true;
 }
 
@@ -172,8 +168,8 @@ void OgreFramework::updateOgre(double timeSinceLastFrame){
 }
 
 void OgreFramework::moveCamera(){
-    if(m_pKeyboard->isKeyDown(OIS::KC_LSHIFT))  m_pCamera->moveRelative(m_TranslateVector);
-    else m_pCamera->moveRelative(m_TranslateVector / 10);
+    if(m_pKeyboard->isKeyDown(OIS::KC_LSHIFT))  activeCamera()->moveRelative(m_TranslateVector);
+    else activeCamera()->moveRelative(m_TranslateVector / 10);
 }
 
 void OgreFramework::getInput(){
@@ -181,4 +177,16 @@ void OgreFramework::getInput(){
     if(m_pKeyboard->isKeyDown(OIS::KC_D)) m_TranslateVector.x = m_MoveScale;
     if(m_pKeyboard->isKeyDown(OIS::KC_W)) m_TranslateVector.z = -m_MoveScale;
     if(m_pKeyboard->isKeyDown(OIS::KC_S)) m_TranslateVector.z = m_MoveScale;
+}
+
+void OgreFramework::setActiveCamera(Camera* camera){
+  viewPort_->setCamera(camera);
+}
+
+Camera* OgreFramework::activeCamera() const{
+  return viewPort_->getCamera();
+}
+
+Real OgreFramework::getDefaultAspectRatio(){
+  return Real(viewPort_->getActualWidth()) / Real(viewPort_->getActualHeight());
 }

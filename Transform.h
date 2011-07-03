@@ -1,12 +1,12 @@
-#ifndef STORMFIGHTER_STransform_H_
-#define STORMFIGHTER_STransform_H_
+#ifndef STORMFIGHTER_STRANSFORM_H_
+#define STORMFIGHTER_STRANSFORM_H_
 
 #include "common.h"
 #include <OgreSceneNode.h>
 #include "Component.h"
 
 /**
- * @brief Non-mandatory component for GameObject, sets position and orientation
+ * @brief Mandatory component for GameObject, sets position, orientation and scale
  */
 class STransform : public Component {
  public:
@@ -38,6 +38,10 @@ class STransform : public Component {
   void setPosition(Ogre::Vector3 position){node_->setPosition(position);}
   void setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
   void setScale(Ogre::Vector3 scale){node_->setScale(scale);}
+
+  // ADVANCED TRANSFORMS
+
+  void lookAt(Ogre::Vector3 position); // worldspace, -z (like camera lookAt)
 
   // PARENTING
   STransform* const parent();

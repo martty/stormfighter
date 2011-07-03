@@ -5,7 +5,7 @@
 #include "OgreFramework.h"
 #include "GameObject.h"
 #include "Mesh.h"
-
+#include "Camera.h"
 
 class StormfighterApp : public OIS::KeyListener {
  public:

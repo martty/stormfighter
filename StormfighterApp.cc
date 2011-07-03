@@ -29,12 +29,19 @@ void StormfighterApp::setupStormfighterScene(){
   sampleMesh->addComponent(new SMesh("robot.mesh"));
   sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,10));
   sampleMesh->sendInit(this);
-  GameObject* sampleMesh2 = new GameObject();
+  GameObject* cam = new GameObject("cammy");
+  SCamera* c = new SCamera();
+  cam->addComponent(c);
+  cam->sendInit(this);
+  c->setNearClipDistance(1);
+  c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
+  c->activate();
+  cam->transform()->setPosition(Ogre::Vector3(0,60,60));
+  cam->transform()->lookAt(Ogre::Vector3(0,0,0));
   GameObject* sampleMesh3 = new GameObject();
   GameObject* sampleMesh4 = new GameObject("a");
   GameObject* sampleMesh5 = new GameObject("a");
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh2->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh3->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh4->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh5->name());
@@ -44,14 +51,14 @@ void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop...");
     double timeSinceLastFrame = 0;
     double startTime = 0;
-    OgreFramework::getSingletonPtr()->m_pRenderWnd->resetStatistics();
+    OgreFramework::getSingletonPtr()->defaultRenderWindow()->resetStatistics();
     while(!m_bShutdown && !OgreFramework::getSingletonPtr()->isOgreToBeShutDown()){
-        if(OgreFramework::getSingletonPtr()->m_pRenderWnd->isClosed())
+        if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isClosed())
             m_bShutdown = true;
         #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_LINUX
         Ogre::WindowEventUtilities::messagePump();
         #endif
-        if(OgreFramework::getSingletonPtr()->m_pRenderWnd->isActive()){
+        if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isActive()){
             startTime = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU();
             OgreFramework::getSingletonPtr()->m_pKeyboard->capture();
             OgreFramework::getSingletonPtr()->m_pMouse->capture();

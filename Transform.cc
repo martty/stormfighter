@@ -32,3 +32,7 @@ void STransform::attachObject(MovableObject* object){
 void STransform::detachObject(MovableObject* object){
   node_->detachObject(object);
 }
+
+void STransform::lookAt(Vector3 position){
+  node_->lookAt(position, SceneNode::TS_WORLD);
+}
