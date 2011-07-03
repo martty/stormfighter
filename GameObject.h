@@ -37,7 +37,7 @@ class GameObject {
   bool hasComponent(SString name) const;
 
   /// Returns the transform component of the GameObject, alias for component("Transform")
-  STransform* const transform() const;
+  STransform* const transform();
 
   void sendInit(StormfighterApp* app);
 

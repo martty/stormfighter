@@ -48,7 +48,7 @@ bool GameObject::hasComponent(SString name) const{
   return ( components_.find(name) != components_.end() );
 }
 
-STransform* const GameObject::transform() const{
+STransform* const GameObject::transform(){
   return transform_;
 }
 
