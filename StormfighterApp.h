@@ -3,6 +3,7 @@
 
 #include "OgreFramework.h"
 #include "GameObject.h"
+#include "Mesh.h"
 
 class StormfighterApp : public OIS::KeyListener {
     public:

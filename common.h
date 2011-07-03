@@ -5,6 +5,8 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
+#include "OgreFramework.h"
+
 #ifndef NULL
 #define NULL 0
 #endif

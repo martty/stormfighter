@@ -13,7 +13,7 @@ void GameObject::init(){
   if( transform_ != NULL ) delete transform_ ;
   components_.clear();
 
-  transform_ = new Transform();
+  transform_ = new STransform();
   addComponent(transform_);
 }
 
@@ -38,7 +38,7 @@ bool GameObject::hasComponent(MyString name) const{
   return ( components_.find(name) != components_.end() );
 }
 
-Transform* const GameObject::transform(){
+STransform* const GameObject::transform(){
   return transform_;
 }
 
@@ -46,8 +46,11 @@ void GameObject::sendInit(StormfighterApp* app){
   for (ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
     (*it).second->setInterface(this, app);
   }
-
+  transform_->onInit(); // guarantee first call, since map is not ordered (not required yet, but maybe later)
   for (ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    (*it).second->onInit();
+    if((*it).second->type() != "Transform"){
+      OgreFramework::getSingletonPtr()->m_pLog->logMessage((*it).second->type());
+      (*it).second->onInit();
+    }
   }
 }

@@ -33,7 +33,7 @@ class GameObject {
   bool hasComponent(MyString name) const;
 
   /// Returns the transform component of the GameObject, alias for component("Transform")
-  Transform* const transform();
+  STransform* const transform();
 
   void sendInit(StormfighterApp* app) ;
 
@@ -41,7 +41,7 @@ class GameObject {
   void init();
 
   ComponentMap components_;
-  Transform* transform_;
+  STransform* transform_;
 };
 
 #endif

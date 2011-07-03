@@ -66,6 +66,7 @@
 		<Unit filename="GameObject.cc" />
 		<Unit filename="GameObject.h" />
 		<Unit filename="Library.h" />
+		<Unit filename="Mesh.cc" />
 		<Unit filename="Mesh.h" />
 		<Unit filename="OgreFramework.cc" />
 		<Unit filename="OgreFramework.h" />

@@ -25,6 +25,10 @@ void StormfighterApp::setupStormfighterScene(){
   //terrain.addComponent(new MyPlane());
 
   //terrain.sendInit(this);
+  GameObject* sampleMesh = new GameObject();
+  sampleMesh->addComponent(new SMesh("robot.mesh"));
+  sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,0));
+  sampleMesh->sendInit(this);
 }
 void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop...");

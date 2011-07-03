@@ -1,5 +1,5 @@
-#ifndef STORMFIGHTER_TRANSFORM_H_
-#define STORMFIGHTER_TRANSFORM_H_
+#ifndef STORMFIGHTER_STransform_H_
+#define STORMFIGHTER_STransform_H_
 
 #include "common.h"
 #include <OgreSceneNode.h>
@@ -8,7 +8,7 @@
 /**
  * @brief Non-mandatory component for GameObject, sets position and orientation
  */
-class Transform : public Component {
+class STransform : public Component {
  public:
 
   /**
@@ -16,39 +16,43 @@ class Transform : public Component {
    * @param position Translation vector
    * @param orientation Rotation quaternion
    */
-  Transform(Ogre::Vector3 position, Ogre::Quaternion orientation);
+  STransform(Ogre::Vector3 position, Ogre::Quaternion orientation);
 
   /// Same as above but without rotation
-  explicit Transform(Ogre::Vector3 position);
+  explicit STransform(Ogre::Vector3 position);
 
   /// Same as above but transform will be identity
-  Transform();
+  STransform();
 
   /// Destroy transform component
-  ~Transform(){return;}
+  ~STransform();
 
-  /// The transform component's type string is @b "Transform"
+  /// The Transform component's type string is @b "Transform"
   MyString const type() const { return "Transform"; }
 
   // POSITION, ORIENTATION, SCALE
-  Ogre::Vector3 const position(){ return position_;}
-  Ogre::Quaternion const orientation(){return orientation_;}
-  Ogre::Vector3 const scale();
+  Ogre::Vector3 const position(){return node_->getPosition();}
+  Ogre::Quaternion const orientation(){return node_->getOrientation();}
+  Ogre::Vector3 const scale(){return node_->getScale();}
 
-  void setPosition(Ogre::Vector3 position);
-  void setOrientation(Ogre::Quaternion orientation);
-  void setScale(Ogre::Vector3 scale);
+  void setPosition(Ogre::Vector3 position){node_->setPosition(position);}
+  void setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
+  void setScale(Ogre::Vector3 scale){node_->setScale(scale);}
 
   // PARENTING
-  Transform* const parent();
-  void setParent(Transform* parent);
+  STransform* const parent();
+  void setParent(STransform* parent);
+
+  // Ogre specific
+  /// Attach Ogre::MovableObject to this STransform
+  void attachObject(Ogre::MovableObject* object);
+  /// Detach Ogre::MovableObject from this STransform
+  void detachObject(Ogre::MovableObject* object);
 
  private:
-  Ogre::Vector3 position_;
-  Ogre::Quaternion orientation_;
   Ogre::SceneNode* node_;
 
-  void init(Ogre::Vector3 position, Ogre::Quaternion orientation);
+  void init(Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 scale);
 };
 
 #endif
