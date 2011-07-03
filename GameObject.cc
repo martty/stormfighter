@@ -3,12 +3,22 @@
 
 using namespace Ogre;
 
+NameCountMap GameObject::namecount_ = NameCountMap();
+
 GameObject::GameObject(){
+  name_ = "gameobject";
+  transform_ = NULL;
+  init();
+}
+
+GameObject::GameObject(SString name){
+  name_ = name;
   transform_ = NULL;
   init();
 }
 
 void GameObject::init(){
+  name_ = getUniqueName(name_);
   // FIXME untested
   if( transform_ != NULL ) delete transform_ ;
   components_.clear();
@@ -38,7 +48,7 @@ bool GameObject::hasComponent(SString name) const{
   return ( components_.find(name) != components_.end() );
 }
 
-STransform* const GameObject::transform(){
+STransform* const GameObject::transform() const{
   return transform_;
 }
 
@@ -53,4 +63,19 @@ void GameObject::sendInit(StormfighterApp* app){
       (*it).second->onInit();
     }
   }
+}
+
+SString GameObject::getUniqueName(SString basename){
+  NameCountMap::iterator it = namecount_.find(basename);
+  if (it != namecount_.end()){
+      // exists
+      int num = ++(*it).second;
+      return basename+"_"+Ogre::StringConverter::toString(num);
+  }
+  namecount_[basename]=0;
+  return basename;
+}
+
+SString GameObject::debug(){
+  return "["+name()+"]:<"+StringConverter::toString(transform()->position())+">";
 }

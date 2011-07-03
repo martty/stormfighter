@@ -27,8 +27,18 @@ void StormfighterApp::setupStormfighterScene(){
   //terrain.sendInit(this);
   GameObject* sampleMesh = new GameObject();
   sampleMesh->addComponent(new SMesh("robot.mesh"));
-  sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,0));
+  sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,10));
   sampleMesh->sendInit(this);
+  GameObject* sampleMesh2 = new GameObject();
+  GameObject* sampleMesh3 = new GameObject();
+  GameObject* sampleMesh4 = new GameObject("a");
+  GameObject* sampleMesh5 = new GameObject("a");
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh2->name());
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh3->name());
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh4->name());
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh5->name());
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->debug());
 }
 void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop...");
@@ -59,16 +69,16 @@ void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Main loop quit");
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Shutdown OGRE...");
 }
-bool StormfighterApp::keyPressed(const OIS::KeyEvent &keyEventRef)
-{
+
+bool StormfighterApp::keyPressed(const OIS::KeyEvent &keyEventRef){
     OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
     if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_F)){
         //do something
     }
     return true;
 }
-bool StormfighterApp::keyReleased(const OIS::KeyEvent &keyEventRef)
-{
+
+bool StormfighterApp::keyReleased(const OIS::KeyEvent &keyEventRef){
     OgreFramework::getSingletonPtr()->keyReleased(keyEventRef);
     return true;
 }
