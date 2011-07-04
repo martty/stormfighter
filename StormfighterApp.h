@@ -17,6 +17,9 @@ class StormfighterApp : public OIS::KeyListener {
   bool keyPressed(const OIS::KeyEvent &keyEventRef);
   bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
+  /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
+  void log(SString message);
+
  private:
   void setupStormfighterScene();
   void runStormfighter();

@@ -25,10 +25,15 @@ void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
 
   GameObject* terrain = new GameObject();
-  terrain->addComponent(new STerrain());
-  //terrain.addComponent(new MyPlane());
-
+  STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
+  terrain->addComponent(t);
+  t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
+  t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
+  t->addLayerTo(0,0,200,"growth_weirdfungus-03_diffusespecular.dds","growth_weirdfungus-03_normalheight.dds");
+  t->setHeightImageTo(0,0,"terrain.png");
+  //t->setInputScalingTo(0,0,60);
   terrain->sendInit(this);
+
   GameObject* sampleMesh = new GameObject();
   sampleMesh->addComponent(new SMesh("robot.mesh"));
   sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,10));
@@ -92,4 +97,8 @@ bool StormfighterApp::keyPressed(const OIS::KeyEvent &keyEventRef){
 bool StormfighterApp::keyReleased(const OIS::KeyEvent &keyEventRef){
     OgreFramework::getSingletonPtr()->keyReleased(keyEventRef);
     return true;
+}
+
+void StormfighterApp::log(SString message){
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage(message);
 }

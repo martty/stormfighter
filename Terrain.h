@@ -17,9 +17,12 @@ typedef std::map<Coordinate, Ogre::Terrain::ImportData*> CoordinateImportData;
  */
 class STerrain : public Component {
  public:
-  /// Create a terrain with default values
-  STerrain();
-
+  /**
+  * @brief Create terrain with given values
+  * @param alignment Alignment of the terrain plane (X/Z, X/Y, Y/Z)
+  * @param terrainSize The number of vertices along the side of one tile of terrain (2^N + 1)
+  * @param worldSize The size of one tile of terrain in world units
+  */
   STerrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize);
 
   SString const type() const { return "Terrain"; }
@@ -33,10 +36,14 @@ class STerrain : public Component {
   void setHeightImageTo(int x, int y, SString heightmap);
   /// Set the (x,y) Terrain to constant height
   void setConstantHeightTo(int x, int y, SReal height);
+  /// Set the scaling of input data
+  void setInputScalingTo(int x, int y, SReal inputScale);
   // TODO: more importdata settings
   void onInit();
 
  private:
+  STerrain();
+  /// prepares an importdata for filling in user values
   Ogre::Terrain::ImportData* prepareImportData(int x, int y);
 
   void defineTerrain(long x, long y);

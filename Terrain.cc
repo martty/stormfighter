@@ -6,7 +6,11 @@ STerrain::STerrain() {
   init(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
 }
 
-void STerrain::init(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
+STerrain::STerrain(Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
+  init(alignment, terrainSize, worldSize);
+}
+
+void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
   terrainGroup_ = OGRE_NEW Ogre::TerrainGroup(OgreFramework::getSingletonPtr()->m_pSceneMgr, alignment, terrainSize, worldSize);
 
   // Configure default import settings for if we use imported image
@@ -17,7 +21,7 @@ void STerrain::init(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SR
   defaultimp.minBatchSize = 33;
   defaultimp.maxBatchSize = 65;
   // textures
-  defaultimp.layerList.resize(3);
+  /*defaultimp.layerList.resize(3);
   defaultimp.layerList[0].worldSize = 100;
   defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.dds");
   defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.dds");
@@ -27,6 +31,7 @@ void STerrain::init(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SR
   defaultimp.layerList[2].worldSize = 200;
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_diffusespecular.dds");
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.dds");
+  */
 }
 
 void STerrain::defineTerrain(long x, long y){
@@ -34,9 +39,17 @@ void STerrain::defineTerrain(long x, long y){
   if (Ogre::ResourceGroupManager::getSingleton().resourceExists(terrainGroup_->getResourceGroup(), filename)) {
     terrainGroup_->defineTerrain(x, y);
   } else {
-    Ogre::Image img;
-    getTerrainImage(x % 2 != 0, y % 2 != 0, img);
-    terrainGroup_->defineTerrain(x, y, &img);
+    Coordinate coord(x,y);
+    CoordinateImportData::iterator it = importdatas_.find(coord);
+    if (it != importdatas_.end()){
+      // the slot has been specified, load it
+      terrainGroup_->defineTerrain(x, y, (*it).second);
+    } else {
+      // fallback, if no specification
+      Ogre::Image img;
+      getTerrainImage(x % 2 != 0, y % 2 != 0, img);
+      terrainGroup_->defineTerrain(x, y, &img);
+    }
     terrainsImported_= true;
   }
 }
@@ -90,7 +103,7 @@ Terrain::ImportData* STerrain::prepareImportData(int x, int y){
 void STerrain::addLayerTo(int x, int y, SReal worldSize, SString texture_diffusespecular, SString texture_normalheight){
   Terrain::ImportData* import = prepareImportData(x,y);
   int layer = import->layerList.size(); // the next layer
-  import->layerList.resize(layer);
+  import->layerList.resize(layer+1);
   import->layerList[layer].worldSize = worldSize;
   import->layerList[layer].textureNames.push_back(texture_diffusespecular);
   import->layerList[layer].textureNames.push_back(texture_normalheight);
@@ -98,7 +111,7 @@ void STerrain::addLayerTo(int x, int y, SReal worldSize, SString texture_diffuse
 void STerrain::setHeightImageTo(int x, int y, SString heightmap){
   Terrain::ImportData* import = prepareImportData(x,y);
   Image* img = OGRE_NEW Image();
-  img->load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+  img->load(heightmap, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   import->inputImage = img;
   import->deleteInputData = true; // let Ogre delete the Image
 }
@@ -107,11 +120,16 @@ void STerrain::setConstantHeightTo(int x, int y, SReal height){
   import->constantHeight = height;
 }
 
+void STerrain::setInputScalingTo(int x, int y, SReal inputscale){
+  Terrain::ImportData* import = prepareImportData(x,y);
+  import->inputScale = inputscale;
+}
 
 void STerrain::onInit(){
   terrainGroup_->setFilenameConvention(object()->name()+"_terrain", Ogre::String("dat"));
   terrainGroup_->setOrigin(object()->transform()->position());
 
+  // TODO: configurable indexes to load for terrains
   for (long x = 0; x <= 0; ++x){
     for (long y = 0; y <= 0; ++y){
       defineTerrain(x, y);
