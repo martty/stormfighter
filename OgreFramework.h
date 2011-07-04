@@ -33,6 +33,7 @@ class OgreFramework : public Ogre::Singleton<OgreFramework>, OIS::KeyListener, O
   /// Get default renderwindow (for stats)
   Ogre::RenderWindow* defaultRenderWindow() const{ return renderWindow_; }
 
+  // TODO: more cfg might be necessary (or elsewhere)
   bool isOgreToBeShutDown()const{return m_bShutDownOgre;}
 
   bool keyPressed(const OIS::KeyEvent &keyEventRef);

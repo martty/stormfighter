@@ -70,6 +70,8 @@
 		<Unit filename="GameObject.cc" />
 		<Unit filename="GameObject.h" />
 		<Unit filename="Library.h" />
+		<Unit filename="Light.cc" />
+		<Unit filename="Light.h" />
 		<Unit filename="Mesh.cc" />
 		<Unit filename="Mesh.h" />
 		<Unit filename="OgreFramework.cc" />

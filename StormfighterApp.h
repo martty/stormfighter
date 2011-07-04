@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "Terrain.h"
+#include "Light.h"
 
 class StormfighterApp : public OIS::KeyListener {
  public:
@@ -19,6 +20,9 @@ class StormfighterApp : public OIS::KeyListener {
 
   /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
   void log(SString message);
+
+  /// Set light used for lighting terrain
+  void setTerrainLight(Ogre::Light* light);
 
  private:
   void setupStormfighterScene();

@@ -22,7 +22,16 @@ void StormfighterApp::startStormfighter(){
 }
 void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-  OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
+  //OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
+
+  GameObject* lighty = new GameObject();
+  SLight* light = new SLight(Ogre::Light::LT_DIRECTIONAL);
+  lighty->addComponent(light);
+  light->setDiffuseColour(Ogre::ColourValue(1,0,0));
+  lighty->transform()->setPosition(Ogre::Vector3(0,100,0));
+  lighty->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(1,0,1)));
+  lighty->sendInit(this);
+  light->setAsTerrainLight();
 
   GameObject* terrain = new GameObject();
   STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
@@ -47,11 +56,9 @@ void StormfighterApp::setupStormfighterScene(){
   c->activate();
   cam->transform()->setPosition(Ogre::Vector3(0,160,60));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
-  GameObject* sampleMesh3 = new GameObject();
   GameObject* sampleMesh4 = new GameObject("a");
   GameObject* sampleMesh5 = new GameObject("a");
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh3->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh4->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh5->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->debug());
@@ -101,4 +108,10 @@ bool StormfighterApp::keyReleased(const OIS::KeyEvent &keyEventRef){
 
 void StormfighterApp::log(SString message){
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(message);
+}
+
+void StormfighterApp::setTerrainLight(Ogre::Light* light){
+  terrainGlobals_->setLightMapDirection(light->getDerivedDirection());
+  terrainGlobals_->setCompositeMapAmbient(OgreFramework::getSingletonPtr()->m_pSceneMgr->getAmbientLight());
+  terrainGlobals_->setCompositeMapDiffuse(light->getDiffuseColour());
 }
