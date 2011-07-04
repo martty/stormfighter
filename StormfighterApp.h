@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Terrain.h"
 #include "Light.h"
+#include "Primitive.h"
 
 class StormfighterApp : public OIS::KeyListener {
  public:

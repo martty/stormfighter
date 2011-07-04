@@ -20,7 +20,7 @@ void SMesh::onInit(){
   if(meshname_.empty()){
     valid_ = false;
   } else {
-    entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity("UniqueGOname"+meshname_, meshname_);
+    entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(object()->name()+meshname_, meshname_);
     object()->transform()->attachObject(entity_);
     valid_ = true;
   }

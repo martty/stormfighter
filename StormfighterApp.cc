@@ -56,10 +56,13 @@ void StormfighterApp::setupStormfighterScene(){
   c->activate();
   cam->transform()->setPosition(Ogre::Vector3(0,160,60));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
-  GameObject* sampleMesh4 = new GameObject("a");
+  GameObject* prim = new GameObject("a");
+  SPrimitive* sp = new SPrimitive(Ogre::SceneManager::PT_SPHERE);
+  prim->addComponent(sp);
+  prim->transform()->setPosition(Ogre::Vector3(0, 0, 0));
+  prim->sendInit(this);
   GameObject* sampleMesh5 = new GameObject("a");
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh4->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh5->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->debug());
 }

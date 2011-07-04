@@ -76,6 +76,10 @@
 		<Unit filename="Mesh.h" />
 		<Unit filename="OgreFramework.cc" />
 		<Unit filename="OgreFramework.h" />
+		<Unit filename="Primitive.cc">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Primitive.h" />
 		<Unit filename="StormfighterApp.cc" />
 		<Unit filename="StormfighterApp.h" />
 		<Unit filename="Terrain.cc" />

@@ -30,11 +30,11 @@ class SMesh : public Component {
   /// Get mesh name
 //  SString meshname();
 
- private:
+ protected:
   Ogre::Entity* entity_;
   /// true if there is a proper entity; if false, this should NOT enter hierarchy
   bool valid_;
-
+ private:
   SString meshname_;
 };
 
