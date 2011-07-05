@@ -63,6 +63,9 @@
 			<Add directory="$(OGRE_HOME)\bin\$(TARGET_NAME)" />
 			<Add directory="C:\bullet-2.78\lib\lib" />
 		</Linker>
+		<Unit filename="BulletOgreDebugDraw.cc" />
+		<Unit filename="BulletOgreDebugDraw.h" />
+		<Unit filename="BulletOgreGlue.h" />
 		<Unit filename="Camera.cc" />
 		<Unit filename="Camera.h" />
 		<Unit filename="Component.cc" />
@@ -76,6 +79,8 @@
 		<Unit filename="Mesh.h" />
 		<Unit filename="OgreFramework.cc" />
 		<Unit filename="OgreFramework.h" />
+		<Unit filename="Physics.cc" />
+		<Unit filename="Physics.h" />
 		<Unit filename="Primitive.cc">
 			<Option compilerVar="CC" />
 		</Unit>

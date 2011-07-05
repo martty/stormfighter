@@ -6,6 +6,7 @@
 #include <OgreQuaternion.h>
 
 #include "OgreFramework.h"
+#include "BulletOgreGlue.h"
 
 #ifndef NULL
 #define NULL 0
