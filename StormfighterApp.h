@@ -10,6 +10,9 @@
 #include "Terrain.h"
 #include "Light.h"
 #include "Primitive.h"
+#include "RigidBody.h"
+#include "SphereCollider.h"
+#include "BoxCollider.h"
 
 // TODO: kezd hosszura nõni a #include lista, kéne külön file
 
