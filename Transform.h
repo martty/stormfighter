@@ -12,7 +12,7 @@ class STransform : public Component {
  public:
 
   /**
-   * @brief Contructor of transfer
+   * @brief Contructor of transform
    * @param position Translation vector
    * @param orientation Rotation quaternion
    */
@@ -46,6 +46,7 @@ class STransform : public Component {
   // PARENTING
   STransform* const parent();
   void setParent(STransform* parent);
+  void addChild(STransform* child);
 
   // Ogre specific
   /// Attach Ogre::MovableObject to this STransform

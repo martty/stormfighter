@@ -47,8 +47,10 @@ void StormfighterApp::setupStormfighterScene(){
   //t->setInputScalingTo(0,0,60);
   terrain->sendInit(this);
   */
-
+  GameObject* pp = new GameObject();
   GameObject* sampleMesh = new GameObject();
+  pp->transform()->addChild(sampleMesh->transform());
+  pp->transform()->setPosition(Ogre::Vector3(0, 0, -100));
   sampleMesh->addComponent(new SMesh("robot.mesh"));
   sampleMesh->transform()->setPosition(Ogre::Vector3(0,10,10));
   sampleMesh->sendInit(this);
