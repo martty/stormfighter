@@ -16,14 +16,21 @@ SMesh::~SMesh(){
   // TODO: cleanup
 }
 
-void SMesh::onInit(){
+void SMesh::onAdd(SString goname, STransform* transform){
   if(meshname_.empty()){
     valid_ = false;
   } else {
-    entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(object()->name()+meshname_, meshname_);
-    object()->transform()->attachObject(entity_);
+    entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(goname+meshname_, meshname_);
+    transform->attachObject(entity_);
     valid_ = true;
   }
 }
 
+const Ogre::AxisAlignedBox* SMesh::getBounds(){
+  return &(entity_->getMesh()->getBounds());
+}
+
+SReal SMesh::getBoundingSphereRadius() const{
+  return entity_->getMesh()->getBoundingSphereRadius();
+}
 // TODO: impl

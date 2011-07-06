@@ -10,31 +10,35 @@
 #include "Collider.h"
 
 class SRigidBody : public Component, public btMotionState {
+ friend class Physics;
+ friend class STransform;
  public:
   /** Default constructor */
   SRigidBody(SReal mass);
   /** Default destructor */
   ~SRigidBody();
-  // MotionState overrides [BtOgre]
-  /// get btTransform of object
-  // FIXME: internal for bullet
-  void getWorldTransform(btTransform &retVal) const;
-
-  // FIXME: this should not be public, should be used by STransform
-	void setKinematicPos(Ogre::Vector3 position, Ogre::Quaternion orientation);
-  /// For Bullet (internal)
-  // FIXME: this should not be public as well
-	void setWorldTransform(const btTransform &transform);
 
 	void onInit();
 
 	SString const type() const { return "RigidBody"; }
 
+	void setKinematic(bool isKinematic);
+
  private:
   void init(SReal mass);
 
+  // MotionState overrides [BtOgre]
+  /// get btTransform of object (internal, for Physics)
+  void getWorldTransform(btTransform &retVal) const;
+
+  /// set position (only for kinematic objects, for STransform)
+	void setKinematicTransform(Ogre::Vector3 position, Ogre::Quaternion orientation);
+  /// set world transform (internal, for Physics)
+	void setWorldTransform(const btTransform &transform);
+
   SReal mass_;
   btRigidBody* rigidBody_;
+  bool isKinematic_; // until init
 
   btTransform internalTransform_; // for motionstate
 };

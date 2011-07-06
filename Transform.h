@@ -35,9 +35,13 @@ class STransform : public Component {
   Ogre::Quaternion const orientation(){return node_->getOrientation();}
   Ogre::Vector3 const scale(){return node_->getScale();}
 
-  void setPosition(Ogre::Vector3 position){node_->setPosition(position);}
-  void setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
+  void setPosition(Ogre::Vector3 position);
+  void setOrientation(Ogre::Quaternion orientation);
   void setScale(Ogre::Vector3 scale){node_->setScale(scale);}
+
+  // INTERNAL FOR MOTIONSTATE
+  void _setPosition(Ogre::Vector3 position){node_->setPosition(position);}
+  void _setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
 
   // ADVANCED TRANSFORMS
 
@@ -47,6 +51,9 @@ class STransform : public Component {
   STransform* const parent();
   void setParent(STransform* parent);
   void addChild(STransform* child);
+
+  // DEBUG
+  void showBoundingBox(bool show);
 
   // Ogre specific
   /// Attach Ogre::MovableObject to this STransform

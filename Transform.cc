@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "RigidBody.h"
 
 using namespace Ogre ;
 
@@ -28,6 +29,27 @@ STransform::STransform(): node_(NULL){
   init(Vector3::ZERO, Quaternion::IDENTITY, Vector3::UNIT_SCALE);
 }
 
+void STransform::setPosition(Vector3 position){
+  node_->setPosition(position);
+  // if we have init'd, notify RigidBody component
+  if(hasInterface()){
+    if(object()->hasComponent("RigidBody")){
+      SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
+      rigidbody->setKinematicTransform(position, orientation());
+    }
+  }
+}
+
+void STransform::setOrientation(Quaternion orientation){
+  node_->setOrientation(orientation);
+  // if we have init'd, notify RigidBody component
+  if(hasInterface()){
+    if(object()->hasComponent("RigidBody")){
+      SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
+      rigidbody->setKinematicTransform(position(), orientation);
+    }
+  }
+}
 void STransform::attachObject(MovableObject* object){
   node_->attachObject(object);
 }
@@ -53,4 +75,8 @@ void STransform::setParent(STransform* parent){
 void STransform::addChild(STransform* child){
   child->node_->getParentSceneNode()->removeChild(child->node_);
   node_->addChild(child->node_);
+}
+
+void STransform::showBoundingBox(bool show){
+  node_->showBoundingBox(show);
 }

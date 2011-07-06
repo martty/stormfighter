@@ -37,6 +37,7 @@ void GameObject::addComponent(Component* cmp){
       return;
   }
   components_[cmp->type()] = cmp ;
+  cmp->onAdd(name_, transform_);
 }
 
 Component* const GameObject::component(SString name){
@@ -58,7 +59,7 @@ void GameObject::sendInit(StormfighterApp* app){
   }
   transform_->onInit(); // guarantee first call, since map is not ordered (not required yet, but maybe later)
   for (ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    if((*it).second->type() != "Transform"){
+    if((*it).second->type() != "Transform" && (*it).second->state() != Component::READY){
       (*it).second->onInit();
     }
   }

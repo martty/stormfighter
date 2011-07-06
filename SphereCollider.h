@@ -8,10 +8,14 @@
 class SSphereCollider : public SCollider
 {
  public:
-  /** Default constructor */
+  /// Constructor, setting the radius of the sphere
   SSphereCollider(SReal radius);
+  /// Constructor, with autocfg
+  SSphereCollider();
   /** Default destructor */
   ~SSphereCollider();
+
+  void onInit();
 
   // TODO: differentiating in type
   SString const type() const { return "Collider"; }

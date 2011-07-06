@@ -18,6 +18,8 @@ class Physics {
   /// Add a rigidbody to the simulation, with collision filtering
   void addRigidBody(btRigidBody* rigidBody, short type, short collidesWith);
 
+  void removeRigidBody(btRigidBody* rigidBody);
+
   /// Update physics world
   void tick(SReal deltaTime);
 

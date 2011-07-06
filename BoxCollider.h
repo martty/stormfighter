@@ -3,16 +3,23 @@
 
 #include "common.h"
 #include "Collider.h"
+#include "Mesh.h"
+#include "GameObject.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
+#include <OgreAxisAlignedBox.h>
 
 
 class SBoxCollider : public SCollider
 {
  public:
-  /** Default constructor */
+  /// Constructor, setting the halfextents of the box
   SBoxCollider(Ogre::Vector3 halfextents);
+  /// Constructor, using autocfg
+  SBoxCollider();
   /** Default destructor */
   ~SBoxCollider();
+
+  void onInit();
 
   SString const type() const { return "Collider"; }
 

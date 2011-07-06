@@ -12,8 +12,8 @@
 class SCollider : public Component
 {
  public:
-  /** Default constructor */
-  SCollider(){collisionShape_ = NULL; }
+  /** Default constructor, by default we do not have autocfg */
+  SCollider(){collisionShape_ = NULL; autoConfig_ = false; }
   /** Default destructor */
   virtual ~SCollider(){delete collisionShape_;}
 
@@ -21,6 +21,8 @@ class SCollider : public Component
 
  protected:
   btCollisionShape* collisionShape_;
+  /// define whether this collider should size and orient itself based on the other components in the GO
+  bool autoConfig_;
 };
 
 #endif

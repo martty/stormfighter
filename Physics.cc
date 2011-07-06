@@ -7,36 +7,39 @@ Physics::Physics()
 
 Physics::~Physics()
 {
-    delete dWorld_;
-    delete solver_;
-    delete collisionDispatcher_;
-    delete collisionConfiguration_;
-    delete broadphase_;
+  delete dWorld_;
+  delete solver_;
+  delete collisionDispatcher_;
+  delete collisionConfiguration_;
+  delete broadphase_;
 }
 
 void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
-    broadphase_ = new btAxisSweep3(wAABBmin,wAABBmax,maxprox);
-    collisionConfiguration_ = new btDefaultCollisionConfiguration();
-    collisionDispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
-    solver_ = new btSequentialImpulseConstraintSolver;
-    dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
-    Ogre::SceneNode * rootnode = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
-    debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
-    debugdrawer_->setDebugMode(true);
-    dWorld_->setDebugDrawer(debugdrawer_);
-    //dWorld_->setGravity(btVector3(0,9.8f, 0));
+  broadphase_ = new btAxisSweep3(wAABBmin,wAABBmax,maxprox);
+  collisionConfiguration_ = new btDefaultCollisionConfiguration();
+  collisionDispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
+  solver_ = new btSequentialImpulseConstraintSolver;
+  dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
+  Ogre::SceneNode * rootnode = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
+  debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
+  debugdrawer_->setDebugMode(true);
+  dWorld_->setDebugDrawer(debugdrawer_);
 }
 
 void Physics::tick(SReal deltaTime){
-    dWorld_->stepSimulation(deltaTime);//, 14, btScalar(1.)/btScalar(1200.));
-    dWorld_->debugDrawWorld();
-    debugdrawer_->step();
+  dWorld_->stepSimulation(deltaTime);//, 14, btScalar(1.)/btScalar(1200.));
+  dWorld_->debugDrawWorld();
+  debugdrawer_->step();
 }
 
 void Physics::addRigidBody(btRigidBody* rigidbody){
-    dWorld_->addRigidBody(rigidbody);
+  dWorld_->addRigidBody(rigidbody);
 }
 
 void Physics::addRigidBody(btRigidBody* rigidbody, short type, short collidesWith){
-    dWorld_->addRigidBody(rigidbody, type, collidesWith);
+  dWorld_->addRigidBody(rigidbody, type, collidesWith);
+}
+
+void Physics::removeRigidBody(btRigidBody* rigidBody){
+  dWorld_->removeRigidBody(rigidBody);
 }

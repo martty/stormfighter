@@ -3,19 +3,13 @@
 
 #include "common.h"
 
+class STransform;
+
 /**
  * @brief Compenents are responsible for a part of a GameObject's behavior, appearance, etc.
  */
 class Component{
  public:
-  /**
-   * @brief Create Component
-   * @param object GameObject in which the component acts
-   * @param app The application interface the component can access
-   */
-  void setInterface(GameObject* object, StormfighterApp* app);
-  bool hasInterface() const;
-
   /// Default constructor will create non-acting contructor
   Component();
 
@@ -25,19 +19,38 @@ class Component{
   /// returns type of component as string
   SString const virtual type() const = 0;
 
+  /**
+  * @brief Called when the component is added to a GameObject
+  * @param objectname Name of the GO, so that the component can appropriately name
+  * @param transform Transform component of the GO
+  */
+  virtual void onAdd(SString objectname, STransform* transform){}
+  /**
+   * @brief Exposes the GameObject and the Application to the component
+   * @param object GameObject in which the component acts
+   * @param app The application interface the component can access
+   */
+  void setInterface(GameObject* object, StormfighterApp* app);
+  bool hasInterface() const;
+
+  /// to be called when component should be ready
+  virtual void onInit(){}
+
   /// to be called before each frame is rendered
   virtual void onUpdate(){}
 
-  /// to be called once after Ogre startup
-  virtual void onInit(){}
+  enum State {CREATED, PREPARED, READY};
 
+  State state() const;
 protected:
   GameObject* object() const;
   StormfighterApp* application() const;
 
+  void setState(State new_state);
  private:
   GameObject* object_;
   StormfighterApp* application_;
+  State state_;
 
   void init(){}
 };
