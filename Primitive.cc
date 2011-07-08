@@ -9,8 +9,8 @@ SPrimitive::SPrimitive(SceneManager::PrefabType type) : SMesh(){
 SPrimitive::~SPrimitive(){
 }
 
-void SPrimitive::onInit(){
-  entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(object()->name()+"_primitive", type_);
-  object()->transform()->attachObject(entity_);
+void SPrimitive::onAdd(SString goname, STransform* transform){
+  entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(goname+"_primitive", type_);
+  transform->attachObject(entity_);
   valid_ = true;
 }

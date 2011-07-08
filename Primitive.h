@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "Mesh.h"
+#include "Transform.h"
 
 /**
  * @brief Prefab primitive from Ogre
@@ -15,11 +16,10 @@ class SPrimitive : public SMesh {
   /// Destructor
   ~SPrimitive();
 
-  /// The mesh component's type string is "Mesh"
-  SString const type() const { return "Mesh/Primitive"; }
+  /// The mesh component's type string is "Mesh/Primitive"
+  SString const type() const { return "Mesh"; }
 
-  /// At Ogre startup
-  virtual void onInit();
+  virtual void onAdd(SString goname, STransform* transform);
  private:
   Ogre::SceneManager::PrefabType type_;
 };

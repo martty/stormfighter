@@ -4,7 +4,7 @@
 #include "common.h"
 #include <OgreEntity.h>
 #include "Component.h"
-#include "GameObject.h"
+#include "Transform.h"
 
 /**
  * @brief Mesh (triangle appearance) component of a GameObject
@@ -22,13 +22,16 @@ class SMesh : public Component {
   /// The mesh component's type string is "Mesh"
   SString const type() const { return "Mesh"; }
 
-  /// At Ogre startup
-  virtual void onInit();
+  virtual void onAdd(SString goname, STransform* transform);
 
   /// Set or change mesh
 //  void setMesh(SString meshname);
   /// Get mesh name
 //  SString meshname();
+
+  const Ogre::AxisAlignedBox* getBounds();
+
+  SReal getBoundingSphereRadius() const;
 
  protected:
   Ogre::Entity* entity_;

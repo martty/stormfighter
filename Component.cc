@@ -7,6 +7,7 @@ void Component::setInterface (GameObject* object, StormfighterApp* app){
 
 Component::Component(){
   setInterface(NULL,NULL);
+  setState(CREATED);
 }
 
 bool Component::hasInterface() const{
@@ -19,4 +20,12 @@ GameObject* Component::object() const {
 
 StormfighterApp* Component::application() const {
   return application_;
+}
+
+Component::State Component::state() const {
+  return state_;
+}
+
+void Component::setState(State new_state){
+  state_ = new_state;
 }

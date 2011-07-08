@@ -3,12 +3,18 @@
 
 #include <map>
 #include "OgreFramework.h"
+#include "Physics.h"
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Camera.h"
 #include "Terrain.h"
 #include "Light.h"
 #include "Primitive.h"
+#include "RigidBody.h"
+#include "SphereCollider.h"
+#include "BoxCollider.h"
+
+// TODO: kezd hosszura nõni a #include lista, kéne külön file
 
 class StormfighterApp : public OIS::KeyListener {
  public:
@@ -25,12 +31,15 @@ class StormfighterApp : public OIS::KeyListener {
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
 
+  Physics* physics() const { return physics_; };
+
  private:
   void setupStormfighterScene();
   void runStormfighter();
 
   Ogre::TerrainGlobalOptions* terrainGlobals_;
   bool	 m_bShutdown;
+  Physics* physics_;
 };
 
 #endif

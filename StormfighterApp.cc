@@ -11,6 +11,10 @@ void StormfighterApp::startStormfighter(){
     if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0", this, 0))
         return;
     m_bShutdown = false;
+    // set up physics!
+    log("Initializing physics");
+    physics_ = new Physics();
+    log("Physics initialized!");
     terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
     // global terrain settings cfg
     terrainGlobals_->setMaxPixelError(8);
@@ -33,7 +37,7 @@ void StormfighterApp::setupStormfighterScene(){
   lighty->sendInit(this);
   light->setAsTerrainLight();
 
-  GameObject* terrain = new GameObject();
+/*  GameObject* terrain = new GameObject();
   STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
   terrain->addComponent(t);
   t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
@@ -42,10 +46,13 @@ void StormfighterApp::setupStormfighterScene(){
   t->setHeightImageTo(0,0,"terrain.png");
   //t->setInputScalingTo(0,0,60);
   terrain->sendInit(this);
-
+  */
+  GameObject* pp = new GameObject();
   GameObject* sampleMesh = new GameObject();
+  pp->transform()->addChild(sampleMesh->transform());
+  pp->transform()->setPosition(Ogre::Vector3(0, 0, -100));
   sampleMesh->addComponent(new SMesh("robot.mesh"));
-  sampleMesh->transform()->setPosition(Ogre::Vector3(0,0,10));
+  sampleMesh->transform()->setPosition(Ogre::Vector3(0,10,10));
   sampleMesh->sendInit(this);
   GameObject* cam = new GameObject("cammy");
   SCamera* c = new SCamera();
@@ -54,16 +61,28 @@ void StormfighterApp::setupStormfighterScene(){
   c->setNearClipDistance(1);
   c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
   c->activate();
-  cam->transform()->setPosition(Ogre::Vector3(0,160,60));
+  cam->transform()->setPosition(Ogre::Vector3(0,60,160));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
+
   GameObject* prim = new GameObject("a");
   SPrimitive* sp = new SPrimitive(Ogre::SceneManager::PT_SPHERE);
   prim->addComponent(sp);
-  prim->transform()->setPosition(Ogre::Vector3(0, 0, 0));
+  prim->transform()->setPosition(Ogre::Vector3(0, 100, 0));
+  prim->addComponent(new SSphereCollider());
+  prim->addComponent(new SRigidBody(10));
   prim->sendInit(this);
-  GameObject* sampleMesh5 = new GameObject("a");
+
+  GameObject* plane = new GameObject("plane");
+  plane->addComponent(new SBoxCollider());
+  plane->transform()->setScale(Ogre::Vector3(10, 0.1, 10));
+  //plane->transform()->showBoundingBox(true);
+  plane->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  SRigidBody* rby = new SRigidBody(0);
+  plane->addComponent(rby);
+  plane->sendInit(this);
+  rby->setKinematic(true);
+  plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh5->name());
   OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->debug());
 }
 void StormfighterApp::runStormfighter(){
@@ -77,6 +96,7 @@ void StormfighterApp::runStormfighter(){
         #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_LINUX
         Ogre::WindowEventUtilities::messagePump();
         #endif
+
         if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isActive()){
             startTime = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU();
             OgreFramework::getSingletonPtr()->m_pKeyboard->capture();
@@ -84,6 +104,8 @@ void StormfighterApp::runStormfighter(){
             OgreFramework::getSingletonPtr()->updateOgre(timeSinceLastFrame);
             OgreFramework::getSingletonPtr()->m_pRoot->renderOneFrame();
             timeSinceLastFrame = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU() - startTime;
+            // tick physics
+            physics_->tick(SReal(timeSinceLastFrame)/1000.0f);
         } else {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
             Sleep(1000);

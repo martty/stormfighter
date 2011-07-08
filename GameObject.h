@@ -39,6 +39,16 @@ class GameObject {
   /// Returns the transform component of the GameObject, alias for component("Transform")
   STransform* transform();
 
+  // PARENTING
+  // TODO: create GO holder, so we have consistent hierarchy at all times (root GO)
+  // TODO: impl
+  /// Returns the parent of GO
+  GameObject* const parent();
+  /// Sets the parent of GO
+  void setParent(GameObject* parent);
+  /// Add a child to this GO
+  void addChild(GameObject* child);
+
   void sendInit(StormfighterApp* app);
 
   const SString& name() const {return name_;}

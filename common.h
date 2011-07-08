@@ -5,6 +5,7 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include "OgreFramework.h"
+#include "BulletOgreGlue.h"
 
 #define DEBUG true
 #define TEST true||DEBUG
