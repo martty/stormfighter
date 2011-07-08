@@ -16,13 +16,13 @@ typedef std::map<SString, int> NameCountMap;
  * Suggested abbroviation: GO, :)
  */
 class GameObject {
-  public:
+ public:
 
   /// Initialize GameObject with empty component map - name will be gameobject_n
   GameObject();
 
   /// Initialize GO with given name, if exists
-  GameObject(SString name);
+  GameObject(const SString& name);
 
   /// Delete GameObject
   ~GameObject();
@@ -31,18 +31,17 @@ class GameObject {
   void addComponent(Component* component);
 
   /// Returns component with given type
-  Component* const component(SString name);
+  Component* component(const SString& name);
 
   /// Returns true if GameObject has component with type "name"
-  bool hasComponent(SString name) const;
+  bool hasComponent(const SString& name) const;
 
   /// Returns the transform component of the GameObject, alias for component("Transform")
-  STransform* const transform();
+  STransform* transform();
 
   void sendInit(StormfighterApp* app);
 
-  SString name() const {return name_;}
-
+  const SString& name() const {return name_;}
   SString debug();
 
  private:
@@ -52,7 +51,9 @@ class GameObject {
 
   SString name_;
   ComponentMap components_;
+  std::vector<SString> component_groups_;
   STransform* transform_;
+
   /// map for counting names
   static NameCountMap namecount_;
 };

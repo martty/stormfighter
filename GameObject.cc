@@ -1,3 +1,4 @@
+#include "common.h"
 #include "GameObject.h"
 #include "Transform.h"
 
@@ -11,18 +12,16 @@ GameObject::GameObject(){
   init();
 }
 
-GameObject::GameObject(SString name){
+GameObject::GameObject(const SString& name){
   name_ = name;
   transform_ = NULL;
   init();
 }
 
 void GameObject::init(){
-  name_ = getUniqueName(name_);
-  // FIXME untested
-  if( transform_ != NULL ) delete transform_ ;
   components_.clear();
 
+  name_ = getUniqueName(name_);
   transform_ = new STransform();
   addComponent(transform_);
 }
@@ -32,23 +31,33 @@ GameObject::~GameObject(){
 }
 
 void GameObject::addComponent(Component* cmp){
-  if (components_.find(cmp->type()) != components_.end()){
-      // FIXME throw sajat exception
-      return;
+  if(TEST){
+    SString cmp_group; size_t pos;
+
+    /// Find group (cmp's type until '/')
+    cmp_group = ((pos = cmp->type().find("/")) == std::string::npos) ? cmp->type() : cmp->type().substr(0,pos);
+
+    /// Search component with same group name already in component map
+    for(ComponentMap::iterator it=components_.begin(); it!=components_.end(); it++ ){
+        if( (pos = (*it).first.find(cmp_group)) != std::string::npos && pos == 0 ) {
+            throw SException(debug() + " | duplicate component group: " + cmp_group + " for component: " + cmp->type());
+        }
+    }
   }
+
   components_[cmp->type()] = cmp ;
 }
 
-Component* const GameObject::component(SString name){
-  // if ( !hasComponent(name) ) FIXME Exception
+Component* GameObject::component(const SString& name){
+  if ( !hasComponent(name) ) throw SException(debug() + " | component unknown:" + name);
   return components_[name] ;
 }
 
-bool GameObject::hasComponent(SString name) const{
+bool GameObject::hasComponent(const SString& name) const{
   return ( components_.find(name) != components_.end() );
 }
 
-STransform* const GameObject::transform(){
+STransform* GameObject::transform(){
   return transform_;
 }
 
@@ -75,6 +84,6 @@ SString GameObject::getUniqueName(SString basename){
   return basename;
 }
 
-SString GameObject::debug(){
+SString GameObject::debug() {
   return "["+name()+"]:<"+StringConverter::toString(transform()->position())+">";
 }
