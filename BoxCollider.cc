@@ -1,4 +1,8 @@
 #include "BoxCollider.h"
+#include "Mesh.h"
+#include "GameObject.h"
+#include <BulletCollision/CollisionShapes/btBoxShape.h>
+#include <OgreAxisAlignedBox.h>
 
 SBoxCollider::SBoxCollider(Ogre::Vector3 halfextents){
   init(halfextents);

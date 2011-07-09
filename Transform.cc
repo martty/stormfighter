@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "GameObject.h"
 #include "RigidBody.h"
 
 using namespace Ogre ;
@@ -32,6 +33,7 @@ STransform::STransform(): node_(NULL){
 void STransform::setPosition(Vector3 position){
   node_->setPosition(position);
   // if we have init'd, notify RigidBody component
+  // FIXME: notify childrens' rigidbodies too
   if(hasInterface()){
     if(object()->hasComponent("RigidBody")){
       SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
@@ -43,6 +45,7 @@ void STransform::setPosition(Vector3 position){
 void STransform::setOrientation(Quaternion orientation){
   node_->setOrientation(orientation);
   // if we have init'd, notify RigidBody component
+  // FIXME: notify childrens' rigidbodies too
   if(hasInterface()){
     if(object()->hasComponent("RigidBody")){
       SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));

@@ -5,7 +5,7 @@ using namespace Ogre;
 template<> OgreFramework* Ogre::Singleton<OgreFramework>::ms_Singleton = 0;
 
 OgreFramework::OgreFramework(){
-    m_MoveSpeed	 = 0.1f;
+    m_MoveSpeed	 = 1.0f;
     m_RotateSpeed	 = 0.3f;
     m_bShutDownOgre	 = false;
     m_iNumScreenShots	 = 0;

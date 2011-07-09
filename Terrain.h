@@ -39,7 +39,15 @@ class STerrain : public Component {
   /// Set the scaling of input data
   void setInputScalingTo(int x, int y, SReal inputScale);
   // TODO: more importdata settings
-  void onInit();
+  void onAdd(SString goname, STransform* transform);
+
+  SReal* heightData(int x, int y);
+  SReal worldSize();
+  uint16_t terrainSize(int x, int y);
+  SReal minHeight(int x, int y);
+  SReal maxHeight(int x, int y);
+  Ogre::Vector3 terrainPosition(int x, int y);
+  void setMaterialNameTo(int x, int y, SString matname);
 
  private:
   STerrain();

@@ -1,4 +1,6 @@
 #include "Light.h"
+#include "GameObject.h"
+#include "StormfighterApp.h"
 
 using namespace Ogre;
 

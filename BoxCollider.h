@@ -3,11 +3,6 @@
 
 #include "common.h"
 #include "Collider.h"
-#include "Mesh.h"
-#include "GameObject.h"
-#include <BulletCollision/CollisionShapes/btBoxShape.h>
-#include <OgreAxisAlignedBox.h>
-
 
 class SBoxCollider : public SCollider
 {

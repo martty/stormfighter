@@ -4,8 +4,6 @@
 #include "common.h"
 #include <OgreLight.h>
 #include "Component.h"
-#include "GameObject.h"
-#include "StormfighterApp.h"
 
 class SLight : public Component {
  public:

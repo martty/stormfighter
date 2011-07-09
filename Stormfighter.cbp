@@ -68,11 +68,17 @@
 		<Unit filename="BulletOgreDebugDraw.cc" />
 		<Unit filename="BulletOgreDebugDraw.h" />
 		<Unit filename="BulletOgreGlue.h" />
+		<Unit filename="BulletOgreMeshToShape.cc" />
+		<Unit filename="BulletOgreMeshToShape.h" />
 		<Unit filename="Camera.cc" />
 		<Unit filename="Camera.h" />
 		<Unit filename="Collider.h" />
 		<Unit filename="Component.cc" />
 		<Unit filename="Component.h" />
+		<Unit filename="CompoundCollider.cc" />
+		<Unit filename="CompoundCollider.h" />
+		<Unit filename="ConvexHullCollider.cc" />
+		<Unit filename="ConvexHullCollider.h" />
 		<Unit filename="GameObject.cc" />
 		<Unit filename="GameObject.h" />
 		<Unit filename="Library.h" />
@@ -96,8 +102,13 @@
 		<Unit filename="StormfighterApp.h" />
 		<Unit filename="Terrain.cc" />
 		<Unit filename="Terrain.h" />
+		<Unit filename="TerrainCollider.cc" />
+		<Unit filename="TerrainCollider.h" />
 		<Unit filename="Transform.cc" />
 		<Unit filename="Transform.h" />
+		<Unit filename="TrimeshCollider.cc" />
+		<Unit filename="TrimeshCollider.h" />
+		<Unit filename="common.cc" />
 		<Unit filename="common.h" />
 		<Unit filename="main.cc" />
 		<Extensions>

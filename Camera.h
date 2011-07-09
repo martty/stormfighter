@@ -4,7 +4,6 @@
 #include "common.h"
 #include <OgreCamera.h>
 #include "Component.h"
-#include "GameObject.h"
 
 /**
  * @brief Component for GameObject, represents a camera

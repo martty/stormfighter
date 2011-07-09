@@ -1,4 +1,17 @@
 #include "StormfighterApp.h"
+#include <cstdlib>
+#include "GameObject.h"
+#include "Mesh.h"
+#include "Camera.h"
+#include "Terrain.h"
+#include "Light.h"
+#include "Primitive.h"
+#include "RigidBody.h"
+#include "SphereCollider.h"
+#include "BoxCollider.h"
+#include "ConvexHullCollider.h"
+#include "TrimeshCollider.h"
+#include "TerrainCollider.h"
 
 StormfighterApp::StormfighterApp(){
     terrainGlobals_ = NULL;
@@ -7,6 +20,7 @@ StormfighterApp::~StormfighterApp(){
     delete OgreFramework::getSingletonPtr();
 }
 void StormfighterApp::startStormfighter(){
+    std::srand ( std::time(NULL) );
     new OgreFramework();
     if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0", this, 0))
         return;
@@ -26,34 +40,41 @@ void StormfighterApp::startStormfighter(){
 }
 void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-  //OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
 
   GameObject* lighty = new GameObject();
   SLight* light = new SLight(Ogre::Light::LT_DIRECTIONAL);
   lighty->addComponent(light);
-  light->setDiffuseColour(Ogre::ColourValue(1,0,0));
+  light->setDiffuseColour(Ogre::ColourValue(1,1,1));
   lighty->transform()->setPosition(Ogre::Vector3(0,100,0));
   lighty->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(1,0,1)));
   lighty->sendInit(this);
   light->setAsTerrainLight();
 
-/*  GameObject* terrain = new GameObject();
-  STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
-  terrain->addComponent(t);
+  GameObject* terrain = new GameObject();
+  STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 129, 1200.0f);
   t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
-  t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
-  t->addLayerTo(0,0,200,"growth_weirdfungus-03_diffusespecular.dds","growth_weirdfungus-03_normalheight.dds");
+  //t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
+  //t->addLayerTo(0,0,200,"growth_weirdfungus-03_diffusespecular.dds","growth_weirdfungus-03_normalheight.dds");
   t->setHeightImageTo(0,0,"terrain.png");
-  //t->setInputScalingTo(0,0,60);
+  terrain->addComponent(t);
+  terrain->addComponent(new STerrainCollider());
+  SRigidBody* rb = new SRigidBody(0);
+  terrain->addComponent(rb);
   terrain->sendInit(this);
-  */
-  GameObject* pp = new GameObject();
+  rb->disableDebugDraw();
+
+  /*GameObject* pp = new GameObject();
   GameObject* sampleMesh = new GameObject();
   pp->transform()->addChild(sampleMesh->transform());
-  pp->transform()->setPosition(Ogre::Vector3(0, 0, -100));
+  //pp->transform()->setPosition(Ogre::Vector3(0, 0, 20));
   sampleMesh->addComponent(new SMesh("robot.mesh"));
+  sampleMesh->addComponent(new SConvexHullCollider());
+  SRigidBody* sr = new SRigidBody(1);
+  sr->setKinematic(false);
+  sampleMesh->addComponent(sr);
   sampleMesh->transform()->setPosition(Ogre::Vector3(0,10,10));
-  sampleMesh->sendInit(this);
+  sampleMesh->sendInit(this);*/
+
   GameObject* cam = new GameObject("cammy");
   SCamera* c = new SCamera();
   cam->addComponent(c);
@@ -64,26 +85,35 @@ void StormfighterApp::setupStormfighterScene(){
   cam->transform()->setPosition(Ogre::Vector3(0,60,160));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
 
-  GameObject* prim = new GameObject("a");
-  SPrimitive* sp = new SPrimitive(Ogre::SceneManager::PT_SPHERE);
-  prim->addComponent(sp);
-  prim->transform()->setPosition(Ogre::Vector3(0, 100, 0));
-  prim->addComponent(new SSphereCollider());
-  prim->addComponent(new SRigidBody(10));
-  prim->sendInit(this);
-
-  GameObject* plane = new GameObject("plane");
+  /*GameObject* plane = new GameObject("plane");
   plane->addComponent(new SBoxCollider());
   plane->transform()->setScale(Ogre::Vector3(10, 0.1, 10));
   //plane->transform()->showBoundingBox(true);
-  plane->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  SPrimitive* spr = new SPrimitive(Ogre::SceneManager::PT_CUBE);
+  plane->addComponent(spr);
+  spr->setMaterialName("Examples/BumpyMetal");
   SRigidBody* rby = new SRigidBody(0);
   plane->addComponent(rby);
   plane->sendInit(this);
-  rby->setKinematic(true);
-  plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->name());
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(sampleMesh->debug());
+  */
+  for(int i = 0; i < 20; i++){
+    GameObject* go = new GameObject("faller");
+    SPrimitive* pr = new SPrimitive(Ogre::SceneManager::PT_SPHERE);
+    go->addComponent(pr);
+    pr->setMaterialName("Examples/RustySteel");
+    //SReal scale = (std::rand() % 100)/100;
+    go->transform()->setScale(Ogre::Vector3(0.1, 0.1, 0.1));
+    int x = std::rand() % 100;
+    int z = std::rand() % 100;
+    int y = std::rand() % 20;
+    go->transform()->setPosition(Ogre::Vector3(x,100+y,z));
+    go->addComponent(new SSphereCollider());
+    go->addComponent(new SRigidBody(4));
+    go->sendInit(this);
+  }
+//  rby->setKinematic(true);
+  //plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));
+
 }
 void StormfighterApp::runStormfighter(){
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop...");

@@ -5,9 +5,6 @@
 #include <btBulletDynamicsCommon.h>
 #include "Component.h"
 #include "Transform.h"
-#include "GameObject.h"
-#include "StormfighterApp.h"
-#include "Collider.h"
 
 class SRigidBody : public Component, public btMotionState {
  friend class Physics;
@@ -23,6 +20,9 @@ class SRigidBody : public Component, public btMotionState {
 	SString const type() const { return "RigidBody"; }
 
 	void setKinematic(bool isKinematic);
+
+	/// does not draw this rigidbody in debug drawing
+	void disableDebugDraw();
 
  private:
   void init(SReal mass);

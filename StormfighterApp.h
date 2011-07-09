@@ -3,16 +3,8 @@
 
 #include <map>
 #include "OgreFramework.h"
+#include <Terrain/OgreTerrain.h>
 #include "Physics.h"
-#include "GameObject.h"
-#include "Mesh.h"
-#include "Camera.h"
-#include "Terrain.h"
-#include "Light.h"
-#include "Primitive.h"
-#include "RigidBody.h"
-#include "SphereCollider.h"
-#include "BoxCollider.h"
 
 // TODO: kezd hosszura nõni a #include lista, kéne külön file
 

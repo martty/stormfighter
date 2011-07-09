@@ -15,8 +15,8 @@ void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal wo
 
   // Configure default import settings for if we use imported image
   Ogre::Terrain::ImportData& defaultimp = terrainGroup_->getDefaultImportSettings();
-  defaultimp.terrainSize = 513;
-  defaultimp.worldSize = 1200.0f;
+  defaultimp.terrainSize = terrainSize;
+  defaultimp.worldSize = worldSize;
   defaultimp.inputScale = 60;
   defaultimp.minBatchSize = 33;
   defaultimp.maxBatchSize = 65;
@@ -32,6 +32,7 @@ void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal wo
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_diffusespecular.dds");
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.dds");
   */
+  setState(CREATED);
 }
 
 void STerrain::defineTerrain(long x, long y){
@@ -125,9 +126,9 @@ void STerrain::setInputScalingTo(int x, int y, SReal inputscale){
   import->inputScale = inputscale;
 }
 
-void STerrain::onInit(){
-  terrainGroup_->setFilenameConvention(object()->name()+"_terrain", Ogre::String("dat"));
-  terrainGroup_->setOrigin(object()->transform()->position());
+void STerrain::onAdd(SString goname, STransform* transform){
+  terrainGroup_->setFilenameConvention(goname+"_terrain", Ogre::String("dat"));
+  terrainGroup_->setOrigin(transform->position());
 
   // TODO: configurable indexes to load for terrains
   for (long x = 0; x <= 0; ++x){
@@ -145,4 +146,33 @@ void STerrain::onInit(){
     }
   }
   terrainGroup_->freeTemporaryResources();
+  setState(READY);
+}
+
+SReal* STerrain::heightData(int x, int y){
+  return terrainGroup_->getTerrain(x,y)->getHeightData();
+}
+
+SReal STerrain::minHeight(int x, int y){
+  return terrainGroup_->getTerrain(x,y)->getMinHeight();
+}
+
+SReal STerrain::maxHeight(int x, int y){
+  return terrainGroup_->getTerrain(x,y)->getMaxHeight();
+}
+
+SReal STerrain::worldSize(){
+  return terrainGroup_->getTerrainWorldSize();
+}
+
+uint16_t STerrain::terrainSize(int x, int y){
+  return terrainGroup_->getTerrain(x,y)->getSize();
+}
+
+Ogre::Vector3 STerrain::terrainPosition(int x, int y){
+  return terrainGroup_->getTerrain(x,y)->getPosition();
+}
+
+void STerrain::setMaterialNameTo(int x, int y, SString matname){
+//  terrainGroup_->getTerrain(x,y)->setMaterialName(matname);
 }

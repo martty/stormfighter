@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Transform.h"
 
 using namespace Ogre;
 
@@ -33,4 +34,11 @@ const Ogre::AxisAlignedBox* SMesh::getBounds(){
 SReal SMesh::getBoundingSphereRadius() const{
   return entity_->getMesh()->getBoundingSphereRadius();
 }
-// TODO: impl
+
+void SMesh::setMaterialName(SString materialName){
+  entity_->setMaterialName(materialName);
+}
+
+bool SMesh::animated() const{
+  return entity_->hasSkeleton() || entity_->hasVertexAnimation();
+}
