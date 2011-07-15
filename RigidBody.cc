@@ -9,6 +9,7 @@ SRigidBody::SRigidBody(SReal mass){
   rigidBody_ = NULL;
   internalTransform_ = btTransform::getIdentity();
   isKinematic_ = false;
+  collisionFlags_ = 0;
   setState(PREPARED);
 }
 
@@ -63,8 +64,9 @@ void SRigidBody::onInit(){
     }
     btRigidBody::btRigidBodyConstructionInfo rigidbodyCI(mass_, this, collisionShape, myinertia);
     rigidBody_ = new btRigidBody(rigidbodyCI);
-    rigidBody_->setUserPointer(this); // this component is set for callbacks, which is TODO of course :)
+    rigidBody_->setUserPointer(object()); // this component is set for callbacks, which is TODO of course :)
     application()->physics()->addRigidBody(rigidBody_);
+    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | collisionFlags_);
     setKinematic(isKinematic_);
     setState(READY);
   }
@@ -85,5 +87,8 @@ void SRigidBody::setKinematic(bool isKinematic){
 }
 
 void SRigidBody::disableDebugDraw(){
-  rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+  if(rigidBody_)
+    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+  else
+    collisionFlags_ = collisionFlags_ | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 }

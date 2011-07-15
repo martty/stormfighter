@@ -5,10 +5,12 @@
 using namespace Ogre ;
 
 STransform::~STransform(){
-  delete node_;
+  if(!isRoot_)
+    delete node_;
 }
 
 void STransform::init (Vector3 position, Quaternion orientation, Vector3 scale){
+  isRoot_ = false;
   node_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode()->createChildSceneNode(); // by default in top hierarchy
   node_->setPosition(position);
   node_->setOrientation(orientation);
@@ -28,6 +30,21 @@ STransform::STransform(Vector3 position): node_(NULL){
 
 STransform::STransform(): node_(NULL){
   init(Vector3::ZERO, Quaternion::IDENTITY, Vector3::UNIT_SCALE);
+}
+
+STransform::STransform(bool isRoot) : node_(NULL){
+  isRoot_ = isRoot;
+  if(!isRoot_){
+    init(Vector3::ZERO, Quaternion::IDENTITY, Vector3::UNIT_SCALE);
+    return;
+  }
+  // Root scenenode get
+  node_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
+  node_->setPosition(Vector3::ZERO);
+  node_->setOrientation(Quaternion::IDENTITY);
+
+  UserObjectBindings& bindings = node_->getUserObjectBindings();
+  bindings.setUserAny(Any(this));
 }
 
 void STransform::setPosition(Vector3 position){

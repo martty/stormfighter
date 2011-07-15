@@ -23,7 +23,7 @@ class SMesh : public Component {
   /// The mesh component's type string is "Mesh"
   SString const type() const { return "Mesh"; }
 
-  virtual void onAdd(SString goname, STransform* transform);
+  virtual unsigned int onAdd(SString goname, STransform* transform);
 
   /// Set or change mesh
 //  void setMesh(SString meshname);

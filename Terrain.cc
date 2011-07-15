@@ -126,7 +126,7 @@ void STerrain::setInputScalingTo(int x, int y, SReal inputscale){
   import->inputScale = inputscale;
 }
 
-void STerrain::onAdd(SString goname, STransform* transform){
+unsigned int STerrain::onAdd(SString goname, STransform* transform){
   terrainGroup_->setFilenameConvention(goname+"_terrain", Ogre::String("dat"));
   terrainGroup_->setOrigin(transform->position());
 
@@ -147,6 +147,7 @@ void STerrain::onAdd(SString goname, STransform* transform){
   }
   terrainGroup_->freeTemporaryResources();
   setState(READY);
+  return NONE;
 }
 
 SReal* STerrain::heightData(int x, int y){

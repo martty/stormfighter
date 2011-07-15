@@ -19,7 +19,7 @@ class SPrimitive : public SMesh {
   /// The mesh component's type string is "Mesh/Primitive"
   SString const type() const { return "Mesh"; }
 
-  virtual void onAdd(SString goname, STransform* transform);
+  virtual unsigned int onAdd(SString goname, STransform* transform);
  private:
   Ogre::SceneManager::PrefabType type_;
 };

@@ -9,9 +9,10 @@ SCamera::SCamera(){
 SCamera::~SCamera(){
 }
 
-void SCamera::onInit(){
-  camera_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createCamera(object()->name()+"_camera");
-  object()->transform()->attachObject(camera_);
+unsigned int SCamera::onAdd(SString goname, STransform* transform){
+  camera_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createCamera(goname+"_camera");
+  transform->attachObject(camera_);
+  return NONE;
 }
 
 void SCamera::setAspectRatio(SReal ratio){

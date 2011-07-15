@@ -9,6 +9,9 @@
 // Nem szeretek sokat irni
 typedef std::map<SString, Component*> ComponentMap ;
 typedef std::map<SString, int> NameCountMap;
+typedef std::map<unsigned int, std::vector<Component*> > CallsMap;
+
+struct CollisionData;
 
 /**
  *@brief Generic parent class for all GameObject
@@ -16,56 +19,65 @@ typedef std::map<SString, int> NameCountMap;
  * Suggested abbroviation: GO, :)
  */
 class GameObject {
+ friend class Hierarchy;
  public:
-
-  /// Initialize GameObject with empty component map - name will be gameobject_n
-  GameObject();
-
-  /// Initialize GO with given name, if exists
-  GameObject(const SString& name);
-
-  /// Delete GameObject
-  ~GameObject();
-
-  /// Add's component to GameObject's component map
-  void addComponent(Component* component);
-
-  /// Returns component with given type
-  Component* component(const SString& name);
-
-  /// Returns true if GameObject has component with type "name"
-  bool hasComponent(const SString& name) const;
-
-  /// Returns the transform component of the GameObject, alias for component("Transform")
-  STransform* transform();
-
-  // PARENTING
-  // TODO: create GO holder, so we have consistent hierarchy at all times (root GO)
-  // TODO: impl
-  /// Returns the parent of GO
-  GameObject* const parent();
-  /// Sets the parent of GO
-  void setParent(GameObject* parent);
-  /// Add a child to this GO
-  void addChild(GameObject* child);
-
-  void sendInit(StormfighterApp* app);
-
+  // Core functions for GameObject
+  GameObject(); /// Initialize GameObject with empty component map - name will be gameobject_n
+  GameObject(bool isRoot); /// Initialize GameObject as Root (if isRoot = true)
+  GameObject(const SString& name); /// Initialize GO with given name, if exists
+  virtual ~GameObject(); /// Delete GameObject
   const SString& name() const {return name_;}
   SString debug();
 
+  // Components
+  void addComponent(Component* component);   /// Add's component to GameObject's component map
+  Component* component(const SString& name); /// Returns component with given type
+  bool hasComponent(const SString& name) const;   /// Returns true if GameObject has component with type "name"
+  STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
+
+  // Component management
+  /// sends onInit to components, will follow list if recursive is true
+  void initialize(StormfighterApp* app, bool recursive );
+  /// sends onUpdate to components, will follow list if recursive is true
+  void update(bool recursive);
+  /// sends collision to components
+  void onCollision(const CollisionData* collisionData);
+
+  // Game object list managament
+  void addSibling(GameObject* go); ///Add equal level member to GameObject list
+  void addChild(GameObject* go); ///Add children(lower in hierarchy) member to GameObject list
+  void setParent(GameObject* go); /// Set parent GameObject
+
+  const GameObject* find(const SString& name); ///Find object with given name
+  const GameObject* find(const GameObject* go); ///Find object
+
+  void removeChild(GameObject* go); /// Removes child from hierarchy (does NOT destroy)
+  void clearChildren(); ///Destroy children (call their destructors)
+ protected:
+  GameObject* next(); ///The next GameObject in the list
+  GameObject* children(); ///The root of the children list
+  GameObject* parent(); /// Parent of this GameObject
+  void setNext(GameObject* go); ///Set next sibling in list(use this for insertation&deletion)
+
  private:
-  void init();
+  void init(bool isRoot);
   /// Handling unique names in the format of name_n
   SString static getUniqueName(SString basename);
 
+  bool isRoot_;
   SString name_;
   ComponentMap components_;
   std::vector<SString> component_groups_;
   STransform* transform_;
 
+  GameObject* next_; /// Next sibling in list
+  GameObject* children_; /// Root of children's list
+  GameObject* parent_;
+
   /// map for counting names
   static NameCountMap namecount_;
+  /// map for registering components to calls
+  CallsMap callsdispatch_;
 };
 
 #endif

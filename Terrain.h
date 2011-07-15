@@ -39,7 +39,7 @@ class STerrain : public Component {
   /// Set the scaling of input data
   void setInputScalingTo(int x, int y, SReal inputScale);
   // TODO: more importdata settings
-  void onAdd(SString goname, STransform* transform);
+  unsigned int onAdd(SString goname, STransform* transform);
 
   SReal* heightData(int x, int y);
   SReal worldSize();

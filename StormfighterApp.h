@@ -4,9 +4,8 @@
 #include <map>
 #include "OgreFramework.h"
 #include <Terrain/OgreTerrain.h>
+#include "Hierarchy.h"
 #include "Physics.h"
-
-// TODO: kezd hosszura nõni a #include lista, kéne külön file
 
 class StormfighterApp : public OIS::KeyListener {
  public:
@@ -31,6 +30,7 @@ class StormfighterApp : public OIS::KeyListener {
 
   Ogre::TerrainGlobalOptions* terrainGlobals_;
   bool	 m_bShutdown;
+  Hierarchy* hierarchy_;
   Physics* physics_;
 };
 

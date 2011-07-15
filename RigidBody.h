@@ -39,6 +39,7 @@ class SRigidBody : public Component, public btMotionState {
   SReal mass_;
   btRigidBody* rigidBody_;
   bool isKinematic_; // until init
+  unsigned int collisionFlags_;
 
   btTransform internalTransform_; // for motionstate
 };

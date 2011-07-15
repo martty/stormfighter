@@ -6,6 +6,15 @@
 #include <OgreSceneNode.h>
 #include "BulletOgreDebugDraw.h"
 
+struct CollisionData {
+  int num_contact_points;
+  Ogre::Vector3* pointsOnA;
+  Ogre::Vector3* pointsOnB;
+  Ogre::Vector3* normalsOnB;
+
+  GameObject* other;
+};
+
 class Physics {
  public:
   /** Default constructor */
@@ -22,6 +31,8 @@ class Physics {
 
   /// Update physics world
   void tick(SReal deltaTime);
+
+  static void tickCallback(btDynamicsWorld* world, btScalar timestep);
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Physics);

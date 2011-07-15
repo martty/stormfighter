@@ -20,7 +20,7 @@ class SCamera : public Component {
 
   void activate();
 
-  void onInit();
+  unsigned int onAdd(SString goname, STransform* transform);
 
  private:
 

@@ -81,6 +81,8 @@
 		<Unit filename="ConvexHullCollider.h" />
 		<Unit filename="GameObject.cc" />
 		<Unit filename="GameObject.h" />
+		<Unit filename="Hierarchy.cc" />
+		<Unit filename="Hierarchy.h" />
 		<Unit filename="Library.h" />
 		<Unit filename="Light.cc" />
 		<Unit filename="Light.h" />
@@ -96,6 +98,7 @@
 		<Unit filename="Primitive.h" />
 		<Unit filename="RigidBody.cc" />
 		<Unit filename="RigidBody.h" />
+		<Unit filename="Script.h" />
 		<Unit filename="SphereCollider.cc" />
 		<Unit filename="SphereCollider.h" />
 		<Unit filename="StormfighterApp.cc" />

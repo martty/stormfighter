@@ -21,7 +21,10 @@ class STransform : public Component {
   /// Same as above but without rotation
   explicit STransform(Ogre::Vector3 position);
 
-  /// Same as above but transform will be identity
+  /// Construct Transform, which may or may not be root (identity)
+  explicit STransform(bool isRoot);
+
+  /// Construct non-root identity Transform
   STransform();
 
   /// Destroy transform component
@@ -63,6 +66,8 @@ class STransform : public Component {
 
  private:
   Ogre::SceneNode* node_;
+
+  bool isRoot_;
 
   void init(Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 scale);
 };

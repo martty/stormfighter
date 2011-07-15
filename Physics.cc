@@ -1,4 +1,5 @@
 #include "Physics.h"
+#include "GameObject.h"
 
 Physics::Physics()
 {
@@ -24,6 +25,8 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
   debugdrawer_->setDebugMode(true);
   dWorld_->setDebugDrawer(debugdrawer_);
+
+  dWorld_->setInternalTickCallback(&Physics::tickCallback);
 }
 
 void Physics::tick(SReal deltaTime){
@@ -42,4 +45,41 @@ void Physics::addRigidBody(btRigidBody* rigidbody, short type, short collidesWit
 
 void Physics::removeRigidBody(btRigidBody* rigidBody){
   dWorld_->removeRigidBody(rigidBody);
+}
+
+void Physics::tickCallback(btDynamicsWorld* world, btScalar timeStep){
+  int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i=0;i<numManifolds;i++){
+		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		GameObject* goA = static_cast<GameObject*>(obA->getUserPointer());
+		GameObject* goB = static_cast<GameObject*>(obB->getUserPointer());
+
+		if(!goA || !goB)
+      return;
+
+		int numContacts = contactManifold->getNumContacts();
+
+		CollisionData* collisionData = new CollisionData();
+		collisionData->num_contact_points = numContacts;
+		collisionData->pointsOnA = new Ogre::Vector3[numContacts];
+		collisionData->pointsOnB = new Ogre::Vector3[numContacts];
+		collisionData->normalsOnB = new Ogre::Vector3[numContacts];
+		for (int j=0;j<numContacts;j++){
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance()<0.f){
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				collisionData->pointsOnA[j] = Convert::toOgre(ptA);
+				collisionData->pointsOnB[j] = Convert::toOgre(ptB);
+				collisionData->normalsOnB[j] = Convert::toOgre(normalOnB);
+			}
+		}
+		collisionData->other = goB;
+		goA->onCollision(collisionData);
+		delete collisionData;
+	}
 }

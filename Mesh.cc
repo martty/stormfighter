@@ -6,18 +6,20 @@ using namespace Ogre;
 SMesh::SMesh(){
   entity_ = NULL;
   meshname_ = "";
+  setState(CREATED);
 }
 
 SMesh::SMesh(SString meshname){
   entity_ = NULL;
   meshname_ = meshname;
+  setState(CREATED);
 }
 
 SMesh::~SMesh(){
   // TODO: cleanup
 }
 
-void SMesh::onAdd(SString goname, STransform* transform){
+unsigned int SMesh::onAdd(SString goname, STransform* transform){
   if(meshname_.empty()){
     valid_ = false;
   } else {
@@ -25,6 +27,8 @@ void SMesh::onAdd(SString goname, STransform* transform){
     transform->attachObject(entity_);
     valid_ = true;
   }
+  setState(READY);
+  return NONE;
 }
 
 const Ogre::AxisAlignedBox* SMesh::getBounds(){
