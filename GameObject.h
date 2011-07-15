@@ -44,15 +44,22 @@ class GameObject {
   void onCollision(const CollisionData* collisionData);
 
   // Game object list managament
-  void addSibling(GameObject* go); ///Add equal level member to GameObject list
-  void addChild(GameObject* go); ///Add children(lower in hierarchy) member to GameObject list
-  void setParent(GameObject* go); /// Set parent GameObject
+  ///Add equal level member to GameObject list
+  void addSibling(GameObject* go);
+  ///Add children(lower in hierarchy) member to GameObject list
+  void addChild(GameObject* go);
+  /// Set parent GameObject
+  void setParent(GameObject* go);
 
-  const GameObject* find(const SString& name); ///Find object with given name
-  const GameObject* find(const GameObject* go); ///Find object
+  ///Find object with given name
+  const GameObject* find(const SString& name);
+  ///Find object
+  const GameObject* find(const GameObject* go);
 
-  void removeChild(GameObject* go); /// Removes child from hierarchy (does NOT destroy)
-  void clearChildren(); ///Destroy children (call their destructors)
+  /// Removes child from hierarchy (does NOT destroy)
+  void removeChild(GameObject* go);
+  ///Destroy all children (call their destructors)
+  void clearChildren();
  protected:
   GameObject* next(); ///The next GameObject in the list
   GameObject* children(); ///The root of the children list

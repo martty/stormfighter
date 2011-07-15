@@ -1,4 +1,6 @@
 #include "BulletOgreMeshToShape.h"
+#include <OgreSubMesh.h>
+#include <OgreSubEntity.h>
 
 /*
  * =============================================================================================

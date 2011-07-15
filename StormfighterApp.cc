@@ -12,35 +12,46 @@
 #include "ConvexHullCollider.h"
 #include "TrimeshCollider.h"
 #include "TerrainCollider.h"
-#include "Script.h"
+#include "FreeLookCameraController.h"
 
 StormfighterApp::StormfighterApp(){
-    terrainGlobals_ = NULL;
+  physics_ = NULL;
+  input_ = NULL;
+  hierarchy_ = NULL;
+  gui_ = NULL;
+  terrainGlobals_ = NULL;
+  deltaTime_ = 0;
 }
 StormfighterApp::~StormfighterApp(){
-    delete OgreFramework::getSingletonPtr();
+  delete OgreFramework::getSingletonPtr();
 }
 void StormfighterApp::startStormfighter(){
-    std::srand ( std::time(NULL) );
-    new OgreFramework();
-    if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0", this, 0))
-        return;
-    m_bShutdown = false;
-    log("Initializing hierarchy");
-    hierarchy_ = new Hierarchy();
-    log("Hierarchy initialized!");
-    // set up physics!
-    log("Initializing physics");
-    physics_ = new Physics();
-    log("Physics initialized!");
-    terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
-    // global terrain settings cfg
-    terrainGlobals_->setMaxPixelError(8);
-    // testing composite map
-    terrainGlobals_->setCompositeMapDistance(3000);
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Stormfighter initialized!");
-    setupStormfighterScene();
-    runStormfighter();
+  std::srand ( std::time(NULL) );
+  new OgreFramework();
+  if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0"))
+      return;
+  m_bShutdown = false;
+  log("Initializing input");
+  input_ = new Input(OgreFramework::getSingletonPtr()->defaultRenderWindow());
+  log("Input initialized!");
+  log("Initializing hierarchy");
+  hierarchy_ = new Hierarchy();
+  log("Hierarchy initialized!");
+  // set up physics!
+  log("Initializing physics");
+  physics_ = new Physics();
+  log("Physics initialized!");
+  log("Initializing GUI");
+  gui_ = new GUI(input_);
+  log("GUI initialized!");
+  terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
+  // global terrain settings cfg
+  terrainGlobals_->setMaxPixelError(8);
+  // testing composite map
+  terrainGlobals_->setCompositeMapDistance(3000);
+  OgreFramework::getSingletonPtr()->m_pLog->logMessage("Stormfighter initialized!");
+  setupStormfighterScene();
+  runStormfighter();
 }
 void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
@@ -79,6 +90,7 @@ void StormfighterApp::setupStormfighterScene(){
   GameObject* cam = hierarchy_->createGameObject("cammy");
   SCamera* c = new SCamera();
   cam->addComponent(c);
+  cam->addComponent(new SFreeLookCameraController());
   c->setNearClipDistance(1);
   c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
   c->activate();
@@ -132,15 +144,22 @@ void StormfighterApp::runStormfighter(){
 
       if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isActive()){
           startTime = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU();
-          OgreFramework::getSingletonPtr()->m_pKeyboard->capture();
-          OgreFramework::getSingletonPtr()->m_pMouse->capture();
+          // capture input
+          input_->capture();
           OgreFramework::getSingletonPtr()->updateOgre(timeSinceLastFrame);
           OgreFramework::getSingletonPtr()->m_pRoot->renderOneFrame();
           timeSinceLastFrame = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU() - startTime;
+          deltaTime_ = timeSinceLastFrame/1000.0d;
           // update GOs
           hierarchy_->update();
           // tick physics
-          physics_->tick(SReal(timeSinceLastFrame)/1000.0f);
+          physics_->tick(deltaTime_);
+          // update GUI
+          gui_->update(deltaTime_);
+          // check for exit
+          if(input_->isKeyDown(OIS::KC_ESCAPE))
+            m_bShutdown = true;
+
       } else {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
           Sleep(1000);
@@ -151,19 +170,6 @@ void StormfighterApp::runStormfighter(){
   }
   OgreFramework::getSingletonPtr()->m_pLog->logMessage("Main loop quit");
   OgreFramework::getSingletonPtr()->m_pLog->logMessage("Shutdown OGRE...");
-}
-
-bool StormfighterApp::keyPressed(const OIS::KeyEvent &keyEventRef){
-    OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_F)){
-        //do something
-    }
-    return true;
-}
-
-bool StormfighterApp::keyReleased(const OIS::KeyEvent &keyEventRef){
-    OgreFramework::getSingletonPtr()->keyReleased(keyEventRef);
-    return true;
 }
 
 void StormfighterApp::log(SString message){

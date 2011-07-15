@@ -100,3 +100,19 @@ void STransform::addChild(STransform* child){
 void STransform::showBoundingBox(bool show){
   node_->showBoundingBox(show);
 }
+
+void STransform::move(Vector3 delta){
+  setPosition(position()+delta);
+}
+
+void STransform::moveRelative(Vector3 delta){
+  setPosition(position()+orientation()*delta);
+}
+
+void STransform::yaw(Radian angle){
+  node_->yaw(angle);
+}
+
+void STransform::pitch(Radian angle){
+  node_->pitch(angle);
+}

@@ -6,15 +6,15 @@
 #include <Terrain/OgreTerrain.h>
 #include "Hierarchy.h"
 #include "Physics.h"
+#include "Input.h"
+#include "GUI.h"
 
-class StormfighterApp : public OIS::KeyListener {
+class StormfighterApp {
  public:
   StormfighterApp();
   ~StormfighterApp();
 
   void startStormfighter();
-  bool keyPressed(const OIS::KeyEvent &keyEventRef);
-  bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
   /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
   void log(SString message);
@@ -22,7 +22,11 @@ class StormfighterApp : public OIS::KeyListener {
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
 
-  Physics* physics() const { return physics_; };
+  Physics* physics() const { return physics_; }
+
+  Input* input() const {return input_; }
+
+  double inline deltaTime() const {return deltaTime_;}
 
  private:
   void setupStormfighterScene();
@@ -32,6 +36,9 @@ class StormfighterApp : public OIS::KeyListener {
   bool	 m_bShutdown;
   Hierarchy* hierarchy_;
   Physics* physics_;
+  Input* input_;
+  GUI* gui_;
+  double deltaTime_;
 };
 
 #endif

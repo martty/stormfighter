@@ -17,6 +17,7 @@ class SCamera : public Component {
 
   void setNearClipDistance(SReal distance);
   void setAspectRatio(SReal ratio);
+  void setPolygonMode(Ogre::PolygonMode polymode);
 
   void activate();
 

@@ -26,3 +26,7 @@ void SCamera::setNearClipDistance(SReal distance){
 void SCamera::activate(){
   OgreFramework::getSingletonPtr()->setActiveCamera(camera_);
 }
+
+void SCamera::setPolygonMode(Ogre::PolygonMode mode){
+  camera_->setPolygonMode(mode);
+}
