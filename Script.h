@@ -1,5 +1,5 @@
 #ifndef STORMFIGHTER_SCRIPT_H_
-#define STORMFIGTHER_SCRIPT_H_
+#define STORMFIGHTER_SCRIPT_H_
 
 #include "common.h"
 #include "Component.h"
@@ -10,13 +10,13 @@ class SScript : public Component{
  public:
   SScript(){type_="Script"; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
 
-  SScript(SString type){type_ = type;}
+  SScript(SString type){type_ = type; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
 
   SScript(SString type, unsigned int calls){type_ = type; calls_ = calls;}
 
   virtual ~SScript(){}
 
-  unsigned int onAdd(){return calls_;}
+  unsigned int onAdd(SString objectname, STransform* transform){return calls_;}
 
   const SString type() const {return type_;}
 
@@ -24,7 +24,7 @@ class SScript : public Component{
   virtual void onInit() {};
   virtual void onUpdate() {};
   virtual void onPhysicsUpdate() {};
-  virtual void onCollision(CollisionData* collisionData) {};
+  virtual void onCollision(const CollisionData* collisionData) {};
  protected:
   SString type_;
   unsigned int calls_;

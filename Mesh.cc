@@ -46,3 +46,14 @@ void SMesh::setMaterialName(SString materialName){
 bool SMesh::animated() const{
   return entity_->hasSkeleton() || entity_->hasVertexAnimation();
 }
+
+void SMesh::setAnimationStateEnabled(SString animstate, bool enabled){
+  entity_->getAnimationState(animstate)->setEnabled(enabled);
+}
+void SMesh::setAnimationStateLoop(SString animstate, bool loop){
+  entity_->getAnimationState(animstate)->setLoop(loop);
+}
+
+void SMesh::addAnimationTime(SString animstate, SReal time){
+  entity_->getAnimationState(animstate)->addTime(time);
+}

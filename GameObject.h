@@ -10,6 +10,7 @@
 typedef std::map<SString, Component*> ComponentMap ;
 typedef std::map<SString, int> NameCountMap;
 typedef std::map<unsigned int, std::vector<Component*> > CallsMap;
+typedef std::vector<Component*> ComponentVector;
 
 struct CollisionData;
 
@@ -31,15 +32,21 @@ class GameObject {
 
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
-  Component* component(const SString& name); /// Returns component with given type
-  bool hasComponent(const SString& name) const;   /// Returns true if GameObject has component with type "name"
+  Component* component(const SString& type); /// Returns component with given type
+  bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
   STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
+
+  // Advanced components
+  Component* firstComponentInChildren(const SString& type); /// Get the first component of type, searched first in this GameObject, then children
+  ComponentVector allComponentInChildren(const SString& type); /// Get all components of type, searched first in this GameObject, then children
 
   // Component management
   /// sends onInit to components, will follow list if recursive is true
   void initialize(StormfighterApp* app, bool recursive );
   /// sends onUpdate to components, will follow list if recursive is true
   void update(bool recursive);
+  /// sends onPhysicsUpdate to components, will follow list if recursive is true
+  void physicsUpdate(bool recursive);
   /// sends collision to components
   void onCollision(const CollisionData* collisionData);
 
@@ -52,9 +59,9 @@ class GameObject {
   void setParent(GameObject* go);
 
   ///Find object with given name
-  const GameObject* find(const SString& name);
+  GameObject* find(const SString& name);
   ///Find object
-  const GameObject* find(const GameObject* go);
+  GameObject* find(const GameObject* go);
 
   /// Removes child from hierarchy (does NOT destroy)
   void removeChild(GameObject* go);
@@ -70,6 +77,9 @@ class GameObject {
   void init(bool isRoot);
   /// Handling unique names in the format of name_n
   SString static getUniqueName(SString basename);
+
+  Component* _firstComponentInChildren(const SString& type); /// internal helper
+  void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
 
   bool isRoot_;
   SString name_;

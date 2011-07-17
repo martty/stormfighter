@@ -14,10 +14,6 @@ class OgreFramework : public Ogre::Singleton<OgreFramework> {
   ~OgreFramework();
 
   bool initOgre(Ogre::String wndTitle);
-  void updateOgre(double timeSinceLastFrame);
-
-  void moveCamera();
-  void getInput();
 
   /// Set Camera to render on the default viewport
   void setActiveCamera(Ogre::Camera* camera);

@@ -18,6 +18,8 @@ class SCompoundCollider : public SCollider {
     ~SCompoundCollider();
 
     void onInit();
+
+    const SString type() const { return "Collider"; }
 };
 
 #endif // STORMFIGHTER_COMPOUNDCOLLIDER_H_

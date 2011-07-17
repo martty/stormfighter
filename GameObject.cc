@@ -1,6 +1,7 @@
 #include "common.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Physics.h"
 
 using namespace Ogre;
 
@@ -47,6 +48,7 @@ void GameObject::addSibling(GameObject* go){
   // if GO has parent, remove from it
   if(go->parent_){
     go->parent_->removeChild(go);
+    go->parent_ = NULL;
   }
   if(next_ == NULL)
     next_ = go;
@@ -60,6 +62,7 @@ void GameObject::addChild(GameObject* go){
   // if GO has parent, remove from it
   if(go->parent_){
     go->parent_->removeChild(go);
+    go->parent_ = NULL;
   }
   if(children_ == NULL)
     children_ = go;
@@ -116,25 +119,27 @@ void GameObject::setNext(GameObject* go){
 }
 
 // BFS implementation of find (probably more efficient in usual scenegraphs)
-const GameObject* GameObject::find(const SString& name){
+GameObject* GameObject::find(const SString& name){
+  GameObject* found = NULL;
   if(name == name_)
     return this;
   if( next_ != NULL )
-    return next_->find(name);
-  if( children_ != NULL)
+    found = next_->find(name);
+  if( children_ != NULL && found == NULL)
     return children_->find(name);
-  return NULL;
+  return found;
 }
 
 // BFS implementation of find (probably more efficient in usual scenegraphs)
-const GameObject* GameObject::find(const GameObject* go){
+GameObject* GameObject::find(const GameObject* go){
+  GameObject* found = NULL;
   if(go == this)
     return this;
   if( next_ != NULL )
-    return next_->find(go);
-  if( children_ != NULL)
+    found = next_->find(go);
+  if( children_ != NULL && found == NULL)
     return children_->find(go);
-  return NULL;
+  return found;
 }
 
 void GameObject::clearChildren(){
@@ -189,6 +194,12 @@ STransform* GameObject::transform(){
 
 void GameObject::initialize(StormfighterApp* app, bool recursive){
   //OgreFramework::getSingletonPtr()->m_pLog->logMessage(name_);
+  if(recursive){
+    if(children_)
+      children_->initialize(app, true);
+    if(next_)
+      next_->initialize(app, true);
+  }
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
     (*it).second->setInterface(this,app);
   }
@@ -199,12 +210,6 @@ void GameObject::initialize(StormfighterApp* app, bool recursive){
     if((*it).second->type() != "Transform" && (*it).second->state() != Component::READY){
       (*it).second->onInit();
     }
-  }
-  if(recursive){
-    if(children_)
-      children_->initialize(app, true);
-    if(next_)
-      next_->initialize(app, true);
   }
 }
 
@@ -219,6 +224,19 @@ void GameObject::update(bool recursive){
       next_->update(true);
   }
 }
+
+void GameObject::physicsUpdate(bool recursive){
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+      (*it).second->onPhysicsUpdate();
+  }
+  if(recursive){
+    if(children_)
+      children_->physicsUpdate(true);
+    if(next_)
+      next_->physicsUpdate(true);
+  }
+}
+
 
 SString GameObject::getUniqueName(SString basename){
   NameCountMap::iterator it = namecount_.find(basename);
@@ -244,4 +262,44 @@ void GameObject::onCollision(const CollisionData* collisionData){
   for(std::vector<Component*>::iterator iter = collisionCallList.begin(); iter != collisionCallList.end(); iter++){
       (*iter)->onCollision(collisionData);
   }
+}
+
+// BFS
+Component* GameObject::firstComponentInChildren(const SString& type){
+  if(hasComponent(type))
+    return component(type);
+  if(children_){
+    return children_->_firstComponentInChildren(type);
+  }
+  return NULL;
+}
+
+Component* GameObject::_firstComponentInChildren(const SString& type){
+  Component* ret;
+  if(hasComponent(type))
+    return component(type);
+  if(next_)
+    ret = next_->_firstComponentInChildren(type);
+  if(children_ && ret == NULL)
+    ret = children_->_firstComponentInChildren(type);
+  return ret;
+}
+
+ComponentVector GameObject::allComponentInChildren(const SString& type){
+  ComponentVector vec;
+  if(hasComponent(type))
+    vec.push_back(component(type));
+  if(children_){
+    children_->_allComponentInChildren(type, &vec);
+  }
+  return vec;
+}
+
+void GameObject::_allComponentInChildren(const SString& type, ComponentVector* vec){
+  if(hasComponent(type))
+    vec->push_back(component(type));
+  if(next_)
+    next_->_allComponentInChildren(type, vec);
+  if(children_)
+    children_->_allComponentInChildren(type,vec);
 }

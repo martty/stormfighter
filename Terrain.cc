@@ -177,3 +177,20 @@ Ogre::Vector3 STerrain::terrainPosition(int x, int y){
 void STerrain::setMaterialNameTo(int x, int y, SString matname){
 //  terrainGroup_->getTerrain(x,y)->setMaterialName(matname);
 }
+
+Ogre::Vector3 STerrain::normalAt(Ogre::Vector3 point){
+  long x, y;
+  terrainGroup_->convertWorldPositionToTerrainSlot(point, &x, &y);
+  Ogre::Vector3 pos1, pos2, pos3;
+  SReal height1 = terrainGroup_->getTerrain(x, y)->getHeightAtWorldPosition(point+Ogre::Vector3(0, 10, 0));
+  SReal height2 = terrainGroup_->getTerrain(x, y)->getHeightAtWorldPosition(point+Ogre::Vector3(0.1, 10, 0));
+  SReal height3 = terrainGroup_->getTerrain(x, y)->getHeightAtWorldPosition(point+Ogre::Vector3(0, 10, 0.1));
+  pos1 = point;
+  pos1.y = height1;
+  pos2 = point+Ogre::Vector3(0.1, 0, 0);
+  pos2.y = height2;
+  pos3 = point+Ogre::Vector3(0, 0, 0.1);
+  pos3.y = height3;
+  Ogre::Vector3 normal = -(pos2-pos1).crossProduct((pos3-pos1));
+  return normal.normalisedCopy();
+}

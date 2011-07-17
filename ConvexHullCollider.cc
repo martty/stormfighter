@@ -6,6 +6,7 @@
 SConvexHullCollider::SConvexHullCollider(){
   autoConfig_ = true;
   isAnimated_ = false;
+  isBaked_ = true;
   setState(CREATED);
 }
 
@@ -18,10 +19,21 @@ void SConvexHullCollider::onInit(){
   VertexIndexToShape* vits;
 
   if(isAnimated_)
-    vits = new AnimatedMeshToShapeConverter(mesh->entity());
+    vits = new AnimatedMeshToShapeConverter(mesh->entity(), object()->transform()->worldMatrix());
   else
-    vits = new StaticMeshToShapeConverter(mesh->entity());
+    vits = new StaticMeshToShapeConverter(mesh->entity(), object()->transform()->worldMatrix());
   collisionShape_ = vits->createConvexHull();
   collisionShape_->setLocalScaling(Convert::toBullet(object()->transform()->scale()));
   setState(READY);
+  delete vits;
+}
+
+btTransform SConvexHullCollider::shapeTransform(){
+  if(isBaked_){
+    btTransform ret;
+    ret.setIdentity();
+    return ret;
+  } else {
+    return SCollider::shapeTransform();
+  }
 }

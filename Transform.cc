@@ -47,27 +47,40 @@ STransform::STransform(bool isRoot) : node_(NULL){
   bindings.setUserAny(Any(this));
 }
 
+const Ogre::Vector3 STransform::worldPosition() const{
+  return node_->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
+}
+
+const Ogre::Quaternion STransform::worldOrientation() const{
+  return node_->convertLocalToWorldOrientation(Ogre::Quaternion::IDENTITY);
+}
+
 void STransform::setPosition(Vector3 position){
   node_->setPosition(position);
-  // if we have init'd, notify RigidBody component
-  // FIXME: notify childrens' rigidbodies too
-  if(hasInterface()){
-    if(object()->hasComponent("RigidBody")){
-      SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
-      rigidbody->setKinematicTransform(position, orientation());
-    }
-  }
+  // notify rigidbodies in hierarchy
+  _notifyTransformChange();
 }
 
 void STransform::setOrientation(Quaternion orientation){
   node_->setOrientation(orientation);
-  // if we have init'd, notify RigidBody component
-  // FIXME: notify childrens' rigidbodies too
+  // notify rigidbodies in hierarchy
+  _notifyTransformChange();
+}
+
+void STransform::_notifyTransformChange(){
   if(hasInterface()){
     if(object()->hasComponent("RigidBody")){
       SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
-      rigidbody->setKinematicTransform(position(), orientation);
+      rigidbody->setKinematicTransform(worldPosition(), worldOrientation());
     }
+  }
+  SceneNode::ChildNodeIterator it = node_->getChildIterator();
+  SceneNode* child;
+  STransform* child_tf;
+  while(it.hasMoreElements()){
+    child = static_cast<SceneNode*>(it.getNext());
+    child_tf = Ogre::any_cast<STransform*>(child->getUserObjectBindings().getUserAny());
+    child_tf->_notifyTransformChange();
   }
 }
 void STransform::attachObject(MovableObject* object){
@@ -111,8 +124,20 @@ void STransform::moveRelative(Vector3 delta){
 
 void STransform::yaw(Radian angle){
   node_->yaw(angle);
+  node_->setOrientation(orientation());
 }
 
 void STransform::pitch(Radian angle){
   node_->pitch(angle);
+  node_->setOrientation(orientation());
+}
+
+void STransform::setFixedYawAxis(bool useFixed, const Ogre::Vector3 fixedAxis){
+  node_->setFixedYawAxis(useFixed, fixedAxis);
+}
+
+Ogre::Matrix4 STransform::worldMatrix() const{
+  Ogre::Matrix4 mat(worldOrientation());
+  mat.setTrans(position());
+  return mat;
 }

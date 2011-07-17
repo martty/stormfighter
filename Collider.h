@@ -19,6 +19,8 @@ class SCollider : public Component
 
   btCollisionShape* collisionShape(){return collisionShape_;}
 
+  virtual btTransform shapeTransform();
+
  protected:
   btCollisionShape* collisionShape_;
   /// define whether this collider should size and orient itself based on the other components in the GO

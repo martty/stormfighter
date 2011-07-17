@@ -40,6 +40,9 @@ class Component{
   /// to be called before each frame is rendered
   virtual void onUpdate(){}
 
+  /// to be called on each physics tick
+  virtual void onPhysicsUpdate(){}
+
   /// to be called when the holder GameObject collides
   virtual void onCollision(const CollisionData* collisionData){}
 
@@ -54,8 +57,10 @@ class Component{
     PHYSICS_UPDATE = 4, // needs onPhysicsUpdate called
     COLLISION = 8 // needs onCollision called TODO: collision helyett simple_collision, adv_collision..?
   };
-protected:
+
   GameObject* object() const;
+
+protected:
   StormfighterApp* application() const;
 
   void setState(State new_state);

@@ -9,7 +9,7 @@
 #include "Input.h"
 #include "GUI.h"
 
-class StormfighterApp {
+class StormfighterApp : public Ogre::FrameListener{
  public:
   StormfighterApp();
   ~StormfighterApp();
@@ -26,7 +26,15 @@ class StormfighterApp {
 
   Input* input() const {return input_; }
 
+  Hierarchy* hierarchy() const { return hierarchy_; }
+
   double inline deltaTime() const {return deltaTime_;}
+
+  void setPhysicsDeltaTime(SReal pdt) {physicsDeltaTime_ = pdt; }
+
+  SReal inline physicsDeltaTime() const { return physicsDeltaTime_; }
+
+  bool frameStarted(const Ogre::FrameEvent& evt);
 
  private:
   void setupStormfighterScene();
@@ -39,6 +47,7 @@ class StormfighterApp {
   Input* input_;
   GUI* gui_;
   double deltaTime_;
+  SReal physicsDeltaTime_;
 };
 
 #endif

@@ -49,6 +49,8 @@ class STerrain : public Component {
   Ogre::Vector3 terrainPosition(int x, int y);
   void setMaterialNameTo(int x, int y, SString matname);
 
+  Ogre::Vector3 normalAt(Ogre::Vector3 point);
+
  private:
   STerrain();
   /// prepares an importdata for filling in user values

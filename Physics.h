@@ -15,10 +15,17 @@ struct CollisionData {
   GameObject* other;
 };
 
+struct SingleRayCastResult {
+  GameObject* hitObject;
+  Ogre::Vector3 hitPoint;
+};
+
+extern ContactAddedCallback gContactAddedCallback;
+
 class Physics {
  public:
   /** Default constructor */
-  Physics();
+  Physics(StormfighterApp* app);
   /** Default destructor */
   ~Physics();
 
@@ -29,10 +36,16 @@ class Physics {
 
   void removeRigidBody(btRigidBody* rigidBody);
 
+  SingleRayCastResult closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to);
+
   /// Update physics world
   void tick(SReal deltaTime);
 
   static void tickCallback(btDynamicsWorld* world, btScalar timestep);
+
+  static bool contactAddedCallback(btManifoldPoint& cp,
+                           const btCollisionObject* colObj0,int partId0,int index0,
+                           const btCollisionObject* colObj1,int partId1,int index1);
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Physics);
@@ -45,7 +58,8 @@ class Physics {
   btCollisionDispatcher* collisionDispatcher_;
   btSequentialImpulseConstraintSolver* solver_;
 
-  DebugDrawer *debugdrawer_;
+  DebugDrawer* debugdrawer_;
+  StormfighterApp* application_;
 };
 
 #endif // STORMIFIGHTER_PHYSICS_H_

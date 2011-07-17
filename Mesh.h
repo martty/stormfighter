@@ -9,8 +9,6 @@
  * @brief Mesh (triangle appearance) component of a GameObject
  */
 class SMesh : public Component {
- friend class SConvexHullCollider;
- friend class STrimeshCollider;
  public:
   /// Create an empty Mesh component (mesh can be changed at any time)
   SMesh();
@@ -36,12 +34,17 @@ class SMesh : public Component {
 
   SReal getBoundingSphereRadius() const;
 
+  // ANIMATION
   bool animated() const;
+  void setAnimationStateEnabled(SString animstate, bool enabled);
+  void setAnimationStateLoop(SString animstate, bool loop);
+  void addAnimationTime(SString animstate, SReal time);
+
+  Ogre::Entity* entity(){return entity_;}
 
  protected:
   Ogre::Entity* entity_;
 
-  Ogre::Entity* entity(){return entity_;}
   /// true if there is a proper entity; if false, this should NOT enter hierarchy
   bool valid_;
  private:

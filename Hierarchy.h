@@ -25,6 +25,7 @@ class Hierarchy {
 
   void initialize(StormfighterApp* app);
   void update();
+  void physicsUpdate();
 
   /// Returns the whole hierarchy (DFS)
   SString debug();

@@ -34,14 +34,20 @@ class STransform : public Component {
   /// The Transform component's type string is @b "Transform"
   SString const type() const { return "Transform"; }
 
-  // POSITION, ORIENTATION, SCALE
-  Ogre::Vector3 const position(){return node_->getPosition();}
-  Ogre::Quaternion const orientation(){return node_->getOrientation();}
-  Ogre::Vector3 const scale(){return node_->getScale();}
+  // POSITION, ORIENTATION, SCALE (local space)
+  Ogre::Vector3 const position() const{return node_->getPosition();}
+  Ogre::Quaternion const orientation() const{return node_->getOrientation();}
+  Ogre::Vector3 const scale() const{return node_->getScale();}
 
   void setPosition(const Ogre::Vector3 position);
   void setOrientation(const Ogre::Quaternion orientation);
   void setScale(const Ogre::Vector3 scale){node_->setScale(scale);}
+
+  Ogre::Matrix4 worldMatrix() const;
+
+  // POSITION, ORIENTATION (world space)
+  Ogre::Vector3 const worldPosition() const;
+  Ogre::Quaternion const worldOrientation() const;
 
   // ADVANCED TRANSFORMS
 
@@ -53,6 +59,8 @@ class STransform : public Component {
   void yaw(const Ogre::Radian angle);
   void pitch(const Ogre::Radian angle);
   void roll(const Ogre::Radian angle);
+
+  void setFixedYawAxis(bool useFixed, const Ogre::Vector3 fixedAxis);
 
   // PARENTING
   STransform* const parent();
@@ -72,6 +80,8 @@ class STransform : public Component {
    // INTERNAL FOR MOTIONSTATE
   void _setPosition(Ogre::Vector3 position){node_->setPosition(position);}
   void _setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
+
+  void _notifyTransformChange();
 
   Ogre::SceneNode* node_;
 

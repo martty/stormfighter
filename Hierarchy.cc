@@ -17,6 +17,10 @@ void Hierarchy::update(){
   root_->update(true);
 }
 
+void Hierarchy::physicsUpdate(){
+  root_->physicsUpdate(true);
+}
+
 GameObject* Hierarchy::createGameObject(){
   GameObject* go = new GameObject();
   root_->addChild(go);

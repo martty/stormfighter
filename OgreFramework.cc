@@ -63,10 +63,6 @@ OgreFramework::~OgreFramework(){
     if(m_pRoot) delete m_pRoot;
 }
 
-void OgreFramework::updateOgre(double timeSinceLastFrame){
-    m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-}
-
 void OgreFramework::setActiveCamera(Camera* camera){
   viewPort_->setCamera(camera);
 }

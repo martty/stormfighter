@@ -21,8 +21,15 @@ class SRigidBody : public Component, public btMotionState {
 
 	void setKinematic(bool isKinematic);
 
+	void setDamping(SReal linear, SReal angular);
+
+	// FORCES & the like
+	void applyCentralImpulse(Ogre::Vector3 direction);
+
 	/// does not draw this rigidbody in debug drawing
 	void disableDebugDraw();
+
+	void flush();
 
  private:
   void init(SReal mass);
@@ -40,6 +47,7 @@ class SRigidBody : public Component, public btMotionState {
   btRigidBody* rigidBody_;
   bool isKinematic_; // until init
   unsigned int collisionFlags_;
+  SReal lin_damp_, ang_damp_;
 
   btTransform internalTransform_; // for motionstate
 };

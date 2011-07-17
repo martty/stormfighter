@@ -19,11 +19,14 @@ class SConvexHullCollider : public SCollider {
   /** Default destructor */
   ~SConvexHullCollider();
 
+  btTransform shapeTransform();
+
   void onInit();
 
   SString const type() const { return "Collider"; }
  private:
   bool isAnimated_;
+  bool isBaked_;
 };
 
 #endif // STORMFIGHTER_MESHCOLLIDER_H_

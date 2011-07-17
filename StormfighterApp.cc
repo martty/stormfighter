@@ -12,7 +12,10 @@
 #include "ConvexHullCollider.h"
 #include "TrimeshCollider.h"
 #include "TerrainCollider.h"
+#include "CompoundCollider.h"
 #include "FreeLookCameraController.h"
+#include "ChaseCameraController.h"
+#include "CharacterController.h"
 
 StormfighterApp::StormfighterApp(){
   physics_ = NULL;
@@ -37,9 +40,8 @@ void StormfighterApp::startStormfighter(){
   log("Initializing hierarchy");
   hierarchy_ = new Hierarchy();
   log("Hierarchy initialized!");
-  // set up physics!
   log("Initializing physics");
-  physics_ = new Physics();
+  physics_ = new Physics(this);
   log("Physics initialized!");
   log("Initializing GUI");
   gui_ = new GUI(input_);
@@ -64,10 +66,10 @@ void StormfighterApp::setupStormfighterScene(){
   lighty->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(1,0,1)));
   light->setAsTerrainLight();
 
-  GameObject* terrain = hierarchy_->createGameObject();
+  GameObject* terrain = hierarchy_->createGameObject("Terrain");
   STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 129, 1200.0f);
-  t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
-  //t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
+  //t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
+  t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
   //t->addLayerTo(0,0,200,"growth_weirdfungus-03_diffusespecular.dds","growth_weirdfungus-03_normalheight.dds");
   t->setHeightImageTo(0,0,"terrain.png");
   terrain->addComponent(t);
@@ -76,24 +78,37 @@ void StormfighterApp::setupStormfighterScene(){
   terrain->addComponent(rb);
   rb->disableDebugDraw();
 
-  GameObject* pp = hierarchy_->createGameObject("hietop");
-  GameObject* sampleMesh = hierarchy_->createGameObject("hiechild");
-  pp->addChild(sampleMesh);
-  pp->transform()->setPosition(Ogre::Vector3(0, 0, -120));
-  sampleMesh->addComponent(new SMesh("robot.mesh"));
-  sampleMesh->addComponent(new SConvexHullCollider());
-  //SRigidBody* sr = new SRigidBody(1);
-  //sr->setKinematic(false);
-  //sampleMesh->addComponent(sr);
-  sampleMesh->transform()->setPosition(Ogre::Vector3(0,10,10));
+  GameObject* player = hierarchy_->createGameObject("Player");
+  GameObject* mesh = hierarchy_->createGameObject("PlayerMesh");
+  mesh->addComponent(new SMesh("robot.mesh"));
+  mesh->addComponent(new SConvexHullCollider());
+  //mesh->transform()->setScale(Ogre::Vector3(0.1, 0.1, 0.1));
+  player->addChild(mesh);
+  mesh->transform()->yaw(Ogre::Degree(90));
+  player->transform()->setPosition(Ogre::Vector3(0, 100, 0));
+  SRigidBody* sr = new SRigidBody(30);
+  sr->setKinematic(true);
+  sr->setDamping(0.0f,1.0f);
+  player->addComponent(new SCompoundCollider());
+  player->addComponent(sr);
+  player->addComponent(new SCharacterController());
+
+  GameObject* chaseCam = hierarchy_->createGameObject("chaseCam");
+  SCamera* c = new SCamera();
+  chaseCam->addComponent(c);
+  c->setNearClipDistance(1);
+  c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
+  c->activate();
+  chaseCam->addComponent(new SChaseCameraController(player, Ogre::Vector3(0, 140, 100), Ogre::Vector3(0, 20, -40)));
+
 
   GameObject* cam = hierarchy_->createGameObject("cammy");
-  SCamera* c = new SCamera();
+  c = new SCamera();
   cam->addComponent(c);
   cam->addComponent(new SFreeLookCameraController());
   c->setNearClipDistance(1);
   c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
-  c->activate();
+  //c->activate();
   cam->transform()->setPosition(Ogre::Vector3(0,60,160));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
 
@@ -120,54 +135,39 @@ void StormfighterApp::setupStormfighterScene(){
     int y = std::rand() % 20;
     go->transform()->setPosition(Ogre::Vector3(x,100+y,z));
     go->addComponent(new SSphereCollider());
-    go->addComponent(new SRigidBody(4));
+    //go->addComponent(new SRigidBody(4));
     //go->sendInit(this);
   }
 //  rby->setKinematic(true);
   //plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));
 
 }
+
+bool StormfighterApp::frameStarted(const Ogre::FrameEvent& evt){
+  input_->capture();
+  deltaTime_ = evt.timeSinceLastFrame;
+  hierarchy_->update();
+  // tick physics
+  physics_->tick(deltaTime_);
+  // update GUI
+  gui_->update(deltaTime_);
+  // check for exit
+  if(input_->isKeyDown(OIS::KC_ESCAPE))
+    return false;
+  return true;
+}
+
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
   hierarchy_->initialize(this);
   log(hierarchy_->debug());
   log("Start main loop...");
-  double timeSinceLastFrame = 0;
-  double startTime = 0;
+
   OgreFramework::getSingletonPtr()->defaultRenderWindow()->resetStatistics();
-  while(!m_bShutdown && !OgreFramework::getSingletonPtr()->isOgreToBeShutDown()){
-      if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isClosed())
-          m_bShutdown = true;
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-      Ogre::WindowEventUtilities::messagePump();
-#endif
 
-      if(OgreFramework::getSingletonPtr()->defaultRenderWindow()->isActive()){
-          startTime = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU();
-          // capture input
-          input_->capture();
-          OgreFramework::getSingletonPtr()->updateOgre(timeSinceLastFrame);
-          OgreFramework::getSingletonPtr()->m_pRoot->renderOneFrame();
-          timeSinceLastFrame = OgreFramework::getSingletonPtr()->m_pTimer->getMillisecondsCPU() - startTime;
-          deltaTime_ = timeSinceLastFrame/1000.0d;
-          // update GOs
-          hierarchy_->update();
-          // tick physics
-          physics_->tick(deltaTime_);
-          // update GUI
-          gui_->update(deltaTime_);
-          // check for exit
-          if(input_->isKeyDown(OIS::KC_ESCAPE))
-            m_bShutdown = true;
+  OgreFramework::getSingletonPtr()->m_pRoot->addFrameListener(this);
+  OgreFramework::getSingletonPtr()->m_pRoot->startRendering();
 
-      } else {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-          Sleep(1000);
-#else
-          sleep(1);
-#endif
-      }
-  }
   OgreFramework::getSingletonPtr()->m_pLog->logMessage("Main loop quit");
   OgreFramework::getSingletonPtr()->m_pLog->logMessage("Shutdown OGRE...");
 }

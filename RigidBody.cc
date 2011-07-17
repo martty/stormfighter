@@ -10,6 +10,8 @@ SRigidBody::SRigidBody(SReal mass){
   internalTransform_ = btTransform::getIdentity();
   isKinematic_ = false;
   collisionFlags_ = 0;
+  lin_damp_ = 0.0f;
+  ang_damp_ = 0.0f;
   setState(PREPARED);
 }
 
@@ -37,12 +39,12 @@ void SRigidBody::setWorldTransform(const btTransform &newTransform){
 }
 
 void SRigidBody::onInit(){
-  // search for a collider component in GO
-  // TODO: search in children too (somehow) -> compoundShape collisionshape
-  internalTransform_ = Convert::transform(object()->transform()->position(), object()->transform()->orientation());
+  // search for a collider component in GO & children
+  // TOOD: autoCompound & autoTrimesh
+  internalTransform_ = Convert::transform(object()->transform()->worldPosition(), object()->transform()->worldOrientation());
   SCollider* collider = NULL;
-  if(object()->hasComponent("Collider")){
-    collider = static_cast<SCollider*>(object()->component("Collider"));
+  if(object()->firstComponentInChildren("Collider")){
+    collider = static_cast<SCollider*>(object()->firstComponentInChildren("Collider"));
     // let's rush this collider, we need the shape now
     if(collider->state() == PREPARED){
       collider->onInit();
@@ -66,8 +68,14 @@ void SRigidBody::onInit(){
     rigidBody_ = new btRigidBody(rigidbodyCI);
     rigidBody_->setUserPointer(object()); // this component is set for callbacks, which is TODO of course :)
     application()->physics()->addRigidBody(rigidBody_);
-    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | collisionFlags_);
-    setKinematic(isKinematic_);
+    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | collisionFlags_ | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    if(isKinematic_){
+      rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+      rigidBody_->setActivationState(DISABLE_DEACTIVATION);
+    }
+    rigidBody_->setFriction(1.0f);
+    rigidBody_->setRestitution(0.0f);
+    rigidBody_->setDamping(lin_damp_, ang_damp_);
     setState(READY);
   }
 }
@@ -75,11 +83,19 @@ void SRigidBody::onInit(){
 void SRigidBody::setKinematic(bool isKinematic){
   if(state() == READY){
     if(isKinematic){
+      application()->physics()->removeRigidBody(rigidBody_);
       rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
       rigidBody_->setActivationState(DISABLE_DEACTIVATION);
+      application()->physics()->addRigidBody(rigidBody_);
+      isKinematic_ = true;
     } else {
-      rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() ^ btCollisionObject::CF_KINEMATIC_OBJECT);
-      rigidBody_->setActivationState(ACTIVE_TAG);
+      if(isKinematic_){
+        application()->physics()->removeRigidBody(rigidBody_);
+        rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() - btCollisionObject::CF_KINEMATIC_OBJECT);
+        application()->physics()->addRigidBody(rigidBody_);
+        isKinematic_ = false;
+        //rigidBody_->forceActivationState(ACTIVE_TAG);
+      }
     }
   } else {
     isKinematic_ = isKinematic;
@@ -91,4 +107,22 @@ void SRigidBody::disableDebugDraw(){
     rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
   else
     collisionFlags_ = collisionFlags_ | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+}
+
+void SRigidBody::applyCentralImpulse(Ogre::Vector3 direction){
+  rigidBody_->applyCentralImpulse(Convert::toBullet(direction));
+}
+
+void SRigidBody::setDamping(SReal linear, SReal angular){
+  if(state() != READY){
+    lin_damp_ = linear;
+    ang_damp_ = angular;
+  } else {
+    rigidBody_->setDamping(linear, angular);
+  }
+}
+
+void SRigidBody::flush(){
+  application()->physics()->removeRigidBody(rigidBody_);
+  application()->physics()->addRigidBody(rigidBody_);
 }
