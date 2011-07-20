@@ -7,10 +7,12 @@
 #include "BulletOgreDebugDraw.h"
 
 struct CollisionData {
-  int num_contact_points;
-  Ogre::Vector3* pointsOnA;
-  Ogre::Vector3* pointsOnB;
-  Ogre::Vector3* normalsOnB;
+  Ogre::Vector3 pointOnA;
+  Ogre::Vector3 pointOnB;
+  Ogre::Vector3 normalOnB;
+
+  bool stale;
+  bool fresh;
 
   GameObject* other;
 };
@@ -20,7 +22,9 @@ struct SingleRayCastResult {
   Ogre::Vector3 hitPoint;
 };
 
-extern ContactAddedCallback gContactAddedCallback;
+typedef std::map<SString, short> MaskMap;
+
+extern ContactProcessedCallback gContactProcessedCallback;
 
 class Physics {
  public:
@@ -32,9 +36,13 @@ class Physics {
   /// Add a rigidbody to the simulation
   void addRigidBody(btRigidBody* rigidBody);
   /// Add a rigidbody to the simulation, with collision filtering
-  void addRigidBody(btRigidBody* rigidBody, short type, short collidesWith);
+  void addRigidBody(btRigidBody* rigidBody, short group, short collidesWith);
+
+  void addRigidBody(btRigidBody* rigidBody, SString group, StringVector collidesWith);
 
   void removeRigidBody(btRigidBody* rigidBody);
+
+  void addCollisionGroup(SString name);
 
   SingleRayCastResult closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to);
 
@@ -43,9 +51,7 @@ class Physics {
 
   static void tickCallback(btDynamicsWorld* world, btScalar timestep);
 
-  static bool contactAddedCallback(btManifoldPoint& cp,
-                           const btCollisionObject* colObj0,int partId0,int index0,
-                           const btCollisionObject* colObj1,int partId1,int index1);
+  static bool contactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1);
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Physics);
@@ -60,6 +66,9 @@ class Physics {
 
   DebugDrawer* debugdrawer_;
   StormfighterApp* application_;
+
+  MaskMap collisionGroups_;
+  int collision_group_counter;
 };
 
 #endif // STORMIFIGHTER_PHYSICS_H_

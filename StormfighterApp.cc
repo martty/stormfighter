@@ -58,6 +58,10 @@ void StormfighterApp::startStormfighter(){
 void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
+  physics_->addCollisionGroup("terrain");
+  physics_->addCollisionGroup("player");
+  physics_->addCollisionGroup("faller");
+
   GameObject* lighty = hierarchy_->createGameObject();
   SLight* light = new SLight(Ogre::Light::LT_DIRECTIONAL);
   lighty->addComponent(light);
@@ -75,6 +79,7 @@ void StormfighterApp::setupStormfighterScene(){
   terrain->addComponent(t);
   terrain->addComponent(new STerrainCollider());
   SRigidBody* rb = new SRigidBody(0);
+  rb->setCollisionGroup("terrain");
   terrain->addComponent(rb);
   rb->disableDebugDraw();
 
@@ -89,6 +94,12 @@ void StormfighterApp::setupStormfighterScene(){
   SRigidBody* sr = new SRigidBody(30);
   sr->setKinematic(true);
   sr->setDamping(0.0f,1.0f);
+  sr->setCollisionGroup("player");
+  StringVector st;
+  st.push_back("terrain");
+  st.push_back("default");
+  st.push_back("faller");
+  sr->setCollidesWith(st);
   player->addComponent(new SCompoundCollider());
   player->addComponent(sr);
   player->addComponent(new SCharacterController());
@@ -135,8 +146,9 @@ void StormfighterApp::setupStormfighterScene(){
     int y = std::rand() % 20;
     go->transform()->setPosition(Ogre::Vector3(x,100+y,z));
     go->addComponent(new SSphereCollider());
-    //go->addComponent(new SRigidBody(4));
-    //go->sendInit(this);
+    SRigidBody* rig = new SRigidBody(4);
+    go->addComponent(rig);
+    rig->setCollisionGroup("faller");
   }
 //  rby->setKinematic(true);
   //plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));

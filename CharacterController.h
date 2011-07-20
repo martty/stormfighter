@@ -11,8 +11,15 @@ class SCharacterController : public SScript {
 
   void onInit();
   void onUpdate();
-  //void onPhysicsUpdate();
-  void onCollision(const CollisionData* colldata);
+  void onPhysicsUpdate();
+  /// to be called when the holder GameObject collides, once
+  void onCollisionEnter(const CollisionData* collisionData);
+  /// to be called when the holder GameObject stops colliding (with an other one), once
+  void onCollisionExit(const CollisionData* collisionData);
+  /// to be called when the holder GameObject collider, every tick
+  void onCollisionStay(const CollisionData* collisionData);
+
+  void jump();
 
  private:
   Ogre::Vector3	 translateVector_;
@@ -21,6 +28,8 @@ class SCharacterController : public SScript {
   float	 moveScale_;
   Ogre::Degree	 rotScale_;
   Ogre::Degree currentRot_;
+
+  SVector3 speed_;
 
   SReal timeout_;
 

@@ -3,6 +3,8 @@
 
 #include "common.h"
 #include "Component.h"
+#include "StormfighterApp.h"
+#include "GameObject.h"
 
 struct CollisionData;
 
@@ -21,11 +23,24 @@ class SScript : public Component{
   const SString type() const {return type_;}
 
   // Override these for functionality
-  virtual void onInit() {};
-  virtual void onUpdate() {};
-  virtual void onPhysicsUpdate() {};
-  virtual void onCollision(const CollisionData* collisionData) {};
+  virtual void onInit() {}
+  virtual void onUpdate() {}
+  virtual void onPhysicsUpdate() {}
+  /// to be called when the holder GameObject collides, once
+  virtual void onCollisionEnter(const CollisionData* collisionData){}
+  /// to be called when the holder GameObject stops colliding (with an other one), once
+  virtual void onCollisionExit(const CollisionData* collisionData){}
+  /// to be called when the holder GameObject collider, every tick
+  virtual void onCollisionStay(const CollisionData* collisionData){}
  protected:
+    // ALIASES (less typing, more fun! at the price of increased compilation time.. :S)
+  // Application aliases
+  inline Input* input() const { return application()->input(); }
+  inline Physics* physics() const { return application()->physics(); }
+  inline SReal deltaTime() const { return application()->deltaTime(); }
+  // Object aliases
+  inline STransform* transform() const { return object()->transform(); }
+
   SString type_;
   unsigned int calls_;
 };

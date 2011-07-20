@@ -14,14 +14,6 @@ bool Component::hasInterface() const{
   return (object_ != NULL) && (application_ != NULL) ;
 }
 
-GameObject* Component::object() const {
-  return object_;
-}
-
-StormfighterApp* Component::application() const {
-  return application_;
-}
-
 Component::State Component::state() const {
   return state_;
 }

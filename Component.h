@@ -3,8 +3,8 @@
 
 #include "common.h"
 
-class STransform;
 struct CollisionData;
+class STransform;
 
 /**
  * @brief Compenents are responsible for a part of a GameObject's behavior, appearance, etc.
@@ -43,8 +43,12 @@ class Component{
   /// to be called on each physics tick
   virtual void onPhysicsUpdate(){}
 
-  /// to be called when the holder GameObject collides
-  virtual void onCollision(const CollisionData* collisionData){}
+  /// to be called when the holder GameObject collides, once
+  virtual void onCollisionEnter(const CollisionData* collisionData){}
+  /// to be called when the holder GameObject stops colliding (with an other one), once
+  virtual void onCollisionExit(const CollisionData* collisionData){}
+  /// to be called when the holder GameObject collider, every tick
+  virtual void onCollisionStay(const CollisionData* collisionData){}
 
   enum State {CREATED, PREPARED, READY};
 
@@ -58,10 +62,10 @@ class Component{
     COLLISION = 8 // needs onCollision called TODO: collision helyett simple_collision, adv_collision..?
   };
 
-  GameObject* object() const;
+  inline GameObject* object() const {return object_;}
 
 protected:
-  StormfighterApp* application() const;
+  inline StormfighterApp* application() const {return application_;}
 
   void setState(State new_state);
  private:

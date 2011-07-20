@@ -16,6 +16,15 @@ typedef std::string SString;
 /// Real number class
 typedef Ogre::Real SReal;
 
+/// 3D Vector class
+typedef Ogre::Vector3 SVector3;
+
+/// Quaternion class
+typedef Ogre::Quaternion SQuaternion;
+
+/// An std::vector of SStrings
+typedef std::vector<SString> StringVector;
+
 /// Any code may use pointers to these classes
 class GameObject;
 class Component;
@@ -32,6 +41,11 @@ class SException : public std::exception {
  private:
   SString what_;
 };
+
+// UGLY but EASY!
+#ifdef DEBUG
+#define LOG(what) OgreFramework::getSingletonPtr()->m_pLog->logMessage(Ogre::StringConverter::toString(what))
+#endif
 
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class

@@ -11,7 +11,9 @@ SCharacterController::SCharacterController():SScript("CharacterController"){
   isJumping_ = false;
   currentRot_ = 0;
   timeout_ = 0.0f;
+  speed_ = SVector3::ZERO;
   readyToLand_ = false;
+  colliding_ = false;
 }
 
 SCharacterController::~SCharacterController(){
@@ -26,23 +28,10 @@ void SCharacterController::onUpdate(){
   // TODO: documentation & cleanup
   // TODO: disabling collision with terrain after jump
   // TODO: air control
+  SRigidBody* rb = static_cast<SRigidBody*>(object()->component("RigidBody"));
   if(application()->input()->isKeyDown(OIS::KC_SPACE) && !isJumping_){
-    isJumping_ = true;
-    SRigidBody* sr = static_cast<SRigidBody*>(object()->component("RigidBody"));
-    // give back control to physics
-    sr->setKinematic(false);
-    // launch at an angle
-    sr->applyCentralImpulse(object()->transform()->orientation()* Ogre::Vector3(0, 30, 0.0f)); // up
-    timeout_ = OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds();
-    readyToLand_ = false;
+    jump();
   }
-  if(colliding_ == false){
-    readyToLand_ = true;
-  }
-  if(!isJumping_){
-    SRigidBody* rb = static_cast<SRigidBody*>(object()->component("RigidBody"));
-    // give back control to player
-    rb->setKinematic(true);
     moveScale_ = moveSpeed_ * application()->deltaTime();
     rotScale_ = rotateSpeed_ * application()->deltaTime();
     translateVector_ = Ogre::Vector3::ZERO;
@@ -50,31 +39,16 @@ void SCharacterController::onUpdate(){
     if(application()->input()->isKeyDown(OIS::KC_D)) translateVector_.x = moveScale_;
     if(application()->input()->isKeyDown(OIS::KC_W)) translateVector_.z = -moveScale_;
     if(application()->input()->isKeyDown(OIS::KC_S)) translateVector_.z = moveScale_;
-    if(application()->input()->isKeyDown(OIS::KC_LSHIFT))
-      object()->transform()->moveRelative(translateVector_);
+    /*if(application()->input()->isKeyDown(OIS::KC_LSHIFT))
+      speed_ += translateVector_;
     else
-      object()->transform()->moveRelative(translateVector_ / 10);
-
-    SingleRayCastResult sr = application()->physics()->closestRayCast(object()->transform()->position()-Ogre::Vector3(0, -2, 0), object()->transform()->position()+Ogre::Vector3(0, -100, 0));
-    if(sr.hitObject){
-      Ogre::Vector3 cpos = object()->transform()->position();
-      Ogre::Vector3 npos = cpos;
-      cpos.y = sr.hitPoint.y + 0.1f;
-      object()->transform()->move((cpos-npos)*0.1f);
-      GameObject* hit = sr.hitObject;
-      currentRot_ += Ogre::Degree(application()->input()->axisRelative(X) * -rotScale_);
-      if(hit->hasComponent("Terrain")){
-        STerrain* terr = static_cast<STerrain*>(hit->component("Terrain"));
-        Ogre::Vector3 normal = terr->normalAt(sr.hitPoint);
-        //application()->log(Ogre::StringConverter::toString(normal));
-        Ogre::Quaternion rot = Ogre::Vector3::UNIT_Y.getRotationTo(normal);
-        Ogre::Quaternion nrot = Ogre::Quaternion::Slerp(0.01f, object()->transform()->orientation(), rot);
-        Ogre::Quaternion control = Ogre::Quaternion::IDENTITY;
-        control.FromAngleAxis(currentRot_,object()->transform()->orientation()*Ogre::Vector3::UNIT_Y );
-        nrot = control;// * nrot;
-        object()->transform()->setOrientation(nrot);
-      }
-    }
+      speed_ += translateVector_/10;*/
+    SReal y = speed_.y;
+    if(speed_.length()>0.5)
+      speed_ *= 0.5/speed_.length();
+    speed_.y = y;
+    object()->transform()->moveRelative(speed_);
+    object()->transform()->moveRelative(translateVector_);
     //object()->transform()->yaw(Ogre::Degree(application()->input()->axisRelative(X) * -rotScale_));
     GameObject* go = object()->find("PlayerMesh");
     if(!go)
@@ -82,27 +56,61 @@ void SCharacterController::onUpdate(){
     SMesh* mesh = static_cast<SMesh*>(go->component("Mesh"));
     if(!mesh)
       return;
-    if(translateVector_.length() > 0){
+    if(translateVector_.length() > 0 && !isJumping_){
       mesh->setAnimationStateEnabled("Walk", true);
       mesh->setAnimationStateLoop("Walk", true);
       if(application()->input()->isKeyDown(OIS::KC_LSHIFT))
         mesh->addAnimationTime("Walk", application()->deltaTime());
       else
-        mesh->addAnimationTime("Walk", application()->deltaTime()/10);
+        mesh->addAnimationTime("Walk", application()->deltaTime());
     } else {
       mesh->setAnimationStateEnabled("Walk", false);
     }
+    transform()->yaw(application()->input()->axisRelative(X) * -rotScale_);
+  if(!colliding_){
+    speed_ += SVector3(0, -0.98, 0)*deltaTime();
   }
-  colliding_ = false;
+  SingleRayCastResult sr = application()->physics()->closestRayCast(object()->transform()->position()-Ogre::Vector3(0, -2, 0), object()->transform()->position()+Ogre::Vector3(0, -100, 0));
+  if(sr.hitObject){
+    //application()->log(Ogre::StringConverter::toString(sr.hitPoint));
+    SVector3 cpos = object()->transform()->position();
+    SReal absdist = (cpos-sr.hitPoint).length();
+    SReal dist = cpos.y-sr.hitPoint.y;
+    if(dist < 0.0f){
+      object()->transform()->move(SVector3(0, absdist,0));
+    } else if (dist > 0.0f && dist < 0.1f){
+      speed_.y = 0;
+    }
+    //currentRot_ += Ogre::Degree(application()->input()->axisRelative(X) * -rotScale_);
+  }
 }
 
-void SCharacterController::onCollision(const CollisionData* collisionData){
-  //application()->log(collisionData->other->name());
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage(Ogre::StringConverter::toString(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()));
-  colliding_ = true;
-  if(isJumping_ && readyToLand_){
-    if(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()-timeout_ < 100.0f)
-      return;
+void SCharacterController::jump(){
+  speed_ += SVector3(0, 0.7f, 0);
+  isJumping_ = true;
+}
+
+void SCharacterController::onPhysicsUpdate(){
+
+}
+
+/// to be called when the holder GameObject collides, once
+void SCharacterController::onCollisionEnter(const CollisionData* collisionData){
+  application()->log("Enter" + collisionData->other->name());
+  if(collisionData->other->name() == "Terrain"){
+    colliding_ = true;
+    speed_.y = 0;
     isJumping_ = false;
   }
+}
+/// to be called when the holder GameObject stops colliding (with an other one), once
+void SCharacterController::onCollisionExit(const CollisionData* collisionData){
+  application()->log("Exit" + collisionData->other->name());
+  if(collisionData->other->name() == "Terrain"){
+    colliding_ = false;
+  }
+}
+/// to be called when the holder GameObject collider, every tick
+void SCharacterController::onCollisionStay(const CollisionData* collisionData){
+  //application()->log("Stay" + collisionData->other->name());
 }

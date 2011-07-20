@@ -11,6 +11,7 @@ typedef std::map<SString, Component*> ComponentMap ;
 typedef std::map<SString, int> NameCountMap;
 typedef std::map<unsigned int, std::vector<Component*> > CallsMap;
 typedef std::vector<Component*> ComponentVector;
+typedef std::map<SString, CollisionData*> CollisionMap;
 
 struct CollisionData;
 
@@ -47,8 +48,8 @@ class GameObject {
   void update(bool recursive);
   /// sends onPhysicsUpdate to components, will follow list if recursive is true
   void physicsUpdate(bool recursive);
-  /// sends collision to components
-  void onCollision(const CollisionData* collisionData);
+  /// sends collision events to components
+  void collision();
 
   // Game object list managament
   ///Add equal level member to GameObject list
@@ -67,6 +68,9 @@ class GameObject {
   void removeChild(GameObject* go);
   ///Destroy all children (call their destructors)
   void clearChildren();
+
+  /// Adds a collision
+  void addCollision(CollisionData* collisionData);
  protected:
   GameObject* next(); ///The next GameObject in the list
   GameObject* children(); ///The root of the children list
@@ -86,6 +90,7 @@ class GameObject {
   ComponentMap components_;
   std::vector<SString> component_groups_;
   STransform* transform_;
+  CollisionMap collisionmap_;
 
   GameObject* next_; /// Next sibling in list
   GameObject* children_; /// Root of children's list

@@ -12,6 +12,9 @@ SRigidBody::SRigidBody(SReal mass){
   collisionFlags_ = 0;
   lin_damp_ = 0.0f;
   ang_damp_ = 0.0f;
+  group_ = "default";
+  collidesWith_.clear();
+  collidesWith_.push_back("all");
   setState(PREPARED);
 }
 
@@ -67,35 +70,31 @@ void SRigidBody::onInit(){
     btRigidBody::btRigidBodyConstructionInfo rigidbodyCI(mass_, this, collisionShape, myinertia);
     rigidBody_ = new btRigidBody(rigidbodyCI);
     rigidBody_->setUserPointer(object()); // this component is set for callbacks, which is TODO of course :)
-    application()->physics()->addRigidBody(rigidBody_);
-    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | collisionFlags_ | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    add();
+    setState(READY);
+    setFlag(collisionFlags_);
+    if(mass_ != 0 || isKinematic_) // dynamic || static
+       setFlag(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
     if(isKinematic_){
-      rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+      setFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
       rigidBody_->setActivationState(DISABLE_DEACTIVATION);
     }
     rigidBody_->setFriction(1.0f);
     rigidBody_->setRestitution(0.0f);
     rigidBody_->setDamping(lin_damp_, ang_damp_);
-    setState(READY);
   }
 }
 
 void SRigidBody::setKinematic(bool isKinematic){
   if(state() == READY){
     if(isKinematic){
-      application()->physics()->removeRigidBody(rigidBody_);
-      rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+      setFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
       rigidBody_->setActivationState(DISABLE_DEACTIVATION);
-      application()->physics()->addRigidBody(rigidBody_);
       isKinematic_ = true;
     } else {
-      if(isKinematic_){
-        application()->physics()->removeRigidBody(rigidBody_);
-        rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() - btCollisionObject::CF_KINEMATIC_OBJECT);
-        application()->physics()->addRigidBody(rigidBody_);
-        isKinematic_ = false;
-        //rigidBody_->forceActivationState(ACTIVE_TAG);
-      }
+      unsetFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
+      isKinematic_ = false;
+      //rigidBody_->forceActivationState(ACTIVE_TAG);
     }
   } else {
     isKinematic_ = isKinematic;
@@ -103,10 +102,7 @@ void SRigidBody::setKinematic(bool isKinematic){
 }
 
 void SRigidBody::disableDebugDraw(){
-  if(rigidBody_)
-    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
-  else
-    collisionFlags_ = collisionFlags_ | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+  setFlag(btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 }
 
 void SRigidBody::applyCentralImpulse(Ogre::Vector3 direction){
@@ -122,7 +118,52 @@ void SRigidBody::setDamping(SReal linear, SReal angular){
   }
 }
 
-void SRigidBody::flush(){
+void SRigidBody::setCollisionResponse(bool hasResponse){
+  setFlagTo(btCollisionObject::CF_NO_CONTACT_RESPONSE, hasResponse);
+}
+
+void SRigidBody::setFlag(unsigned int flag){
+  if(state() == READY)
+    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | flag);
+  else
+    collisionFlags_ |= flag;
+}
+
+void SRigidBody::unsetFlag(unsigned int flag){
+  if(state() == READY)
+    rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() & ~flag);
+  else
+    collisionFlags_ &= ~flag;
+}
+
+void SRigidBody::setFlagTo(unsigned int flag, bool set){
+  if(set)
+    setFlag(flag);
+  else
+    unsetFlag(flag);
+}
+
+void SRigidBody::setCollisionGroup(SString group){
+  group_ = group;
+  if(state() == READY)
+    flush();
+}
+
+void SRigidBody::setCollidesWith(StringVector collidesWith){
+  collidesWith_ = collidesWith;
+  if(state() == READY)
+    flush();
+}
+
+void SRigidBody::remove(){
   application()->physics()->removeRigidBody(rigidBody_);
-  application()->physics()->addRigidBody(rigidBody_);
+}
+
+void SRigidBody::add(){
+  application()->physics()->addRigidBody(rigidBody_, group_, collidesWith_);
+}
+
+void SRigidBody::flush(){
+  remove();
+  add();
 }

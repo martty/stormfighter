@@ -30,6 +30,7 @@ void GameObject::init(bool isRoot){
   transform_ = NULL;
   components_.clear();
   callsdispatch_.clear();
+  collisionmap_.clear();
 
   name_ = getUniqueName(name_);
   transform_ = new STransform(isRoot_);
@@ -235,6 +236,7 @@ void GameObject::physicsUpdate(bool recursive){
     if(next_)
       next_->physicsUpdate(true);
   }
+  collision();
 }
 
 
@@ -253,14 +255,29 @@ SString GameObject::debug() {
   return "["+name()+"]:<"+StringConverter::toString(transform()->position())+">";
 }
 
-void GameObject::onCollision(const CollisionData* collisionData){
-  if(callsdispatch_.empty())
+void GameObject::collision(){
+  if(callsdispatch_.empty() || callsdispatch_.find(Component::COLLISION) == callsdispatch_.end())
     return;
-  if(callsdispatch_.find(Component::COLLISION) == callsdispatch_.end())
-    return;
-  std::vector<Component*> collisionCallList = callsdispatch_[Component::COLLISION];
-  for(std::vector<Component*>::iterator iter = collisionCallList.begin(); iter != collisionCallList.end(); iter++){
-      (*iter)->onCollision(collisionData);
+  ComponentVector collisionCallList = callsdispatch_[Component::COLLISION];
+  // check what events do we need to send out
+  std::vector<SString> removes;
+  for(CollisionMap::iterator it = collisionmap_.begin(); it != collisionmap_.end(); it++){
+    for(ComponentVector::iterator iter = collisionCallList.begin(); iter != collisionCallList.end(); iter++){
+      if((*it).second->stale){
+        (*iter)->onCollisionExit((*it).second);
+        removes.push_back((*it).first);
+      } else if ((*it).second->fresh){
+        (*iter)->onCollisionEnter((*it).second);
+      } else {
+        (*iter)->onCollisionStay((*it).second);
+      }
+    }
+    (*it).second->stale = true;
+    (*it).second->fresh = false;
+  }
+  // remove exited entries
+  for(std::vector<SString>::iterator it = removes.begin(); it != removes.end(); it++){
+    collisionmap_.erase(*it);
   }
 }
 
@@ -302,4 +319,17 @@ void GameObject::_allComponentInChildren(const SString& type, ComponentVector* v
     next_->_allComponentInChildren(type, vec);
   if(children_)
     children_->_allComponentInChildren(type,vec);
+}
+
+void GameObject::addCollision(CollisionData* colld){
+  CollisionMap::iterator it = collisionmap_.find(colld->other->name_);
+  CollisionData* old;
+  if(it != collisionmap_.end() && (*it).second->stale){ // replace old collisiondata with new if and only if stale
+    old = (*it).second;
+    (*it).second = colld;
+    delete old;
+  } else if(it == collisionmap_.end()){ // insert new and make it fresh
+    collisionmap_[colld->other->name_] = colld;
+    colld->fresh = true;
+  }
 }

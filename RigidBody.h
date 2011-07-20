@@ -20,6 +20,10 @@ class SRigidBody : public Component, public btMotionState {
 	SString const type() const { return "RigidBody"; }
 
 	void setKinematic(bool isKinematic);
+	void setCollisionResponse(bool hasResponse);
+
+	void setCollisionGroup(SString group);
+	void setCollidesWith(StringVector collidesWith);
 
 	void setDamping(SReal linear, SReal angular);
 
@@ -28,8 +32,6 @@ class SRigidBody : public Component, public btMotionState {
 
 	/// does not draw this rigidbody in debug drawing
 	void disableDebugDraw();
-
-	void flush();
 
  private:
   void init(SReal mass);
@@ -43,11 +45,22 @@ class SRigidBody : public Component, public btMotionState {
   /// set world transform (internal, for Physics)
 	void setWorldTransform(const btTransform &transform);
 
+	void setFlag(unsigned int flag);
+	void unsetFlag(unsigned int flag);
+	void setFlagTo(unsigned int flag, bool set);
+
+	void remove();
+	void add();
+	void flush();
+
   SReal mass_;
   btRigidBody* rigidBody_;
   bool isKinematic_; // until init
   unsigned int collisionFlags_;
   SReal lin_damp_, ang_damp_;
+
+  SString group_;
+  StringVector collidesWith_;
 
   btTransform internalTransform_; // for motionstate
 };
