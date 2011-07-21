@@ -13,6 +13,8 @@ class SCamera : public Component {
   SCamera();
   ~SCamera();
 
+  SCamera* clone() const;
+
   SString const type() const { return "Camera"; }
 
   void setNearClipDistance(SReal distance);

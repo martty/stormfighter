@@ -9,6 +9,8 @@
 *
 */
 
+typedef std::vector<GameObject*> GameObjectList;
+
 class Hierarchy {
  public:
   Hierarchy();
@@ -19,6 +21,8 @@ class Hierarchy {
 
   GameObject* createGameObject();
   GameObject* createGameObject(SString name);
+  /// internal for cloning
+  GameObject* _cloneGameObject(SString name);
 
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
@@ -32,6 +36,10 @@ class Hierarchy {
 
  private:
   GameObject* root_;
+
+  GameObjectList fresh_;
+
+  StormfighterApp* application_;
 };
 
 #endif // STORMFIGHTER_HIERARCHY_H_

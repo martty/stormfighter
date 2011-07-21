@@ -29,13 +29,11 @@ class SCharacterController : public SScript {
   Ogre::Degree	 rotScale_;
   Ogre::Degree currentRot_;
 
-  SVector3 speed_;
+  SReal speedy_; // current speed along Y axis (for falling)
 
-  SReal timeout_;
+  const SReal offset_;
 
   bool isJumping_;
-  bool readyToLand_;
-  bool colliding_;
 };
 
 #endif // STORMFIGHTER_CHARACTERCONTROLLER_H_

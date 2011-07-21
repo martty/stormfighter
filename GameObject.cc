@@ -1,7 +1,7 @@
 #include "common.h"
 #include "GameObject.h"
 #include "Transform.h"
-#include "Physics.h"
+#include "StormfighterApp.h"
 
 using namespace Ogre;
 
@@ -25,6 +25,22 @@ GameObject::GameObject(bool isRoot){
   init(isRoot);
 }
 
+GameObject::GameObject(const SString& name, bool isCloning){
+  name_ = name;
+  if(!isCloning)
+    init(false);
+  isRoot_ = false;
+  transform_ = NULL;
+  components_.clear();
+  callsdispatch_.clear();
+  collisionmap_.clear();
+
+  name_ = getUniqueName(name_);
+
+  next_ = children_ = parent_ = NULL ;
+  application_ = NULL;
+}
+
 void GameObject::init(bool isRoot){
   isRoot_ = isRoot;
   transform_ = NULL;
@@ -37,12 +53,36 @@ void GameObject::init(bool isRoot){
   addComponent(transform_);
 
   next_ = children_ = parent_ = NULL ;
+  application_ = NULL;
 }
 
 GameObject::~GameObject(){
   components_.clear ();
   clearChildren();
   delete next_;
+}
+
+GameObject* GameObject::clone(){
+  return clone(name_);
+}
+
+GameObject* GameObject::clone(SString name){
+  GameObject* clone = NULL;
+  if(application_)
+    clone = application_->hierarchy()->_cloneGameObject(name);
+  else
+    clone = new GameObject(name, true);
+  // iterate over components and clone them
+  LOG(name_ + "->" + clone->name_);
+  clone->transform_ = transform_->clone(); // SUSY!
+  clone->addComponent(clone->transform_);
+  addSibling(clone); // enter it into hierarchy
+  for(ComponentMap::iterator it = components_.begin(); it != components_.end(); it++){
+    if((*it).first != "Transform"){
+      clone->addComponent((*it).second->clone());
+    }
+  }
+  return clone;
 }
 
 void GameObject::addSibling(GameObject* go){
@@ -124,12 +164,24 @@ GameObject* GameObject::find(const SString& name){
   GameObject* found = NULL;
   if(name == name_)
     return this;
+  if(parent_){
+    parent_->_find(name);
+  } else {
+    _find(name);
+  }
+}
+
+GameObject* GameObject::_find(const SString& name){
+  GameObject* found = NULL;
+  if(name == name_)
+    return this;
   if( next_ != NULL )
-    found = next_->find(name);
+    found = next_->_find(name);
   if( children_ != NULL && found == NULL)
-    return children_->find(name);
+    return children_->_find(name);
   return found;
 }
+
 
 // BFS implementation of find (probably more efficient in usual scenegraphs)
 GameObject* GameObject::find(const GameObject* go){
@@ -194,7 +246,7 @@ STransform* GameObject::transform(){
 }
 
 void GameObject::initialize(StormfighterApp* app, bool recursive){
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage(name_);
+  application_ = app;
   if(recursive){
     if(children_)
       children_->initialize(app, true);
@@ -240,7 +292,9 @@ void GameObject::physicsUpdate(bool recursive){
 }
 
 
-SString GameObject::getUniqueName(SString basename){
+SString GameObject::getUniqueName(SString name){
+  size_t pos;
+  SString basename = ((pos = name.rfind("_")) == std::string::npos) ? name : name.substr(0,pos);
   NameCountMap::iterator it = namecount_.find(basename);
   if (it != namecount_.end()){
       // exists
@@ -292,7 +346,7 @@ Component* GameObject::firstComponentInChildren(const SString& type){
 }
 
 Component* GameObject::_firstComponentInChildren(const SString& type){
-  Component* ret;
+  Component* ret = NULL;
   if(hasComponent(type))
     return component(type);
   if(next_)

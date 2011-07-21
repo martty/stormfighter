@@ -10,3 +10,9 @@ btTransform SCollider::shapeTransform(){
     return tf;
   }
 }
+
+SCollider* SCollider::clone() const{
+  SCollider* sco = new SCollider();
+  sco->collisionShape_ = collisionShape_;
+  return sco;
+}

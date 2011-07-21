@@ -272,7 +272,7 @@
 		assert((sz.x > 0.0) && (sz.y > 0.0) && (sz.y > 0.0) &&
 			("Size of Cylinder must be greater than zero on all axes"));
 
-		btCylinderShape* shape = new btCylinderShapeX(Convert::toBullet(sz * 0.5));
+		btCylinderShape* shape = new btCylinderShape(Convert::toBullet(sz * 0.5));
 		return shape;
 	}
 	//------------------------------------------------------------------------------------------------

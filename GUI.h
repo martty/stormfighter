@@ -18,6 +18,9 @@ class GUI : public OgreBites::SdkTrayListener, OIS::KeyListener, OIS::MouseListe
   bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
   bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
+  // game specific
+  void showLosingText();
+
  private:
   OgreBites::SdkTrayManager* trayManager_;
 };

@@ -21,6 +21,8 @@ class SMesh : public Component {
   /// The mesh component's type string is "Mesh"
   SString const type() const { return "Mesh"; }
 
+  virtual SMesh* clone() const;
+
   virtual unsigned int onAdd(SString goname, STransform* transform);
 
   /// Set or change mesh
@@ -41,6 +43,8 @@ class SMesh : public Component {
   void addAnimationTime(SString animstate, SReal time);
 
   Ogre::Entity* entity(){return entity_;}
+
+  static SMesh* cast(Component* cmp) { return static_cast<SMesh*>(cmp); }
 
  protected:
   Ogre::Entity* entity_;

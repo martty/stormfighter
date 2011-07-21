@@ -19,6 +19,11 @@ SBoxCollider::SBoxCollider(){
 SBoxCollider::~SBoxCollider(){
 }
 
+SBoxCollider* SBoxCollider::clone() const {
+  SBoxCollider* box = new SBoxCollider();
+  return box;
+}
+
 void SBoxCollider::init(Ogre::Vector3 halfextents){
   collisionShape_ = new btBoxShape(Convert::toBullet(halfextents));
   setState(READY);

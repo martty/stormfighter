@@ -11,6 +11,10 @@ class SLight : public Component {
 
   SString const type() const { return "Terrain"; }
 
+  SLight* clone() const;
+
+  unsigned int onAdd(SString goname, STransform* transform);
+
   /// Set diffuse colour
   void setDiffuseColour(Ogre::ColourValue diffuse_colour);
   /// Set specular colour
@@ -19,11 +23,9 @@ class SLight : public Component {
   /// Sets this light the light which is used to compute lightmaps for terrains
   void setAsTerrainLight();
 
-  void onInit();
-
  private:
-  void init(Ogre::Light::LightTypes type);
   Ogre::Light* light_;
+  Ogre::Light::LightTypes type_;
 };
 
 #endif

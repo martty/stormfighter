@@ -20,6 +20,9 @@ class Component{
   /// returns type of component as string
   SString const virtual type() const = 0;
 
+  /// clones the component
+  virtual Component* clone() const = 0;
+
   /**
   * @brief Called when the component is added to a GameObject
   * @param objectname Name of the GO, so that the component can appropriately name

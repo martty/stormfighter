@@ -56,3 +56,7 @@ bool GUI::mouseMoved(const OIS::MouseEvent& evt) {
     return true;
   return false;
 }
+
+void GUI::showLosingText(){
+  trayManager_->showOkDialog("You have lost!", "Do not despair, try again!");
+}

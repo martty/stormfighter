@@ -14,6 +14,8 @@ class SBoxCollider : public SCollider
   /** Default destructor */
   ~SBoxCollider();
 
+  SBoxCollider* clone() const;
+
   void onInit();
 
   SString const type() const { return "Collider"; }

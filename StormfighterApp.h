@@ -34,6 +34,10 @@ class StormfighterApp : public Ogre::FrameListener{
 
   SReal inline physicsDeltaTime() const { return physicsDeltaTime_; }
 
+  // game specific
+  void lose() { hasLost_ = true; isPlaying_ = false; }
+  void win() {hasWon_ = true; isPlaying_ = false; }
+
   bool frameStarted(const Ogre::FrameEvent& evt);
 
  private:
@@ -48,6 +52,10 @@ class StormfighterApp : public Ogre::FrameListener{
   GUI* gui_;
   double deltaTime_;
   SReal physicsDeltaTime_;
+
+  bool hasWon_;
+  bool hasLost_;
+  bool isPlaying_;
 };
 
 #endif

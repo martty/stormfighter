@@ -19,7 +19,18 @@ SRigidBody::SRigidBody(SReal mass){
 }
 
 SRigidBody::~SRigidBody(){
-  application()->physics()->removeRigidBody(rigidBody_);
+  remove();
+}
+
+SRigidBody* SRigidBody::clone() const {
+  SRigidBody* rb = new SRigidBody(mass_);
+  rb->collidesWith_ = collidesWith_;
+  rb->collisionFlags_ = collisionFlags_;
+  rb->group_ = group_;
+  rb->lin_damp_ = lin_damp_;
+  rb->ang_damp_ = ang_damp_;
+  rb->isKinematic_ = isKinematic_;
+  return rb;
 }
 
 void SRigidBody::getWorldTransform(btTransform &retVal) const {
@@ -73,8 +84,6 @@ void SRigidBody::onInit(){
     add();
     setState(READY);
     setFlag(collisionFlags_);
-    if(mass_ != 0 || isKinematic_) // dynamic || static
-       setFlag(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
     if(isKinematic_){
       setFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
       rigidBody_->setActivationState(DISABLE_DEACTIVATION);
@@ -82,6 +91,8 @@ void SRigidBody::onInit(){
     rigidBody_->setFriction(1.0f);
     rigidBody_->setRestitution(0.0f);
     rigidBody_->setDamping(lin_damp_, ang_damp_);
+  } else {
+    throw SException(object()->debug() +": Collider not found for RigidBody");
   }
 }
 
@@ -143,6 +154,12 @@ void SRigidBody::setFlagTo(unsigned int flag, bool set){
     unsetFlag(flag);
 }
 
+bool SRigidBody::flag(unsigned int flag) const{
+  if(state() == READY)
+    return rigidBody_->getCollisionFlags() & flag;
+  return collisionFlags_ & flag;
+}
+
 void SRigidBody::setCollisionGroup(SString group){
   group_ = group;
   if(state() == READY)
@@ -153,6 +170,10 @@ void SRigidBody::setCollidesWith(StringVector collidesWith){
   collidesWith_ = collidesWith;
   if(state() == READY)
     flush();
+}
+
+void SRigidBody::setCallbacks(bool hasCallbacks){
+  setFlagTo(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK, hasCallbacks);
 }
 
 void SRigidBody::remove(){

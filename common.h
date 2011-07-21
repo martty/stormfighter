@@ -22,6 +22,12 @@ typedef Ogre::Vector3 SVector3;
 /// Quaternion class
 typedef Ogre::Quaternion SQuaternion;
 
+/// Angle (radian) class
+typedef Ogre::Radian SRadian;
+
+/// Angle (degree) class
+typedef Ogre::Degree SDegree;
+
 /// An std::vector of SStrings
 typedef std::vector<SString> StringVector;
 
@@ -44,7 +50,8 @@ class SException : public std::exception {
 
 // UGLY but EASY!
 #ifdef DEBUG
-#define LOG(what) OgreFramework::getSingletonPtr()->m_pLog->logMessage(Ogre::StringConverter::toString(what))
+#define STRING(what) Ogre::StringConverter::toString(what)
+#define LOG(what) OgreFramework::getSingletonPtr()->m_pLog->logMessage(what)
 #endif
 
 // A macro to disallow the copy constructor and operator= functions

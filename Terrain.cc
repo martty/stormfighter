@@ -35,6 +35,12 @@ void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal wo
   setState(CREATED);
 }
 
+STerrain* STerrain::clone() const {
+  // TODO: clone all
+  STerrain* terr = new STerrain();
+  return terr;
+}
+
 void STerrain::defineTerrain(long x, long y){
   Ogre::String filename = terrainGroup_->generateFilename(x, y);
   if (Ogre::ResourceGroupManager::getSingleton().resourceExists(terrainGroup_->getResourceGroup(), filename)) {

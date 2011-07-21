@@ -27,6 +27,8 @@ class STerrain : public Component {
 
   SString const type() const { return "Terrain"; }
 
+  STerrain* clone() const;
+
   // TODO: default settings
 
   // Individual specification of Ogre::Terrain tiles

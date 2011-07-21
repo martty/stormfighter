@@ -3,6 +3,8 @@
 Hierarchy::Hierarchy(){
   // set up root GO
   root_ = new GameObject(true);
+  fresh_.clear();
+  application_ = NULL;
 }
 
 Hierarchy::~Hierarchy(){
@@ -10,10 +12,15 @@ Hierarchy::~Hierarchy(){
 }
 
 void Hierarchy::initialize(StormfighterApp* app){
-  root_->initialize(app, true);
+  application_ = app;
+  root_->initialize(application_, true);
 }
 
 void Hierarchy::update(){
+  for(GameObjectList::iterator it = fresh_.begin(); it != fresh_.end(); it++){
+    (*it)->initialize(application_, true);
+  }
+  fresh_.clear();
   root_->update(true);
 }
 
@@ -30,6 +37,12 @@ GameObject* Hierarchy::createGameObject(){
 GameObject* Hierarchy::createGameObject(SString name){
   GameObject* go = new GameObject(name);
   root_->addChild(go);
+  return go;
+}
+
+GameObject* Hierarchy::_cloneGameObject(SString name){
+  GameObject* go = new GameObject(name, true);
+  fresh_.push_back(go);
   return go;
 }
 

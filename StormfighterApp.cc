@@ -13,9 +13,13 @@
 #include "TrimeshCollider.h"
 #include "TerrainCollider.h"
 #include "CompoundCollider.h"
+#include "CylinderCollider.h"
 #include "FreeLookCameraController.h"
 #include "ChaseCameraController.h"
 #include "CharacterController.h"
+#include "PlatformMoverVertical.h"
+#include "PlatformPositioner.h"
+#include "WaterRiser.h"
 
 StormfighterApp::StormfighterApp(){
   physics_ = NULL;
@@ -24,6 +28,9 @@ StormfighterApp::StormfighterApp(){
   gui_ = NULL;
   terrainGlobals_ = NULL;
   deltaTime_ = 0;
+  hasWon_ = false;
+  hasLost_ = false;
+  isPlaying_ = true;
 }
 StormfighterApp::~StormfighterApp(){
   delete OgreFramework::getSingletonPtr();
@@ -48,9 +55,10 @@ void StormfighterApp::startStormfighter(){
   log("GUI initialized!");
   terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
   // global terrain settings cfg
-  terrainGlobals_->setMaxPixelError(8);
+  terrainGlobals_->setMaxPixelError(1);
   // testing composite map
   terrainGlobals_->setCompositeMapDistance(3000);
+  //physics_->setDebugDraw(true);
   OgreFramework::getSingletonPtr()->m_pLog->logMessage("Stormfighter initialized!");
   setupStormfighterScene();
   runStormfighter();
@@ -62,8 +70,8 @@ void StormfighterApp::setupStormfighterScene(){
   physics_->addCollisionGroup("player");
   physics_->addCollisionGroup("faller");
 
-  GameObject* lighty = hierarchy_->createGameObject();
-  SLight* light = new SLight(Ogre::Light::LT_DIRECTIONAL);
+  GameObject* lighty = hierarchy_->createGameObject("Light");
+  SLight* light = new SLight(Ogre::Light::LT_POINT);
   lighty->addComponent(light);
   light->setDiffuseColour(Ogre::ColourValue(1,1,1));
   lighty->transform()->setPosition(Ogre::Vector3(0,100,0));
@@ -86,21 +94,18 @@ void StormfighterApp::setupStormfighterScene(){
   GameObject* player = hierarchy_->createGameObject("Player");
   GameObject* mesh = hierarchy_->createGameObject("PlayerMesh");
   mesh->addComponent(new SMesh("robot.mesh"));
-  mesh->addComponent(new SConvexHullCollider());
-  //mesh->transform()->setScale(Ogre::Vector3(0.1, 0.1, 0.1));
-  player->addChild(mesh);
+  mesh->addComponent(new SCylinderCollider());
+  mesh->transform()->setPosition(SVector3(0, -48, 0));
   mesh->transform()->yaw(Ogre::Degree(90));
+  player->addChild(mesh);
   player->transform()->setPosition(Ogre::Vector3(0, 100, 0));
-  SRigidBody* sr = new SRigidBody(30);
+  SRigidBody* sr = new SRigidBody(0);
   sr->setKinematic(true);
   sr->setDamping(0.0f,1.0f);
+  sr->setCallbacks(true);
   sr->setCollisionGroup("player");
-  StringVector st;
-  st.push_back("terrain");
-  st.push_back("default");
-  st.push_back("faller");
-  sr->setCollidesWith(st);
-  player->addComponent(new SCompoundCollider());
+
+  //player->addComponent(new SCompoundCollider());
   player->addComponent(sr);
   player->addComponent(new SCharacterController());
 
@@ -123,44 +128,46 @@ void StormfighterApp::setupStormfighterScene(){
   cam->transform()->setPosition(Ogre::Vector3(0,60,160));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
 
-  /*GameObject* plane = new GameObject("plane");
+  GameObject* plane = hierarchy_->createGameObject("platform");
   plane->addComponent(new SBoxCollider());
-  plane->transform()->setScale(Ogre::Vector3(10, 0.1, 10));
-  //plane->transform()->showBoundingBox(true);
-  SPrimitive* spr = new SPrimitive(Ogre::SceneManager::PT_CUBE);
-  plane->addComponent(spr);
-  spr->setMaterialName("Examples/BumpyMetal");
+  plane->transform()->setScale(SVector3(1, 0.1, 1));
+  plane->transform()->setPosition(SVector3(100, 60, 0));
+  plane->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  //spr->setMaterialName("Examples/BumpyMetal");
   SRigidBody* rby = new SRigidBody(0);
+  // FIXME: setting event generation manually on SRigidBody
+  rby->setKinematic(true);
   plane->addComponent(rby);
-  plane->sendInit(this);
-  */
-  for(int i = 0; i < 20; i++){
-    GameObject* go = hierarchy_->createGameObject("faller");
-    SPrimitive* pr = new SPrimitive(Ogre::SceneManager::PT_SPHERE);
-    go->addComponent(pr);
-    pr->setMaterialName("Examples/RustySteel");
-    //SReal scale = (std::rand() % 100)/100;
-    go->transform()->setScale(Ogre::Vector3(0.1, 0.1, 0.1));
-    int x = std::rand() % 100;
-    int z = std::rand() % 100;
-    int y = std::rand() % 20;
-    go->transform()->setPosition(Ogre::Vector3(x,100+y,z));
-    go->addComponent(new SSphereCollider());
-    SRigidBody* rig = new SRigidBody(4);
-    go->addComponent(rig);
-    rig->setCollisionGroup("faller");
-  }
-//  rby->setKinematic(true);
-  //plane->transform()->setOrientation(Ogre::Quaternion(Ogre::Degree(30), Ogre::Vector3(0,0,1)));
 
+  GameObject* glob = hierarchy_->createGameObject("scripts");
+  glob->addComponent(new SPlatformPositioner(plane));
+
+  GameObject* water = hierarchy_->createGameObject("Water");
+  water->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  water->transform()->setScale(SVector3(1000, 0.01, 1000));
+  SMesh::cast(water->component("Mesh"))->setMaterialName("Examples/WaterStream");
+  water->transform()->setPosition(SVector3(0, -10, 0));
+  water->addComponent(new SWaterRiser());
+  water->addComponent(new SBoxCollider());
+  water->addComponent(new SRigidBody(0));
+  SRigidBody::cast(water->component("RigidBody"))->setKinematic(true);
+  SRigidBody::cast(water->component("RigidBody"))->setCollisionResponse(false);
+  StringVector st;
+  st.push_back("player");
+  SRigidBody::cast(water->component("RigidBody"))->setCollidesWith(st);
 }
 
 bool StormfighterApp::frameStarted(const Ogre::FrameEvent& evt){
   input_->capture();
   deltaTime_ = evt.timeSinceLastFrame;
-  hierarchy_->update();
-  // tick physics
-  physics_->tick(deltaTime_);
+  if(isPlaying_){
+    hierarchy_->update();
+    // tick physics
+    physics_->tick(deltaTime_);
+  } else {
+    if(hasLost_)
+      gui_->showLosingText();
+  }
   // update GUI
   gui_->update(deltaTime_);
   // check for exit
