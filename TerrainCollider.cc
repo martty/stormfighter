@@ -9,6 +9,13 @@ STerrainCollider::STerrainCollider(){
 STerrainCollider::~STerrainCollider(){
 }
 
+STerrainCollider* STerrainCollider::clone() const {
+  // collision shape sharing
+  STerrainCollider* tcol = new STerrainCollider();
+  tcol->collisionShape_ = collisionShape_;
+  return tcol;
+}
+
 void STerrainCollider::onInit(){
 if(!autoConfig_) // if we are not using autocfg, then this component is already READY
     return;

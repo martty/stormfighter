@@ -26,7 +26,7 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
   Ogre::SceneNode * rootnode = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
   debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
-  debugdrawer_->setDebugMode(btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
+  debugdrawer_->setDebugMode(false);
   dWorld_->setDebugDrawer(debugdrawer_);
 
   dWorld_->setInternalTickCallback(&Physics::tickCallback, NULL, false);
@@ -120,8 +120,13 @@ bool Physics::contactProcessedCallback(btManifoldPoint& pt, void* body0, void* b
   collisionData->other = goB;
   collisionData->stale = false;
   goA->addCollision(collisionData);
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage("CPCB "+Ogre::StringConverter::toString(Convert::toOgre(ptA)));
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage(goA->name() + ":" + goB->name());
+  CollisionData* collisionDataB = new CollisionData(); // GO handles freeing
+	collisionDataB->pointOnA = Convert::toOgre(ptA);
+  collisionDataB->pointOnB = Convert::toOgre(ptB);
+  collisionDataB->normalOnB = Convert::toOgre(-normalOnB);
+  collisionDataB->other = goA;
+  collisionDataB->stale = false;
+  goB->addCollision(collisionDataB);
   return false;
 }
 
@@ -144,7 +149,6 @@ void Physics::addCollisionGroup(SString name){
   if(collisionGroups_.size() == 15)
     return;
   collisionGroups_[name] = 1<<collision_group_counter;
-  LOG(collision_group_counter);
   collision_group_counter++;
 }
 
@@ -156,4 +160,8 @@ void Physics::addRigidBody(btRigidBody* rigidBody, SString group, StringVector c
     collideno |= collisionGroups_[(*it)];
   }
   addRigidBody(rigidBody, groupno, collideno);
+}
+
+void Physics::setDebugDraw(bool draw){
+  debugdrawer_->setDebugMode(draw);
 }

@@ -6,11 +6,20 @@ using namespace Ogre;
 
 SLight::SLight(Light::LightTypes type){
   light_ = NULL;
-  init(type);
+  type_ = type;
 }
 
-void SLight::init(Light::LightTypes type){
-  light_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight(); // TODO: GO name
+unsigned int SLight::onAdd(SString goname, STransform* tf){
+  light_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight(goname);
+  light_->setType(type_);
+  tf->attachObject(light_);
+  return NONE;
+}
+
+SLight* SLight::clone() const{
+  // TODO: clone all parameters
+  SLight* light = new SLight(type_);
+  return light;
 }
 
 void SLight::setDiffuseColour(ColourValue col){
@@ -25,8 +34,4 @@ void SLight::setAsTerrainLight(){
   if(application()){
     application()->setTerrainLight(light_);
   }
-}
-
-void SLight::onInit(){
-  object()->transform()->attachObject(light_);
 }

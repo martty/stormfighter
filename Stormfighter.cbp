@@ -72,6 +72,8 @@
 		<Unit filename="BulletOgreMeshToShape.h" />
 		<Unit filename="Camera.cc" />
 		<Unit filename="Camera.h" />
+		<Unit filename="CapsuleCollider.cc" />
+		<Unit filename="CapsuleCollider.h" />
 		<Unit filename="CharacterController.cc" />
 		<Unit filename="CharacterController.h" />
 		<Unit filename="ChaseCameraController.cc" />
@@ -84,6 +86,8 @@
 		<Unit filename="CompoundCollider.h" />
 		<Unit filename="ConvexHullCollider.cc" />
 		<Unit filename="ConvexHullCollider.h" />
+		<Unit filename="CylinderCollider.cc" />
+		<Unit filename="CylinderCollider.h" />
 		<Unit filename="FreeLookCameraController.cc" />
 		<Unit filename="FreeLookCameraController.h" />
 		<Unit filename="GUI.cc" />

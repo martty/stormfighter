@@ -15,12 +15,21 @@ class SRigidBody : public Component, public btMotionState {
   /** Default destructor */
   ~SRigidBody();
 
+  SRigidBody* clone() const;
+
 	void onInit();
 
 	SString const type() const { return "RigidBody"; }
 
 	void setKinematic(bool isKinematic);
+	void setStatic(bool isStatic);
 	void setCollisionResponse(bool hasResponse);
+	void setCallbacks(bool hasCallbacks);
+
+	bool kinematic() const { return flag(btCollisionObject::CF_KINEMATIC_OBJECT); }
+	bool static_() const { return false; }; // TODO: na most mi a teendõ?
+  bool trigger() const {return flag(btCollisionObject::CF_NO_CONTACT_RESPONSE); }
+  SReal mass() const { return mass_; }
 
 	void setCollisionGroup(SString group);
 	void setCollidesWith(StringVector collidesWith);
@@ -32,6 +41,8 @@ class SRigidBody : public Component, public btMotionState {
 
 	/// does not draw this rigidbody in debug drawing
 	void disableDebugDraw();
+
+	static inline SRigidBody* cast(Component* cmp) {return static_cast<SRigidBody*>(cmp);}
 
  private:
   void init(SReal mass);
@@ -48,6 +59,8 @@ class SRigidBody : public Component, public btMotionState {
 	void setFlag(unsigned int flag);
 	void unsetFlag(unsigned int flag);
 	void setFlagTo(unsigned int flag, bool set);
+
+	bool flag(unsigned int flag) const;
 
 	void remove();
 	void add();

@@ -17,3 +17,7 @@ unsigned int SPrimitive::onAdd(SString goname, STransform* transform){
   setState(READY);
   return NONE;
 }
+
+SPrimitive* SPrimitive::clone() const{
+  return new SPrimitive(type_);
+}

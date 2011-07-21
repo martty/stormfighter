@@ -22,14 +22,18 @@ struct CollisionData;
  */
 class GameObject {
  friend class Hierarchy;
+ friend class Physics;
  public:
   // Core functions for GameObject
   GameObject(); /// Initialize GameObject with empty component map - name will be gameobject_n
   GameObject(bool isRoot); /// Initialize GameObject as Root (if isRoot = true)
   GameObject(const SString& name); /// Initialize GO with given name, if exists
+  GameObject(const SString& name, bool cloning); /// Initialize GO with given name, allow for cloning constructor
   virtual ~GameObject(); /// Delete GameObject
   const SString& name() const {return name_;}
   SString debug();
+  GameObject* clone(); /// Creates a clone, with the name current_GO_name_clone_n
+  GameObject* clone(SString name); /// Creates a clone with name
 
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
@@ -69,8 +73,6 @@ class GameObject {
   ///Destroy all children (call their destructors)
   void clearChildren();
 
-  /// Adds a collision
-  void addCollision(CollisionData* collisionData);
  protected:
   GameObject* next(); ///The next GameObject in the list
   GameObject* children(); ///The root of the children list
@@ -82,8 +84,13 @@ class GameObject {
   /// Handling unique names in the format of name_n
   SString static getUniqueName(SString basename);
 
+  /// Adds a collision (for Physics)
+  void addCollision(CollisionData* collisionData);
+
   Component* _firstComponentInChildren(const SString& type); /// internal helper
   void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
+
+  GameObject* _find(const SString& name);
 
   bool isRoot_;
   SString name_;
@@ -95,6 +102,8 @@ class GameObject {
   GameObject* next_; /// Next sibling in list
   GameObject* children_; /// Root of children's list
   GameObject* parent_;
+
+  StormfighterApp* application_;
 
   /// map for counting names
   static NameCountMap namecount_;

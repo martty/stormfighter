@@ -18,6 +18,8 @@ class SScript : public Component{
 
   virtual ~SScript(){}
 
+  SScript* clone() const { return new SScript(type_, calls_); }
+
   unsigned int onAdd(SString objectname, STransform* transform){return calls_;}
 
   const SString type() const {return type_;}

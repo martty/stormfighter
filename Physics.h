@@ -49,6 +49,8 @@ class Physics {
   /// Update physics world
   void tick(SReal deltaTime);
 
+  void setDebugDraw(bool draw);
+
   static void tickCallback(btDynamicsWorld* world, btScalar timestep);
 
   static bool contactProcessedCallback(btManifoldPoint& cp, void* body0, void* body1);

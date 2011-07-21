@@ -11,16 +11,16 @@
 class STransform : public Component {
  friend class SRigidBody;
  public:
-
   /**
    * @brief Contructor of transform
    * @param position Translation vector
    * @param orientation Rotation quaternion
+   * @param scale Scale vector
    */
-  STransform(Ogre::Vector3 position, Ogre::Quaternion orientation);
+  STransform(SVector3 position, SQuaternion orientation, SVector3 scale);
 
-  /// Same as above but without rotation
-  explicit STransform(Ogre::Vector3 position);
+  /// Same as above but without rotation & scale
+  explicit STransform(SVector3 position);
 
   /// Construct Transform, which may or may not be root (identity)
   explicit STransform(bool isRoot);
@@ -31,36 +31,39 @@ class STransform : public Component {
   /// Destroy transform component
   ~STransform();
 
+  /// clones the component
+  STransform* clone() const;
+
   /// The Transform component's type string is @b "Transform"
   SString const type() const { return "Transform"; }
 
   // POSITION, ORIENTATION, SCALE (local space)
-  Ogre::Vector3 const position() const{return node_->getPosition();}
-  Ogre::Quaternion const orientation() const{return node_->getOrientation();}
-  Ogre::Vector3 const scale() const{return node_->getScale();}
+  SVector3 const position() const{return node_->getPosition();}
+  SQuaternion const orientation() const{return node_->getOrientation();}
+  SVector3 const scale() const{return node_->getScale();}
 
-  void setPosition(const Ogre::Vector3 position);
-  void setOrientation(const Ogre::Quaternion orientation);
-  void setScale(const Ogre::Vector3 scale){node_->setScale(scale);}
+  void setPosition(const SVector3 position);
+  void setOrientation(const SQuaternion orientation);
+  void setScale(const SVector3 scale){node_->setScale(scale);}
 
   Ogre::Matrix4 worldMatrix() const;
 
   // POSITION, ORIENTATION (world space)
-  Ogre::Vector3 const worldPosition() const;
-  Ogre::Quaternion const worldOrientation() const;
+  SVector3 const worldPosition() const;
+  SQuaternion const worldOrientation() const;
 
   // ADVANCED TRANSFORMS
 
-  void lookAt(const Ogre::Vector3 position); /// worldspace, -z (like camera lookAt)
+  void lookAt(const SVector3 position); /// worldspace, -z (like camera lookAt)
 
-  void move(const Ogre::Vector3 delta); /// equivalent of setPosition(position()+delta)
-  void moveRelative(const Ogre::Vector3 delta); /// equivalent of setPosition(position()+orientation*delta)
+  void move(const SVector3 delta); /// equivalent of setPosition(position()+delta)
+  void moveRelative(const SVector3 delta); /// equivalent of setPosition(position()+orientation*delta)
 
   void yaw(const Ogre::Radian angle);
   void pitch(const Ogre::Radian angle);
   void roll(const Ogre::Radian angle);
 
-  void setFixedYawAxis(bool useFixed, const Ogre::Vector3 fixedAxis);
+  void setFixedYawAxis(bool useFixed, const SVector3 fixedAxis);
 
   // PARENTING
   STransform* const parent();
@@ -77,9 +80,10 @@ class STransform : public Component {
   void detachObject(Ogre::MovableObject* object);
 
  private:
+  DISALLOW_COPY_AND_ASSIGN(STransform);
    // INTERNAL FOR MOTIONSTATE
-  void _setPosition(Ogre::Vector3 position){node_->setPosition(position);}
-  void _setOrientation(Ogre::Quaternion orientation){node_->setOrientation(orientation);}
+  void _setPosition(SVector3 position){node_->setPosition(position);}
+  void _setOrientation(SQuaternion orientation){node_->setOrientation(orientation);}
 
   void _notifyTransformChange();
 
@@ -87,7 +91,7 @@ class STransform : public Component {
 
   bool isRoot_;
 
-  void init(Ogre::Vector3 position, Ogre::Quaternion orientation, Ogre::Vector3 scale);
+  void init(SVector3 position, SQuaternion orientation, SVector3 scale);
 };
 
 #endif

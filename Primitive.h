@@ -16,6 +16,8 @@ class SPrimitive : public SMesh {
   /// Destructor
   ~SPrimitive();
 
+  SPrimitive* clone() const;
+
   /// The mesh component's type string is "Mesh/Primitive"
   SString const type() const { return "Mesh"; }
 

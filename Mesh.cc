@@ -19,6 +19,12 @@ SMesh::~SMesh(){
   // TODO: cleanup
 }
 
+SMesh* SMesh::clone() const{
+  // TODO: animationstate & materialname not copied
+  SMesh* mesh = new SMesh(meshname_);
+  return mesh;
+}
+
 unsigned int SMesh::onAdd(SString goname, STransform* transform){
   if(meshname_.empty()){
     valid_ = false;

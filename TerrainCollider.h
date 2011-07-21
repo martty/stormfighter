@@ -12,6 +12,8 @@ class STerrainCollider : public SCollider
     /** Default destructor */
     ~STerrainCollider();
 
+    STerrainCollider* clone() const;
+
     void onInit();
 
     SString const type() const { return "Collider"; }

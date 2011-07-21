@@ -17,6 +17,10 @@ class SCollider : public Component
   /** Default destructor */
   virtual ~SCollider(){delete collisionShape_;}
 
+  virtual SCollider* clone() const;
+
+  virtual SString const type () const{return "Collider";}
+
   btCollisionShape* collisionShape(){return collisionShape_;}
 
   virtual btTransform shapeTransform();
