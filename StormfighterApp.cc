@@ -53,6 +53,8 @@ void StormfighterApp::startStormfighter(){
   log("Initializing GUI");
   gui_ = new GUI(input_);
   log("GUI initialized!");
+  scripting_ = new Scripting();
+  log("Scripting initialized!");
   terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
   // global terrain settings cfg
   terrainGlobals_->setMaxPixelError(1);
@@ -66,10 +68,15 @@ void StormfighterApp::startStormfighter(){
 void StormfighterApp::setupStormfighterScene(){
   OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
+  scripting_->setGlobal(input_, "Input", "Input");
+  scripting_->setGlobal(hierarchy_, "Hierarchy", "Hierarchy");
+
+  scripting()->parseFile("init.lua");
+
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
   physics_->addCollisionGroup("faller");
-
+/*
   GameObject* lighty = hierarchy_->createGameObject("Light");
   SLight* light = new SLight(Ogre::Light::LT_POINT);
   lighty->addComponent(light);
@@ -155,6 +162,7 @@ void StormfighterApp::setupStormfighterScene(){
   StringVector st;
   st.push_back("player");
   SRigidBody::cast(water->component("RigidBody"))->setCollidesWith(st);
+  */
 }
 
 bool StormfighterApp::frameStarted(const Ogre::FrameEvent& evt){
