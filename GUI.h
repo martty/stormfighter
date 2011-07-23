@@ -4,8 +4,10 @@
 #include "common.h"
 #include "Input.h"
 #include <SdkTrays.h>
+#include <Awesomium/awesomium_capi.h>
+#include "ViewPortOverlay.h"
 
-class GUI : public OgreBites::SdkTrayListener, OIS::KeyListener, OIS::MouseListener {
+class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::KeyListener, OIS::MouseListener {
  public:
   GUI(Input* input);
   ~GUI();
@@ -21,8 +23,27 @@ class GUI : public OgreBites::SdkTrayListener, OIS::KeyListener, OIS::MouseListe
   // game specific
   void showLosingText();
 
+  void createMaterial();
+
+  void loadResource(Ogre::Resource* resource);
+
+  void displayWebView();
+
+  static void finishedLoading(awe_webview* caller);
+
  private:
   OgreBites::SdkTrayManager* trayManager_;
+  awe_webview* webView_;
+
+  SReal counter;
+  int width_;
+  int height_;
+  int texWidth, texHeight;
+  SReal opacity_;
+  Ogre::TexturePtr viewTexture_;
+  bool compensateNPOT_;
+  ViewportOverlay* overlay_;
+  awe_string* base;
 };
 
 #endif // STORMFIGHTER_GUI_H_
