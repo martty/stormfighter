@@ -9,3 +9,4 @@ ogre.cfg
 media/
 *.log
 doc/
+deps/

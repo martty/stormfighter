@@ -24,7 +24,7 @@ class OgreFramework : public Ogre::Singleton<OgreFramework> {
   Ogre::Real getDefaultAspectRatio();
 
   /// Get default viewport
-  //Ogre::Viewport* defaultViewport() const{ return viewPort_; }
+  Ogre::Viewport* defaultViewport() const{ return viewPort_; }
 
   /// Get default renderwindow (for stats)
   Ogre::RenderWindow* defaultRenderWindow() const{ return renderWindow_; }
