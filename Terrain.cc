@@ -1,4 +1,5 @@
 #include "Terrain.h"
+#include "Graphics.h"
 
 using namespace Ogre;
 
@@ -11,7 +12,7 @@ STerrain::STerrain(Terrain::Alignment alignment, uint16_t terrainSize, SReal wor
 }
 
 void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
-  terrainGroup_ = OGRE_NEW Ogre::TerrainGroup(OgreFramework::getSingletonPtr()->m_pSceneMgr, alignment, terrainSize, worldSize);
+  terrainGroup_ = OGRE_NEW Ogre::TerrainGroup(Graphics::getSingletonPtr()->sceneManager(), alignment, terrainSize, worldSize);
 
   // Configure default import settings for if we use imported image
   Ogre::Terrain::ImportData& defaultimp = terrainGroup_->getDefaultImportSettings();

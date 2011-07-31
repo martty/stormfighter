@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Graphics.h"
 #include "Transform.h"
 
 using namespace Ogre;
@@ -29,7 +30,7 @@ unsigned int SMesh::onAdd(SString goname, STransform* transform){
   if(meshname_.empty()){
     valid_ = false;
   } else {
-    entity_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createEntity(goname+meshname_, meshname_);
+    entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+meshname_, meshname_);
     transform->attachObject(entity_);
     valid_ = true;
   }

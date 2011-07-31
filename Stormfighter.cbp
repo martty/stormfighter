@@ -94,6 +94,8 @@
 		<Unit filename="GUI.h" />
 		<Unit filename="GameObject.cc" />
 		<Unit filename="GameObject.h" />
+		<Unit filename="Graphics.cc" />
+		<Unit filename="Graphics.h" />
 		<Unit filename="Hierarchy.cc" />
 		<Unit filename="Hierarchy.h" />
 		<Unit filename="Input.cc" />
@@ -101,10 +103,10 @@
 		<Unit filename="Library.h" />
 		<Unit filename="Light.cc" />
 		<Unit filename="Light.h" />
+		<Unit filename="Logger.cc" />
+		<Unit filename="Logger.h" />
 		<Unit filename="Mesh.cc" />
 		<Unit filename="Mesh.h" />
-		<Unit filename="OgreFramework.cc" />
-		<Unit filename="OgreFramework.h" />
 		<Unit filename="Physics.cc" />
 		<Unit filename="Physics.h" />
 		<Unit filename="PlatformMoverVertical.cc" />

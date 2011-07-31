@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "Mesh.h"
+#include <OgreSceneManager.h>
 #include "Transform.h"
 
 /**

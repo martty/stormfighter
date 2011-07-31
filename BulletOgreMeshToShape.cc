@@ -1,6 +1,7 @@
 #include "BulletOgreMeshToShape.h"
 #include <OgreSubMesh.h>
 #include <OgreSubEntity.h>
+#include <OgreEntity.h>
 
 /*
  * =============================================================================================
@@ -440,7 +441,7 @@
 		mTransform = transform;
 
 		if (mesh->hasSkeleton ())
-			Ogre::LogManager::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName () + " as skeleton but added to trimesh non animated");
+			Logger::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName () + " as skeleton but added to trimesh non animated");
 
 		if (mesh->sharedVertexData)
 		{

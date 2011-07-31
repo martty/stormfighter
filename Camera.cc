@@ -1,9 +1,11 @@
 #include "Camera.h"
+#include "Graphics.h"
 #include "GameObject.h"
 
 using namespace Ogre;
 
 SCamera::SCamera(){
+  setState(CREATED);
 }
 
 SCamera::~SCamera(){
@@ -15,9 +17,10 @@ SCamera* SCamera::clone() const{
 }
 
 unsigned int SCamera::onAdd(SString goname, STransform* transform){
-  camera_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createCamera(goname+"_camera");
+  camera_ = Graphics::getSingletonPtr()->sceneManager()->createCamera(goname+"_camera");
   transform->attachObject(camera_);
   camera_->setFarClipDistance(10000.0f);
+  setState(READY);
   return NONE;
 }
 
@@ -30,7 +33,7 @@ void SCamera::setNearClipDistance(SReal distance){
 }
 
 void SCamera::activate(){
-  OgreFramework::getSingletonPtr()->setActiveCamera(camera_);
+  Graphics::getSingletonPtr()->setActiveCamera(camera_);
 }
 
 void SCamera::setPolygonMode(Ogre::PolygonMode mode){

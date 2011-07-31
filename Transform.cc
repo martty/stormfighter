@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Graphics.h"
 #include "GameObject.h"
 #include "RigidBody.h"
 
@@ -10,7 +11,7 @@ STransform::~STransform(){
 
 void STransform::init (SVector3 position, SQuaternion orientation, SVector3 scale){
   isRoot_ = false;
-  node_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode()->createChildSceneNode(); // by default in top hierarchy
+  node_ = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode()->createChildSceneNode(); // by default in top hierarchy
   node_->setPosition(position);
   node_->setOrientation(orientation);
   node_->setScale(scale);
@@ -38,7 +39,7 @@ STransform::STransform(bool isRoot) : node_(NULL){
     return;
   }
   // Root scenenode get
-  node_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
+  node_ = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode();
   node_->setPosition(SVector3::ZERO);
   node_->setOrientation(SQuaternion::IDENTITY);
 

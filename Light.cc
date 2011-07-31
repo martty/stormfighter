@@ -1,4 +1,5 @@
 #include "Light.h"
+#include "Graphics.h"
 #include "GameObject.h"
 #include "StormfighterApp.h"
 
@@ -7,12 +8,14 @@ using namespace Ogre;
 SLight::SLight(Light::LightTypes type){
   light_ = NULL;
   type_ = type;
+  setState(CREATED);
 }
 
 unsigned int SLight::onAdd(SString goname, STransform* tf){
-  light_ = OgreFramework::getSingletonPtr()->m_pSceneMgr->createLight(goname);
+  light_ = Graphics::getSingletonPtr()->sceneManager()->createLight(goname);
   light_->setType(type_);
   tf->attachObject(light_);
+  setState(READY);
   return NONE;
 }
 
@@ -32,6 +35,6 @@ void SLight::setSpecularColour(ColourValue col){
 
 void SLight::setAsTerrainLight(){
   if(application()){
-    application()->setTerrainLight(light_);
+    application()->graphics()->setTerrainLight(light_);
   }
 }

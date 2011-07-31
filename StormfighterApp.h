@@ -2,8 +2,8 @@
 #define STORMFIGHTER_STORMFIGHTERAPP_H_
 
 #include <map>
-#include "OgreFramework.h"
-#include <Terrain/OgreTerrain.h>
+#include "Logger.h"
+#include "Graphics.h"
 #include "Hierarchy.h"
 #include "Physics.h"
 #include "Input.h"
@@ -16,11 +16,10 @@ class StormfighterApp : public Ogre::FrameListener{
 
   void startStormfighter();
 
-  /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
-  void log(SString message);
+  /// Shorthand for Logger:getSingletonPtr()->logMessage(string);
+  void log(const SString& message);
 
-  /// Set light used for lighting terrain
-  void setTerrainLight(Ogre::Light* light);
+  Graphics* graphics() const { return graphics_; }
 
   Physics* physics() const { return physics_; }
 
@@ -44,8 +43,9 @@ class StormfighterApp : public Ogre::FrameListener{
   void setupStormfighterScene();
   void runStormfighter();
 
-  Ogre::TerrainGlobalOptions* terrainGlobals_;
   bool	 m_bShutdown;
+  Logger* logger_;
+  Graphics* graphics_;
   Hierarchy* hierarchy_;
   Physics* physics_;
   Input* input_;

@@ -24,7 +24,7 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   collisionDispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
   solver_ = new btSequentialImpulseConstraintSolver;
   dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
-  Ogre::SceneNode * rootnode = OgreFramework::getSingletonPtr()->m_pSceneMgr->getRootSceneNode();
+  Ogre::SceneNode * rootnode = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode();
   debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
   debugdrawer_->setDebugMode(false);
   dWorld_->setDebugDrawer(debugdrawer_);
@@ -41,9 +41,9 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
 }
 
 void Physics::tick(SReal deltaTime){
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage("tick:"+Ogre::StringConverter::toString(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()));
+  //Graphics::getSingletonPtr()->m_pLog->logMessage("tick:"+Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
   dWorld_->stepSimulation(deltaTime);//, 1, btScalar(1.)/btScalar(120.));//, 14, btScalar(1.)/btScalar(1200.));
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage("stepped:"+Ogre::StringConverter::toString(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()));
+  //Graphics::getSingletonPtr()->m_pLog->logMessage("stepped:"+Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
   //dWorld_->debugDrawWorld();
   debugdrawer_->step();
 }
@@ -61,7 +61,7 @@ void Physics::removeRigidBody(btRigidBody* rigidBody){
 }
 
 void Physics::tickCallback(btDynamicsWorld* world, btScalar timeStep){
-  //OgreFramework::getSingletonPtr()->m_pLog->logMessage("tickCB:"+Ogre::StringConverter::toString(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()));
+  //Graphics::getSingletonPtr()->m_pLog->logMessage("tickCB:"+Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
   StormfighterApp* app = static_cast<StormfighterApp*>(world->getWorldUserInfo());
   app->setPhysicsDeltaTime(SReal(timeStep));
   app->hierarchy()->physicsUpdate();
@@ -96,8 +96,8 @@ void Physics::tickCallback(btDynamicsWorld* world, btScalar timeStep){
 				collisionData->normalsOnB[j] = Convert::toOgre(normalOnB);
 			}
 		}
-		//OgreFramework::getSingletonPtr()->m_pLog->logMessage(goA->name() + ":" + goB->name());
-		//OgreFramework::getSingletonPtr()->m_pLog->logMessage(Ogre::StringConverter::toString(OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds()));
+		//Graphics::getSingletonPtr()->m_pLog->logMessage(goA->name() + ":" + goB->name());
+		//Graphics::getSingletonPtr()->m_pLog->logMessage(Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
 		collisionData->other = goB;
 		goA->onCollision(collisionData);
 		delete collisionData;

@@ -26,23 +26,26 @@ StormfighterApp::StormfighterApp(){
   input_ = NULL;
   hierarchy_ = NULL;
   gui_ = NULL;
-  terrainGlobals_ = NULL;
+  graphics_ = NULL;
+  logger_ = NULL;
   deltaTime_ = 0;
   hasWon_ = false;
   hasLost_ = false;
   isPlaying_ = true;
 }
 StormfighterApp::~StormfighterApp(){
-  delete OgreFramework::getSingletonPtr();
+
 }
 void StormfighterApp::startStormfighter(){
   std::srand ( std::time(NULL) );
-  new OgreFramework();
-  if(!OgreFramework::getSingletonPtr()->initOgre("StormfighterApp v1.0"))
+  logger_ = new Logger();
+  graphics_ = new Graphics();
+
+  if(!graphics_->initialize("StormfighterApp v0.8"))
       return;
-  m_bShutdown = false;
+
   log("Initializing input");
-  input_ = new Input(OgreFramework::getSingletonPtr()->defaultRenderWindow());
+  input_ = new Input(graphics_->defaultRenderWindow());
   log("Input initialized!");
   log("Initializing hierarchy");
   hierarchy_ = new Hierarchy();
@@ -53,18 +56,14 @@ void StormfighterApp::startStormfighter(){
   log("Initializing GUI");
   gui_ = new GUI(input_);
   log("GUI initialized!");
-  terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
-  // global terrain settings cfg
-  terrainGlobals_->setMaxPixelError(1);
-  // testing composite map
-  terrainGlobals_->setCompositeMapDistance(3000);
   //physics_->setDebugDraw(true);
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage("Stormfighter initialized!");
+  graphics_->addFrameListener(this);
+  logger_->logMessage("Stormfighter initialized!");
   setupStormfighterScene();
   runStormfighter();
 }
 void StormfighterApp::setupStormfighterScene(){
-  OgreFramework::getSingletonPtr()->m_pSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+  graphics_->sceneManager()->setSkyBox(true, "Examples/SpaceSkyBox");
 
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
@@ -113,7 +112,7 @@ void StormfighterApp::setupStormfighterScene(){
   SCamera* c = new SCamera();
   chaseCam->addComponent(c);
   c->setNearClipDistance(1);
-  c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
+  c->setAspectRatio(graphics_->getDefaultAspectRatio());
   c->activate();
   chaseCam->addComponent(new SChaseCameraController(player, Ogre::Vector3(0, 140, 100), Ogre::Vector3(0, 20, -40)));
 
@@ -123,7 +122,7 @@ void StormfighterApp::setupStormfighterScene(){
   cam->addComponent(c);
   cam->addComponent(new SFreeLookCameraController());
   c->setNearClipDistance(1);
-  c->setAspectRatio(OgreFramework::getSingletonPtr()->getDefaultAspectRatio());
+  c->setAspectRatio(graphics_->getDefaultAspectRatio());
   //c->activate();
   cam->transform()->setPosition(Ogre::Vector3(0,60,160));
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
@@ -182,21 +181,14 @@ void StormfighterApp::runStormfighter(){
   log(hierarchy_->debug());
   log("Start main loop...");
 
-  OgreFramework::getSingletonPtr()->defaultRenderWindow()->resetStatistics();
+  graphics_->defaultRenderWindow()->resetStatistics();
 
-  OgreFramework::getSingletonPtr()->m_pRoot->addFrameListener(this);
-  OgreFramework::getSingletonPtr()->m_pRoot->startRendering();
+  graphics_->startRendering();
 
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage("Main loop quit");
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage("Shutdown OGRE...");
+  logger_->logMessage("Main loop quit");
+  logger_->logMessage("Shutdown OGRE...");
 }
 
-void StormfighterApp::log(SString message){
-  OgreFramework::getSingletonPtr()->m_pLog->logMessage(message);
-}
-
-void StormfighterApp::setTerrainLight(Ogre::Light* light){
-  terrainGlobals_->setLightMapDirection(light->getDerivedDirection());
-  terrainGlobals_->setCompositeMapAmbient(OgreFramework::getSingletonPtr()->m_pSceneMgr->getAmbientLight());
-  terrainGlobals_->setCompositeMapDiffuse(light->getDiffuseColour());
+void StormfighterApp::log(const SString& message){
+  logger_->logMessage(message);
 }

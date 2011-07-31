@@ -4,8 +4,8 @@
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
-#include "OgreFramework.h"
 #include "BulletOgreGlue.h"
+#include "Logger.h"
 
 #define DEBUG true
 #define TEST true||DEBUG
@@ -51,7 +51,7 @@ class SException : public std::exception {
 // UGLY but EASY!
 #ifdef DEBUG
 #define STRING(what) Ogre::StringConverter::toString(what)
-#define LOG(what) OgreFramework::getSingletonPtr()->m_pLog->logMessage(what)
+#define LOG(what) Logger::getSingletonPtr()->logMessage(what)
 #endif
 
 // A macro to disallow the copy constructor and operator= functions
@@ -59,4 +59,5 @@ class SException : public std::exception {
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
+
 #endif

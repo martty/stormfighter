@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include <btBulletDynamicsCommon.h>
+#include <OgreMesh.h>
 
 typedef std::vector<Ogre::Vector3> Vector3Array;
 

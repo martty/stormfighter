@@ -1,8 +1,9 @@
 #include "GUI.h"
+#include "Graphics.h"
 
 GUI::GUI(Input* input){
   // init sdktraymanager
-  trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", OgreFramework::getSingletonPtr()->defaultRenderWindow(), input->mouse_, this);
+  trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", Graphics::getSingletonPtr()->defaultRenderWindow(), input->mouse_, this);
   trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);
   trayManager_->showLogo(OgreBites::TL_BOTTOMRIGHT);
   trayManager_->hideCursor();
