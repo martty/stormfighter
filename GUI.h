@@ -29,8 +29,6 @@ class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::
 
   void displayWebView();
 
-  static void finishedLoading(awe_webview* caller);
-
  private:
   OgreBites::SdkTrayManager* trayManager_;
   awe_webview* webView_;

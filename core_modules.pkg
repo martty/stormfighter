@@ -1,3 +1,32 @@
+class Logger{
+ public:
+  void logMessage(const SString& message);
+};
+
+class Graphics {
+ public:
+
+  /// Set light used for lighting terrain
+  void setTerrainLight(Ogre::Light* light);
+
+  /// Set Camera to render on the default viewport
+  void setActiveCamera(Ogre::Camera* camera);
+  /// Get Camera of the default viewport
+  Ogre::Camera* activeCamera() const;
+
+  /// Get aspect ratio of default viewport
+  Ogre::Real getDefaultAspectRatio();
+
+  /// Get default viewport
+  Ogre::Viewport* defaultViewport() const;
+
+  /// Get default renderwindow (for stats)
+  Ogre::RenderWindow* defaultRenderWindow() const;
+
+  /// Get SceneManager
+  Ogre::SceneManager* sceneManager() const;
+};
+
 struct CollisionData {
   Ogre::Vector3 pointOnA;
   Ogre::Vector3 pointOnB;

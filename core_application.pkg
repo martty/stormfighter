@@ -3,11 +3,9 @@ class StormfighterApp {
   StormfighterApp();
   ~StormfighterApp();
 
-  /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
   void log(SString message);
 
-  /// Set light used for lighting terrain
-  void setTerrainLight(Ogre::Light* light);
+  Graphics* graphics() const;
 
   Physics* physics() const;
 

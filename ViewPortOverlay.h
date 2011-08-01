@@ -36,6 +36,7 @@
 #include "common.h"
 #include <OgreViewport.h>
 #include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
 #include <OgreRenderTargetListener.h>
 
