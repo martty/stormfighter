@@ -66,7 +66,7 @@ c:activate();
 cam:transform():setPosition(SVector3(0,60,160));
 cam:transform():lookAt(SVector3(0,0,0));
 
-local fcc = System:loadComponent('freecameracontroller.lua');
+local fcc = System:loadComponent('scripts/freecameracontroller.lua');
 cam:addComponent(fcc);
 
 function lua_update()

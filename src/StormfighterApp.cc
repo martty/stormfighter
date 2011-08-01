@@ -85,7 +85,7 @@ void StormfighterApp::setupStormfighterScene(){
   scripting_->setGlobal(graphics_, "Graphics", "Graphics");
   scripting_->setGlobal(this, "StormfighterApp", "Application");
 
-  if(!scripting_->parseFile("init.lua"))
+  if(!scripting_->parseFile("scripts/init.lua"))
     exit(1);
 
   physics_->addCollisionGroup("terrain");
