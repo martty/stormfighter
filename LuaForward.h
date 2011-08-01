@@ -16,6 +16,9 @@
 #include "CompoundCollider.h"
 #include "CylinderCollider.h"
 
+#include "Script.h"
+#include "LuaScript.h"
+
 #include "GameObject.h"
 
 #include "Hierarchy.h"
@@ -23,5 +26,7 @@
 #include "Input.h"
 #include "GUI.h"
 #include "Scripting.h"
+#include "Graphics.h"
+#include "Logger.h"
 
 #include "StormfighterApp.h"

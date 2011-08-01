@@ -1,5 +1,14 @@
 #include "StormfighterApp.h"
 #include <cstdlib>
+
+#include "Logger.h"
+#include "Graphics.h"
+#include "Hierarchy.h"
+#include "Physics.h"
+#include "Input.h"
+#include "GUI.h"
+#include "Scripting.h"
+
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Camera.h"
@@ -67,10 +76,17 @@ void StormfighterApp::startStormfighter(){
 void StormfighterApp::setupStormfighterScene(){
   graphics_->sceneManager()->setSkyBox(true, "Examples/SpaceSkyBox");
 
+  // export globals to lua
   scripting_->setGlobal(input_, "Input", "Input");
   scripting_->setGlobal(hierarchy_, "Hierarchy", "Hierarchy");
+  scripting_->setGlobal(gui_, "GUI", "GUI");
+  scripting_->setGlobal(physics_, "Physics", "Physics");
+  scripting_->setGlobal(logger_, "Logger", "Logger");
+  scripting_->setGlobal(graphics_, "Graphics", "Graphics");
+  scripting_->setGlobal(this, "StormfighterApp", "Application");
 
-  scripting()->parseFile("init.lua");
+  if(!scripting_->parseFile("init.lua"))
+    exit(1);
 
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
@@ -166,21 +182,11 @@ void StormfighterApp::setupStormfighterScene(){
 }
 
 bool StormfighterApp::frameStarted(const Ogre::FrameEvent& evt){
-  input_->capture();
   deltaTime_ = evt.timeSinceLastFrame;
-  if(isPlaying_){
-    hierarchy_->update();
-    // tick physics
-    physics_->tick(deltaTime_);
-  } else {
-    if(hasLost_)
-      gui_->showLosingText();
-  }
-  // update GUI
-  gui_->update(deltaTime_);
   // check for exit
   if(input_->isKeyDown(OIS::KC_ESCAPE))
     return false;
+  scripting()->executeString("lua_update();");
   return true;
 }
 

@@ -3,6 +3,7 @@ $#include "common.h"
 typedef float Ogre::Real;
 
 $pfile "core_ogre.pkg"
+$pfile "core_ois.pkg"
 
 /// String class
 typedef std::string SString;
@@ -28,10 +29,9 @@ typedef std::vector<SString> StringVector;
 // include everything
 $#include "LuaForward.h"
 
-$renaming Ogre::Vector3 @ SVector3
-
 $pfile "core_components_graphics.pkg"
 $pfile "core_components_physics.pkg"
+$pfile "core_components_scripting.pkg"
 $pfile "core_gameobject.pkg"
 $pfile "core_modules.pkg"
 $pfile "core_application.pkg"

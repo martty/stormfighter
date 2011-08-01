@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "StormfighterApp.h"
+#include "Hierarchy.h"
+#include "Physics.h"
 
 using namespace Ogre;
 

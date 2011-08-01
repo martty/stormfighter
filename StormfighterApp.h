@@ -1,14 +1,16 @@
 #ifndef STORMFIGHTER_STORMFIGHTERAPP_H_
 #define STORMFIGHTER_STORMFIGHTERAPP_H_
 
+#include "common.h"
 #include <map>
-#include "Logger.h"
-#include "Graphics.h"
-#include "Hierarchy.h"
-#include "Physics.h"
-#include "Input.h"
-#include "GUI.h"
-#include "Scripting.h"
+#include <OgreFrameListener.h>
+class Logger;
+class Graphics;
+class Physics;
+class Input;
+class Hierarchy;
+class Scripting;
+class GUI;
 
 class StormfighterApp : public Ogre::FrameListener{
  public:

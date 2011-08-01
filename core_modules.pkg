@@ -47,6 +47,7 @@ typedef std::map<SString, short> MaskMap;
 
 class Physics {
  public:
+  void tick(SReal deltaTime);
   /// Add a rigidbody to the simulation
   void addRigidBody(btRigidBody* rigidBody);
 
@@ -61,10 +62,11 @@ class Physics {
   void setDebugDraw(bool draw);
 };
 
-enum Axis {X, Y, Z};
-
 class Input {
+ enum Axis {X, Y, Z};
  public:
+  void capture();
+
   bool isKeyDown(const OIS::KeyCode key);
   bool isButtonDown(const OIS::MouseButtonID button);
 
@@ -74,15 +76,14 @@ class Input {
 
 class GUI  {
  public:
-  // game specific
-  void showLosingText();
+  void update(double deltaTime);
 };
 
 typedef std::vector<GameObject*> GameObjectList;
 
 class Hierarchy {
  public:
-
+  void update();
   /// Searches for GO with given name in hierarchy (BFS)
   GameObject* find(SString name);
 

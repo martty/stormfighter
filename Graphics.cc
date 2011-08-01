@@ -84,3 +84,7 @@ void Graphics::setTerrainLight(Ogre::Light* light){
   terrainGlobals_->setCompositeMapAmbient(sceneManager()->getAmbientLight());
   terrainGlobals_->setCompositeMapDiffuse(light->getDiffuseColour());
 }
+
+SRay Graphics::activeCameraToViewPortRay(SReal screenx, SReal screeny){
+  return viewPort_->getCamera()->getCameraToViewportRay(screenx, screeny);
+}

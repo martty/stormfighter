@@ -18,7 +18,9 @@ class Scripting {
   /** Default destructor */
   ~Scripting();
 
-  void parseFile(SString file);
+  bool parseFile(SString file);
+
+  bool executeString(const SString& luaString);
 
   void setGlobal(void* variable, const SString& type_name, const SString& lua_name);
   void unsetGlobal(const SString& lua_name);

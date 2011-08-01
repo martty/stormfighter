@@ -1,6 +1,8 @@
 #include "Physics.h"
 #include "GameObject.h"
 #include "StormfighterApp.h"
+#include "Graphics.h"
+#include "Hierarchy.h"
 #include <limits>
 
 Physics::Physics(StormfighterApp* app){

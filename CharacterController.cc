@@ -4,6 +4,8 @@
 #include "RigidBody.h"
 #include "Mesh.h"
 #include "Terrain.h"
+#include "Input.h"
+#include "Physics.h"
 
 SCharacterController::SCharacterController():SScript("CharacterController"), offset_(48.0f){
   moveSpeed_ = 100.0f;
@@ -36,7 +38,7 @@ void SCharacterController::onUpdate(){
   object()->transform()->moveRelative(SVector3(0, speedy_, 0));
   object()->transform()->moveRelative(translateVector_);
   // Turning
-  transform()->yaw(application()->input()->axisRelative(X) * -rotScale_);
+  transform()->yaw(application()->input()->axisRelative(Input::X) * -rotScale_);
 
   // Mesh animation
   GameObject* go = object()->find("PlayerMesh");

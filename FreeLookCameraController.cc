@@ -1,6 +1,7 @@
 #include "FreeLookCameraController.h"
 #include "GameObject.h"
 #include "StormfighterApp.h"
+#include "Input.h"
 
 SFreeLookCameraController::SFreeLookCameraController():SScript("FreeLookCameraController", INIT|UPDATE){
   moveSpeed_ = 1000.0f;
@@ -45,7 +46,7 @@ void SFreeLookCameraController::onUpdate(){
   else
     object()->transform()->moveRelative(translateVector_ / 10);
 
-  object()->transform()->yaw(Ogre::Degree(application()->input()->axisRelative(X) * -0.1f));
-  object()->transform()->pitch(Ogre::Degree(application()->input()->axisRelative(Y) * -0.1f));
+  object()->transform()->yaw(Ogre::Degree(application()->input()->axisRelative(Input::X) * -0.1f));
+  object()->transform()->pitch(Ogre::Degree(application()->input()->axisRelative(Input::Y) * -0.1f));
 }
 

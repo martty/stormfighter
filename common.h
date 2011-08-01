@@ -4,6 +4,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
+#include <OgreStringConverter.h>
 #include "BulletOgreGlue.h"
 #include "Logger.h"
 
@@ -27,6 +28,12 @@ typedef Ogre::Radian SRadian;
 
 /// Angle (degree) class
 typedef Ogre::Degree SDegree;
+
+/// Ray class
+typedef Ogre::Ray SRay;
+
+/// Colour class
+typedef Ogre::ColourValue SColourValue;
 
 /// An std::vector of SStrings
 typedef std::vector<SString> StringVector;

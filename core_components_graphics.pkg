@@ -29,7 +29,8 @@ class Component{
     COLLISION = 8 // needs onCollision called TODO: collision helyett simple_collision, adv_collision..?
   };
 
-  inline GameObject* object() const {return object_;}
+  GameObject* object() const;
+  StormfighterApp* application() const;
 };
 
 
@@ -38,12 +39,12 @@ class STransform : public Component {
   ~STransform();
 
   /// The Transform component's type string is @b "Transform"
-  const SString type() const { return "Transform"; }
+  const SString type() const;
 
   // POSITION, ORIENTATION, SCALE (local space)
-  SVector3 position() const{return node_->getPosition();}
-  SQuaternion orientation() const{return node_->getOrientation();}
-  SVector3 scale() const{return node_->getScale();}
+  SVector3 position() const;
+  SQuaternion orientation() const;
+  SVector3 scale() const;
 
   void setPosition(const SVector3 position);
   void setOrientation(const SQuaternion orientation);
@@ -79,7 +80,7 @@ class SMesh : public Component {
 
   ~SMesh();
 
-  const SString type() const { return "Mesh"; }
+  const SString type() const;
 
   SMesh* clone() const;
 
@@ -105,7 +106,7 @@ class SPrimitive : public SMesh {
 
   SPrimitive* clone() const;
 
-  const SString type() const { return "Mesh"; }
+  const SString type() const;
 };
 
 class SCamera : public Component {
@@ -115,7 +116,7 @@ class SCamera : public Component {
 
   SCamera* clone() const;
 
-  const SString type() const { return "Camera"; }
+  const SString type() const;
 
   void setNearClipDistance(SReal distance);
   void setAspectRatio(SReal ratio);
@@ -128,7 +129,7 @@ class SLight : public Component {
  public:
   SLight(Ogre::Light::LightTypes type);
 
-  const SString type() const { return "Terrain"; }
+  const SString type() const;
 
   SLight* clone() const;
 

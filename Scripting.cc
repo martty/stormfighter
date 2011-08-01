@@ -11,13 +11,12 @@ Scripting::~Scripting(){
   lua_close(luaState_);
 }
 
-void Scripting::parseFile(SString file){
-  try {
-    if(luaL_dofile(luaState_, file.c_str()))
-      LOG(lua_tostring(luaState_,-1));
-  } catch (std::exception e){
-    LOG(e.what());
+bool Scripting::parseFile(SString file){
+  if(luaL_dofile(luaState_, file.c_str())){
+    LOG(lua_tostring(luaState_,-1));
+    return false;
   }
+  return true;
 }
 
 void Scripting::setGlobal(void* variable, const SString& type_name, const SString& lua_name){
@@ -28,4 +27,12 @@ void Scripting::setGlobal(void* variable, const SString& type_name, const SStrin
 void Scripting::unsetGlobal(const SString& lua_name){
   lua_pushnil(luaState_);
   lua_setglobal(luaState_, lua_name.c_str());
+}
+
+bool Scripting::executeString(const SString& luaString){
+  if(luaL_dostring(luaState_, luaString.c_str())){
+    LOG(lua_tostring(luaState_,-1));
+    return false;
+  }
+  return true;
 }

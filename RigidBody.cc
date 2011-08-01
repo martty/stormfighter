@@ -3,6 +3,7 @@
 #include "StormfighterApp.h"
 #include "Collider.h"
 #include "Terrain.h"
+#include "Physics.h"
 
 SRigidBody::SRigidBody(SReal mass){
   mass_ = mass;

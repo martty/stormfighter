@@ -15,11 +15,10 @@
 *
 */
 
-enum Axis {X, Y, Z};
-
 class Input : public OIS::KeyListener, OIS::MouseListener {
  friend class GUI; // GUI might require raw objects(mouse)
  public:
+  enum Axis {X, Y, Z};
   Input(Ogre::RenderWindow* renderWindow);
   ~Input();
 

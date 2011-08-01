@@ -66,10 +66,9 @@ class Component{
   };
 
   inline GameObject* object() const {return object_;}
-
-protected:
   inline StormfighterApp* application() const {return application_;}
 
+protected:
   void setState(State new_state);
  private:
   GameObject* object_;

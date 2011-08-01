@@ -118,6 +118,8 @@
 		<Unit filename="LuaBindings.cc" />
 		<Unit filename="LuaBindings.h" />
 		<Unit filename="LuaForward.h" />
+		<Unit filename="LuaScript.cc" />
+		<Unit filename="LuaScript.h" />
 		<Unit filename="Mesh.cc" />
 		<Unit filename="Mesh.h" />
 		<Unit filename="Physics.cc" />
@@ -157,11 +159,15 @@
 		<Unit filename="core_application.pkg" />
 		<Unit filename="core_components_graphics.pkg" />
 		<Unit filename="core_components_physics.pkg" />
+		<Unit filename="core_components_scripting.pkg" />
 		<Unit filename="core_gameobject.pkg" />
 		<Unit filename="core_modules.pkg" />
 		<Unit filename="core_ogre.pkg" />
+		<Unit filename="core_ois.pkg" />
+		<Unit filename="freecameracontroller.lua" />
 		<Unit filename="init.lua" />
 		<Unit filename="main.cc" />
+		<Unit filename="sandbox.lua" />
 		<Extensions>
 			<code_completion />
 			<envvars />

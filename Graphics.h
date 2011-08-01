@@ -24,6 +24,8 @@ class Graphics : public Ogre::Singleton<Graphics>{
 
   void startRendering();
 
+  /// Return a SRay through active camera at (x,y) coordinates
+  SRay activeCameraToViewPortRay(SReal screenx, SReal screeny);
 
   /// Set Camera to render on the default viewport
   void setActiveCamera(Ogre::Camera* camera);

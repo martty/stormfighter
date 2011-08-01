@@ -1,6 +1,7 @@
 #include "ChaseCameraController.h"
 #include "GameObject.h"
 #include "StormfighterApp.h"
+#include "Input.h"
 
 SChaseCameraController::SChaseCameraController(GameObject* target, Ogre::Vector3 camera_offset, Ogre::Vector3 target_offset):SScript("ChaseCamerController", INIT|UPDATE){
   target_ = target;
@@ -27,5 +28,5 @@ void SChaseCameraController::onUpdate(){
   object()->transform()->lookAt(target_->transform()->position() + target_->transform()->orientation() * target_offset_);
 
   // up-down
-  camera_offset_.y += application()->input()->axisRelative(Y);
+  camera_offset_.y += application()->input()->axisRelative(Input::Y);
 }
