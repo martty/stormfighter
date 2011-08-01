@@ -19,6 +19,7 @@
 					<Add library="OgreMain_d" />
 					<Add library="OIS_d" />
 					<Add library="OgreTerrain_d" />
+					<Add library="Awesomium_d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -35,6 +36,7 @@
 					<Add library="OgreMain" />
 					<Add library="OIS" />
 					<Add library="OgreTerrain" />
+					<Add library="Awesomium" />
 				</Linker>
 			</Target>
 		</Build>
@@ -52,6 +54,7 @@
 			<Add directory="$(OGRE_HOME)\boost_1_42" />
 			<Add directory="C:\bullet-2.78\src" />
 			<Add directory="$(OGRE_HOME)\boost_1_44" />
+			<Add directory="C:\Stormfighter\deps\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -62,6 +65,7 @@
 			<Add library="LinearMath" />
 			<Add directory="$(OGRE_HOME)\bin\$(TARGET_NAME)" />
 			<Add directory="C:\bullet-2.78\lib\lib" />
+			<Add directory="C:\Stormfighter\deps\lib" />
 		</Linker>
 		<Unit filename="BoxCollider.cc" />
 		<Unit filename="BoxCollider.h" />
@@ -132,6 +136,8 @@
 		<Unit filename="Transform.h" />
 		<Unit filename="TrimeshCollider.cc" />
 		<Unit filename="TrimeshCollider.h" />
+		<Unit filename="ViewPortOverlay.cc" />
+		<Unit filename="ViewPortOverlay.h" />
 		<Unit filename="WaterRiser.cc" />
 		<Unit filename="WaterRiser.h" />
 		<Unit filename="common.cc" />

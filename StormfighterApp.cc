@@ -114,7 +114,8 @@ void StormfighterApp::setupStormfighterScene(){
   c->setNearClipDistance(1);
   c->setAspectRatio(graphics_->getDefaultAspectRatio());
   c->activate();
-  chaseCam->addComponent(new SChaseCameraController(player, Ogre::Vector3(0, 140, 100), Ogre::Vector3(0, 20, -40)));
+  chaseCam->transform()->setPosition(SVector3(0, 60, -100));
+  //chaseCam->addComponent(new SChaseCameraController(player, Ogre::Vector3(0, 140, 100), Ogre::Vector3(0, 20, -40)));
 
 
   GameObject* cam = hierarchy_->createGameObject("cammy");
@@ -146,7 +147,7 @@ void StormfighterApp::setupStormfighterScene(){
   water->transform()->setScale(SVector3(1000, 0.01, 1000));
   SMesh::cast(water->component("Mesh"))->setMaterialName("Examples/WaterStream");
   water->transform()->setPosition(SVector3(0, -10, 0));
-  water->addComponent(new SWaterRiser());
+  //water->addComponent(new SWaterRiser());
   water->addComponent(new SBoxCollider());
   water->addComponent(new SRigidBody(0));
   SRigidBody::cast(water->component("RigidBody"))->setKinematic(true);
