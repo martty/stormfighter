@@ -11,8 +11,13 @@
  */
 class SPrimitive : public SMesh {
  public:
+  enum PrimitiveType {
+    CUBE = Ogre::SceneManager::PT_CUBE,
+    SPHERE = Ogre::SceneManager::PT_SPHERE,
+    PLANE = Ogre::SceneManager::PT_PLANE
+  };
   /// Create a Primitive component of type
-  SPrimitive(Ogre::SceneManager::PrefabType type);
+  SPrimitive(PrimitiveType type);
 
   /// Destructor
   ~SPrimitive();
@@ -24,7 +29,7 @@ class SPrimitive : public SMesh {
 
   virtual unsigned int onAdd(SString goname, STransform* transform);
  private:
-  Ogre::SceneManager::PrefabType type_;
+  PrimitiveType type_;
 };
 
 #endif

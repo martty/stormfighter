@@ -1,0 +1,5 @@
+// from ember-0.6.1
+$pfile "OgreMath.pkg"
+$pfile "OgreVector3.pkg"
+$pfile "OgreQuaternion.pkg"
+$pfile "OgreColourValue.pkg"

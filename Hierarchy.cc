@@ -46,6 +46,18 @@ GameObject* Hierarchy::_cloneGameObject(SString name){
   return go;
 }
 
+void Hierarchy::destroyGameObject(SString name){
+  return;
+}
+
+void Hierarchy::destroyGameObject(GameObject* obj){
+  return;
+}
+
+GameObject* Hierarchy::find(SString name){
+  return root_->find(name);
+}
+
 SString Hierarchy::debug(){
   SString str = "";
   SString prefix = "*";
@@ -63,7 +75,10 @@ SString Hierarchy::debug(){
       continue;
     }
     prefix = prefix.substr(0, prefix.length()-1);
-    g = g->parent_->next_;
+    if(g->parent_ && g->parent_->next_)
+      g = g->parent_->next_;
+    else
+      return str;
   }
   return str;
 }

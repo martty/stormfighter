@@ -1,0 +1,27 @@
+class StormfighterApp {
+ public:
+  StormfighterApp();
+  ~StormfighterApp();
+
+  /// Shorthand for OgreFramework::getSingletonPtr()->m_pLog->logMessage(string);
+  void log(SString message);
+
+  /// Set light used for lighting terrain
+  void setTerrainLight(Ogre::Light* light);
+
+  Physics* physics() const;
+
+  Input* input() const;
+
+  Hierarchy* hierarchy() const;
+
+  double inline deltaTime() const;
+
+  void setPhysicsDeltaTime(SReal pdt);
+
+  SReal inline physicsDeltaTime();
+
+  // game specific
+  void lose();
+  void win();
+};

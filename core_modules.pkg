@@ -1,0 +1,69 @@
+struct CollisionData {
+  Ogre::Vector3 pointOnA;
+  Ogre::Vector3 pointOnB;
+  Ogre::Vector3 normalOnB;
+
+  bool stale;
+  bool fresh;
+
+  GameObject* other;
+};
+
+struct SingleRayCastResult {
+  GameObject* hitObject;
+  Ogre::Vector3 hitPoint;
+};
+
+typedef std::map<SString, short> MaskMap;
+
+class Physics {
+ public:
+  /// Add a rigidbody to the simulation
+  void addRigidBody(btRigidBody* rigidBody);
+
+  void addRigidBody(btRigidBody* rigidBody, SString group, StringVector collidesWith);
+
+  void removeRigidBody(btRigidBody* rigidBody);
+
+  void addCollisionGroup(SString name);
+
+  SingleRayCastResult closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to);
+
+  void setDebugDraw(bool draw);
+};
+
+enum Axis {X, Y, Z};
+
+class Input {
+ public:
+  bool isKeyDown(const OIS::KeyCode key);
+  bool isButtonDown(const OIS::MouseButtonID button);
+
+  int axisRelative(Axis axis);
+  int axisAbsolute(Axis axis);
+};
+
+class GUI  {
+ public:
+  // game specific
+  void showLosingText();
+};
+
+typedef std::vector<GameObject*> GameObjectList;
+
+class Hierarchy {
+ public:
+
+  /// Searches for GO with given name in hierarchy (BFS)
+  GameObject* find(SString name);
+
+  GameObject* createGameObject(SString name);
+  GameObject* createGameObject();
+
+  void destroyGameObject(SString name);
+  void destroyGameObject(GameObject* gameObject);
+
+
+  /// Returns the whole hierarchy (DFS)
+  SString debug();
+};

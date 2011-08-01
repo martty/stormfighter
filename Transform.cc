@@ -132,12 +132,17 @@ void STransform::moveRelative(SVector3 delta){
 
 void STransform::yaw(SRadian angle){
   node_->yaw(angle);
-  node_->setOrientation(orientation());
+  _notifyTransformChange();
 }
 
 void STransform::pitch(SRadian angle){
   node_->pitch(angle);
-  node_->setOrientation(orientation());
+  _notifyTransformChange();
+}
+
+void STransform::roll(SRadian angle){
+  node_->roll(angle);
+ _notifyTransformChange();
 }
 
 void STransform::setFixedYawAxis(bool useFixed, const SVector3 fixedAxis){

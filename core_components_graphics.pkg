@@ -1,0 +1,139 @@
+class Component{
+ public:
+  Component();
+  ~Component();
+
+  const SString type() const = 0;
+
+  Component* clone() const = 0;
+
+  void onInit();
+
+  void onUpdate();
+
+  void onPhysicsUpdate();
+
+  void onCollisionEnter(const CollisionData* collisionData);
+  void onCollisionExit(const CollisionData* collisionData);
+  void onCollisionStay(const CollisionData* collisionData);
+
+  enum State {CREATED, PREPARED, READY};
+
+  State state() const;
+
+  enum Calls {
+    NONE = 0, // No calls needed
+    INIT = 1, // needs onInit called
+    UPDATE = 2, // needs onUpdate called
+    PHYSICS_UPDATE = 4, // needs onPhysicsUpdate called
+    COLLISION = 8 // needs onCollision called TODO: collision helyett simple_collision, adv_collision..?
+  };
+
+  inline GameObject* object() const {return object_;}
+};
+
+
+class STransform : public Component {
+ public:
+  ~STransform();
+
+  /// The Transform component's type string is @b "Transform"
+  const SString type() const { return "Transform"; }
+
+  // POSITION, ORIENTATION, SCALE (local space)
+  SVector3 position() const{return node_->getPosition();}
+  SQuaternion orientation() const{return node_->getOrientation();}
+  SVector3 scale() const{return node_->getScale();}
+
+  void setPosition(const SVector3 position);
+  void setOrientation(const SQuaternion orientation);
+  void setScale(const SVector3 scale){node_->setScale(scale);}
+
+  Ogre::Matrix4 worldMatrix() const;
+
+  // POSITION, ORIENTATION (world space)
+  SVector3 worldPosition() const;
+  SQuaternion worldOrientation() const;
+
+  // ADVANCED TRANSFORMS
+
+  void lookAt(const SVector3 position); /// worldspace, -z (like camera lookAt)
+
+  void move(const SVector3 delta); /// equivalent of setPosition(position()+delta)
+  void moveRelative(const SVector3 delta); /// equivalent of setPosition(position()+orientation*delta)
+
+  void yaw(const Ogre::Radian angle);
+  void pitch(const Ogre::Radian angle);
+  void roll(const Ogre::Radian angle);
+
+  void setFixedYawAxis(bool useFixed, const SVector3 fixedAxis);
+
+  // DEBUG
+  void showBoundingBox(bool show);
+};
+
+class SMesh : public Component {
+ public:
+  SMesh();
+  SMesh(SString meshname);
+
+  ~SMesh();
+
+  const SString type() const { return "Mesh"; }
+
+  SMesh* clone() const;
+
+  void setMaterialName(SString materialName);
+
+  // ANIMATION
+  bool animated() const;
+  void setAnimationStateEnabled(SString animstate, bool enabled);
+  void setAnimationStateLoop(SString animstate, bool loop);
+  void addAnimationTime(SString animstate, SReal time);
+};
+
+class SPrimitive : public SMesh {
+ public:
+  enum PrimitiveType {
+    CUBE = Ogre::SceneManager::PT_CUBE,
+    SPHERE = Ogre::SceneManager::PT_SPHERE,
+    PLANE = Ogre::SceneManager::PT_PLANE
+  };
+  SPrimitive(PrimitiveType type);
+
+  ~SPrimitive();
+
+  SPrimitive* clone() const;
+
+  const SString type() const { return "Mesh"; }
+};
+
+class SCamera : public Component {
+ public:
+  SCamera();
+  ~SCamera();
+
+  SCamera* clone() const;
+
+  const SString type() const { return "Camera"; }
+
+  void setNearClipDistance(SReal distance);
+  void setAspectRatio(SReal ratio);
+  void setPolygonMode(Ogre::PolygonMode polymode);
+
+  void activate();
+};
+
+class SLight : public Component {
+ public:
+  SLight(Ogre::Light::LightTypes type);
+
+  const SString type() const { return "Terrain"; }
+
+  SLight* clone() const;
+
+  void setDiffuseColour(Ogre::ColourValue diffuse_colour);
+  void setSpecularColour(Ogre::ColourValue specular_colour);
+
+  void setAsTerrainLight();
+};

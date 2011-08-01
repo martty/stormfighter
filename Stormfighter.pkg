@@ -1,0 +1,37 @@
+$#include "common.h"
+
+typedef float Ogre::Real;
+
+$pfile "core_ogre.pkg"
+
+/// String class
+typedef std::string SString;
+
+/// Real number class
+typedef Ogre::Real SReal;
+
+/// 3D Vector class
+typedef Ogre::Vector3 SVector3;
+
+/// Quaternion class
+typedef Ogre::Quaternion SQuaternion;
+
+/// Angle (radian) class
+typedef Ogre::Radian SRadian;
+
+/// Angle (degree) class
+typedef Ogre::Degree SDegree;
+
+/// An std::vector of SStrings
+typedef std::vector<SString> StringVector;
+
+// include everything
+$#include "LuaForward.h"
+
+$renaming Ogre::Vector3 @ SVector3
+
+$pfile "core_components_graphics.pkg"
+$pfile "core_components_physics.pkg"
+$pfile "core_gameobject.pkg"
+$pfile "core_modules.pkg"
+$pfile "core_application.pkg"

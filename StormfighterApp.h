@@ -8,6 +8,7 @@
 #include "Physics.h"
 #include "Input.h"
 #include "GUI.h"
+#include "Scripting.h"
 
 class StormfighterApp : public Ogre::FrameListener{
  public:
@@ -26,6 +27,8 @@ class StormfighterApp : public Ogre::FrameListener{
   Input* input() const {return input_; }
 
   Hierarchy* hierarchy() const { return hierarchy_; }
+
+  Scripting* scripting() const { return scripting_; }
 
   double inline deltaTime() const {return deltaTime_;}
 
@@ -50,6 +53,7 @@ class StormfighterApp : public Ogre::FrameListener{
   Physics* physics_;
   Input* input_;
   GUI* gui_;
+  Scripting* scripting_;
   double deltaTime_;
   SReal physicsDeltaTime_;
 
