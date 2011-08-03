@@ -12,12 +12,11 @@ GUI::GUI(Input* input){
   // Create a new WebView instance with a certain width and height, using the
   // WebCore we just created
   webView_ = awe_webcore_create_webview(width_, height_);
-  SString page = "test.html";
+  SString page = "../../media/ui/test.html";
   awe_webview_set_transparent(webView_, true);
-  awe_string* url_str = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
-  awe_webview_load_file(webView_, url_str, awe_string_empty());
+  url_str_ = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
+  awe_webview_load_file(webView_, url_str_, awe_string_empty());
   // Destroy our URL string
-  awe_string_destroy(url_str);
   createMaterial();
   OverlayPosition pos(0, 0);
   overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, height_, pos, "awesomium_mat", 0, TIER_FRONT);
@@ -47,11 +46,12 @@ GUI::GUI(Input* input){
 }
 
 GUI::~GUI(){
+  awe_string_destroy(url_str_);
   delete trayManager_;
   trayManager_ = NULL;
  // Destroy our WebView instance
   awe_webview_destroy(webView_);
-
+  delete[] temp_;
   // Destroy our WebCore instance
   awe_webcore_shutdown();
 }
@@ -64,10 +64,10 @@ void GUI::update(double deltaTime){
   if(counter > 0.05f){
     awe_webcore_update();
     counter = 0.0f;
-  }
-  if(awe_webview_is_dirty(webView_)){
-    if (!awe_webview_is_loading_page(webView_)){
-      displayWebView();
+    if(awe_webview_is_dirty(webView_)){
+      if (!awe_webview_is_loading_page(webView_)){
+        displayWebView();
+      }
     }
   }
 }
@@ -112,7 +112,9 @@ void GUI::createMaterial(){
   Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("awesomium_mat", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   Ogre::Pass* matPass = material->getTechnique(0)->getPass(0);
   //matPass->setSeparateSceneBlending (Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
-  matPass->setSeparateSceneBlending (Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+  matPass->setSeparateSceneBlending (Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_ZERO, Ogre::SBF_ZERO);
+  //material->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+
   matPass->setDepthWriteEnabled(false);
 
   Ogre::TextureUnitState* texunit = matPass->createTextureUnitState("awesomium_tex");
@@ -133,11 +135,11 @@ void GUI::displayWebView(){
   // For new data, because of the way HardwarePixelBuffers work (no copy
   // subregions from *Memory*), we have to copy each line over individually
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
-    unsigned char* temp = new unsigned char[awe_renderbuffer_get_width(renderBuffer)*awe_renderbuffer_get_height(renderBuffer)*4];
-    awe_renderbuffer_copy_to(renderBuffer, temp, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
-    Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer), awe_renderbuffer_get_height(renderBuffer), 1, Ogre::PF_A8R8G8B8, temp);
+    if(!temp_)
+      temp_ = new unsigned char[awe_renderbuffer_get_width(renderBuffer)*awe_renderbuffer_get_height(renderBuffer)*4];
+    //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
+    Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer), awe_renderbuffer_get_height(renderBuffer), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer)));
     pixelBuffer->blitFromMemory(pbox);
-    delete[] temp;
   }
 }
 
@@ -195,4 +197,39 @@ void GUI::loadResource(Ogre::Resource* resource){
   tex->setFormat(Ogre::PF_BYTE_BGRA);
   tex->setUsage(Ogre::TU_DYNAMIC);
   tex->createInternalResources();
+}
+
+void GUI::executeJS(SString script){
+  awe_string* js_str = awe_string_create_from_ascii(script.c_str(), strlen(script.c_str()));
+  awe_webview_execute_javascript(webView_,js_str, awe_string_empty());
+  awe_string_destroy(js_str);
+}
+
+void GUI::reload(){
+  awe_webview_load_file(webView_,  url_str_, awe_string_empty());
+  for (int i = 0; i < 10000; i++){
+    // We must call WebCore::update in our update loop.
+    awe_webcore_update();
+    if (!awe_webview_is_loading_page(webView_)){
+        //Sleep(100);
+        awe_webcore_update();
+        break;
+    }
+    // Sleep a little bit so we don't consume too much CPU while waiting
+    // for the page to finish loading.
+    //Sleep(1);
+  }
+  displayWebView();
+  awe_webview_focus(webView_);
+}
+
+SString GUI::pollCommands(){
+  awe_string* js = awe_string_create_from_ascii("pollCommands();", strlen("pollCommands();"));
+  awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 0);
+  awe_string* result_string = awe_jsvalue_to_string(res);
+  char* str = new char[awe_string_get_length(result_string)];
+  awe_string_to_utf8(result_string, str, awe_string_get_length(result_string));
+  awe_jsvalue_destroy(res);
+  awe_string_destroy(result_string);
+  return SString(str);
 }

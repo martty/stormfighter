@@ -27,11 +27,19 @@ class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::
 
   void loadResource(Ogre::Resource* resource);
 
-  void displayWebView();
+  void executeJS(SString script);
+
+  void reload();
+
+  SString pollCommands();
 
  private:
+  void displayWebView();
   OgreBites::SdkTrayManager* trayManager_;
   awe_webview* webView_;
+  awe_string* url_str_;
+
+  unsigned char* temp_;
 
   SReal counter;
   int width_;

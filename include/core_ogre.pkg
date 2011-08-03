@@ -1,5 +1,31 @@
 // from ember-0.6.1
-$pfile "OgreMath.pkg"
-$pfile "OgreVector3.pkg"
-$pfile "OgreQuaternion.pkg"
-$pfile "OgreColourValue.pkg"
+
+namespace Ogre {
+class Ray  {
+    public:
+        Ray();
+        Ray(const Vector3& origin, const Vector3& direction);
+
+        /** Sets the origin of the ray. */
+        void setOrigin(const Vector3& origin);
+        /** Gets the origin of the ray. */
+        const Vector3& getOrigin(void) const;
+
+        /** Sets the direction of the ray. */
+        void setDirection(const Vector3& dir);
+        /** Gets the direction of the ray. */
+        const Vector3& getDirection(void) const;
+
+		/** Gets the position of a point t units along the ray. */
+		Vector3 getPoint(Real t) const;
+
+		/** Gets the position of a point t units along the ray. */
+		Vector3 operator*(Real t) const;
+
+    };
+};
+
+$pfile "include/OgreMath.pkg"
+$pfile "include/OgreVector3.pkg"
+$pfile "include/OgreQuaternion.pkg"
+$pfile "include/OgreColourValue.pkg"

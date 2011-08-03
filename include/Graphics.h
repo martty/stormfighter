@@ -25,8 +25,10 @@ class Graphics : public Ogre::Singleton<Graphics>{
   void startRendering();
 
   /// Return a SRay through active camera at (x,y) coordinates
-  SRay activeCameraToViewPortRay(SReal screenx, SReal screeny);
+  SRay activeCameraToViewportRay(SReal screenx, SReal screeny);
 
+  /// Raycast into the scene (accurate)
+  SingleRayCastResult closestExactRayQuery(SRay ray);
   /// Set Camera to render on the default viewport
   void setActiveCamera(Ogre::Camera* camera);
   /// Get Camera of the default viewport
@@ -36,7 +38,7 @@ class Graphics : public Ogre::Singleton<Graphics>{
   Ogre::Real getDefaultAspectRatio();
 
   /// Get default viewport
-  inline Ogre::Viewport* defaultViewport() const{ return viewPort_; }
+  inline Ogre::Viewport* defaultViewport() const{ return viewport_; }
 
   /// Get default renderwindow (for stats)
   inline Ogre::RenderWindow* defaultRenderWindow() const{ return renderWindow_; }
@@ -55,9 +57,15 @@ class Graphics : public Ogre::Singleton<Graphics>{
 
   Ogre::Camera*	 defaultCamera_;
   Ogre::RenderWindow*	 renderWindow_;
-  Ogre::Viewport*	 viewPort_;
+  Ogre::Viewport*	 viewport_;
 
   Ogre::TerrainGlobalOptions* terrainGlobals_;
+
+  Ogre::RaySceneQuery* ray_scene_query_;
+
+  void getMeshInformation(Ogre::Entity *entity, size_t &vertex_count, Ogre::Vector3* &vertices, size_t &index_count, Ogre::uint32* &indices,
+                                  const Ogre::Vector3 &position, const Ogre::Quaternion &orient,
+                                  const Ogre::Vector3 &scale);
 };
 
 #endif // STORMFIGHTER_GRAPHICS_H_

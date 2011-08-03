@@ -42,7 +42,7 @@ function fcc:onUpdate()
     self:object():transform():moveRelative(self.translateVector_ / 10);
   end
   self:object():transform():yaw(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.X) * -0.1)));
-  self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
+--  self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
 end
 
 return fcc;

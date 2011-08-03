@@ -1,4 +1,4 @@
 REM Building Lua bindings
-C:\lua\tolua++-1.0.93\src\bin\tolua++ -o LuaBindings.cc -H LuaBindings.h Stormfighter.pkg
+tools\tolua++\tolua++ -o src\LuaBindings.cc -H include\LuaBindings.h include\Stormfighter.pkg
 REM Done
 pause

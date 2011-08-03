@@ -132,7 +132,7 @@ bool Physics::contactProcessedCallback(btManifoldPoint& pt, void* body0, void* b
   return false;
 }
 
-SingleRayCastResult Physics::closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to){
+SingleRayCastResult Physics::closestRayCast(const Ogre::Vector3& from, const Ogre::Vector3& to){
   SingleRayCastResult result;
   btCollisionWorld::ClosestRayResultCallback* crrc = new btCollisionWorld::ClosestRayResultCallback(Convert::toBullet(from), Convert::toBullet(to));
   dWorld_->rayTest(Convert::toBullet(from), Convert::toBullet(to), *crrc);

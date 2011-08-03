@@ -55,6 +55,11 @@ class SException : public std::exception {
   SString what_;
 };
 
+struct SingleRayCastResult {
+  GameObject* hitObject;
+  Ogre::Vector3 hitPoint;
+};
+
 // UGLY but EASY!
 #ifdef DEBUG
 #define STRING(what) Ogre::StringConverter::toString(what)

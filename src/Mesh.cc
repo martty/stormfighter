@@ -31,6 +31,8 @@ unsigned int SMesh::onAdd(SString goname, STransform* transform){
     valid_ = false;
   } else {
     entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+meshname_, meshname_);
+    Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
+    binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
     transform->attachObject(entity_);
     valid_ = true;
   }

@@ -1,3 +1,8 @@
+struct SingleRayCastResult {
+  GameObject* hitObject;
+  Ogre::Vector3 hitPoint;
+};
+
 class Logger{
  public:
   void logMessage(const SString& message);
@@ -25,6 +30,9 @@ class Graphics {
 
   /// Get SceneManager
   Ogre::SceneManager* sceneManager() const;
+  SRay activeCameraToViewportRay(SReal screenx, SReal screeny);
+
+  SingleRayCastResult closestExactRayQuery(SRay ray);
 };
 
 struct CollisionData {
@@ -36,11 +44,6 @@ struct CollisionData {
   bool fresh;
 
   GameObject* other;
-};
-
-struct SingleRayCastResult {
-  GameObject* hitObject;
-  Ogre::Vector3 hitPoint;
 };
 
 typedef std::map<SString, short> MaskMap;
@@ -57,7 +60,7 @@ class Physics {
 
   void addCollisionGroup(SString name);
 
-  SingleRayCastResult closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to);
+  SingleRayCastResult closestRayCast(const Ogre::Vector3& from, const Ogre::Vector3& to);
 
   void setDebugDraw(bool draw);
 };
@@ -77,6 +80,12 @@ class Input {
 class GUI  {
  public:
   void update(double deltaTime);
+
+  void executeJS(SString script);
+
+  void reload();
+
+  SString pollCommands();
 };
 
 typedef std::vector<GameObject*> GameObjectList;

@@ -17,11 +17,6 @@ struct CollisionData {
   GameObject* other;
 };
 
-struct SingleRayCastResult {
-  GameObject* hitObject;
-  Ogre::Vector3 hitPoint;
-};
-
 typedef std::map<SString, short> MaskMap;
 
 extern ContactProcessedCallback gContactProcessedCallback;
@@ -44,7 +39,7 @@ class Physics {
 
   void addCollisionGroup(SString name);
 
-  SingleRayCastResult closestRayCast(Ogre::Vector3 from, Ogre::Vector3 to);
+  SingleRayCastResult closestRayCast(const Ogre::Vector3& from, const Ogre::Vector3& to);
 
   /// Update physics world
   void tick(SReal deltaTime);
