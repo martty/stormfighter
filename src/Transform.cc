@@ -154,3 +154,16 @@ Ogre::Matrix4 STransform::worldMatrix() const{
   mat.setTrans(position());
   return mat;
 }
+
+
+void STransform::setInheritScale(bool inherit){
+  node_->setInheritScale(inherit);
+}
+
+void STransform::setInheritOrientation(bool inherit){
+  node_->setInheritOrientation(inherit);
+}
+
+void STransform::setVisible(bool visible, bool cascade){
+  node_->setVisible(visible, cascade);
+}

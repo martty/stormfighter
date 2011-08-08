@@ -1,6 +1,7 @@
 #include "common.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "MovableObject.h"
 #include "StormfighterApp.h"
 #include "Hierarchy.h"
 #include "Physics.h"
@@ -388,4 +389,20 @@ void GameObject::addCollision(CollisionData* colld){
     collisionmap_[colld->other->name_] = colld;
     colld->fresh = true;
   }
+}
+
+SAxisAlignedBox GameObject::getBoundingBox(){
+  ComponentVector meshes = allComponentInChildren("Mesh");
+  ComponentVector cameras = allComponentInChildren("Camera");
+  ComponentVector lights = allComponentInChildren("Light");
+  ComponentVector bounded;
+  bounded.insert(bounded.end(), meshes.begin(), meshes.end());
+  bounded.insert(bounded.end(), cameras.begin(), cameras.end());
+  bounded.insert(bounded.end(), lights.begin(), lights.end());
+  SAxisAlignedBox bbox;
+  for(ComponentVector::iterator it = bounded.begin(); it != bounded.end(); it++){
+    SMovableObject* mo = static_cast<SMovableObject*>(*it);
+    bbox.merge(mo->getBoundingBox());
+  }
+  return bbox;
 }

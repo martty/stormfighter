@@ -38,9 +38,6 @@ StormfighterApp::StormfighterApp(){
   graphics_ = NULL;
   logger_ = NULL;
   deltaTime_ = 0;
-  hasWon_ = false;
-  hasLost_ = false;
-  isPlaying_ = true;
 }
 StormfighterApp::~StormfighterApp(){
 
@@ -52,19 +49,20 @@ void StormfighterApp::startStormfighter(){
 
   if(!graphics_->initialize("StormfighterApp v0.8"))
       return;
-
+  graphics_->initializeResources();
   log("Initializing input");
   input_ = new Input(graphics_->defaultRenderWindow());
   log("Input initialized!");
+  log("Initializing GUI");
+  gui_ = new GUI(input_);
+  log("GUI initialized!");
+  gui_->initialise();
   log("Initializing hierarchy");
   hierarchy_ = new Hierarchy();
   log("Hierarchy initialized!");
   log("Initializing physics");
   physics_ = new Physics(this);
   log("Physics initialized!");
-  log("Initializing GUI");
-  gui_ = new GUI(input_);
-  log("GUI initialized!");
   scripting_ = new Scripting();
   log("Scripting initialized!");
   //physics_->setDebugDraw(true);
@@ -73,6 +71,7 @@ void StormfighterApp::startStormfighter(){
   setupStormfighterScene();
   runStormfighter();
 }
+
 void StormfighterApp::setupStormfighterScene(){
   graphics_->sceneManager()->setSkyBox(true, "Examples/SpaceSkyBox");
 

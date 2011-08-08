@@ -36,13 +36,17 @@ function fcc:onUpdate()
   if(self:application():input():isKeyDown(OIS.KC_D)) then self.translateVector_.x = self.moveScale_; end
   if(self:application():input():isKeyDown(OIS.KC_W)) then self.translateVector_.z = -self.moveScale_; end
   if(self:application():input():isKeyDown(OIS.KC_S)) then self.translateVector_.z = self.moveScale_; end
+  if(self:application():input():isKeyDown(OIS.KC_E)) then self.translateVector_.y = self.moveScale_; end
+  if(self:application():input():isKeyDown(OIS.KC_Q)) then self.translateVector_.y = -self.moveScale_; end
   if(self:application():input():isKeyDown(OIS.KC_LSHIFT)) then
     self:object():transform():moveRelative(self.translateVector_);
   else
     self:object():transform():moveRelative(self.translateVector_ / 10);
   end
-  self:object():transform():yaw(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.X) * -0.1)));
---  self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
+  if(Input:isButtonDown(OIS.MB_Right)) then
+    self:object():transform():yaw(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.X) * -0.1)));
+    self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
+  end
 end
 
 return fcc;

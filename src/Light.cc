@@ -38,3 +38,7 @@ void SLight::setAsTerrainLight(){
     application()->graphics()->setTerrainLight(light_);
   }
 }
+
+SAxisAlignedBox SLight::getBoundingBox() const{
+  return light_->getBoundingBox();
+}

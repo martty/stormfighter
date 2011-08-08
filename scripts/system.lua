@@ -4,6 +4,7 @@ SQuaternion = Ogre.Quaternion;
 SDegree = Ogre.Degree;
 SRadian = Ogre.Radian;
 SRay = Ogre.Ray;
+SAxisAlignedBox = Ogre.AxisAlignedBox;
 -- ...
 
 function empty_function()
@@ -48,4 +49,21 @@ function System:_addComponent(component)
   ac[self.n_active_components] = {};
   ac[self.n_active_components] = new_component;
   return new_component;
+end
+
+--provide 2D vector :)
+function SVector2(x,y)
+  return SVector3(x,y,0);
+end
+
+function System:_initialise()
+  self:_hijackGameObject();
+end
+
+function System:_hijackGameObject()
+  local old = GameObject.component;
+  -- add automatic casting to component get
+  GameObject.component = function (go, type)
+    return tolua.cast(old(go, type), "S"..type);
+  end
 end

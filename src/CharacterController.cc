@@ -89,7 +89,6 @@ void SCharacterController::onPhysicsUpdate(){
 void SCharacterController::onCollisionEnter(const CollisionData* collisionData){
   if(collisionData->other->name() == "Water"){
     // lost :(
-    application()->lose();
     return;
   }
   SVector3 pt = collisionData->pointOnA;

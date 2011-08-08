@@ -16,6 +16,7 @@ class Graphics : public Ogre::Singleton<Graphics>{
   ~Graphics();
 
   bool initialize(const SString& windowTitle);
+  void initializeResources();
 
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);

@@ -27,21 +27,25 @@ SMesh* SMesh::clone() const{
 }
 
 unsigned int SMesh::onAdd(SString goname, STransform* transform){
+  transform_ = transform;
   if(meshname_.empty()){
     valid_ = false;
   } else {
     entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+meshname_, meshname_);
     Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
     binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
-    transform->attachObject(entity_);
+    transform_->attachObject(entity_);
     valid_ = true;
   }
   setState(READY);
   return NONE;
 }
 
-const Ogre::AxisAlignedBox* SMesh::getBounds(){
-  return &(entity_->getMesh()->getBounds());
+SAxisAlignedBox SMesh::getBoundingBox() const{
+  SAxisAlignedBox aabb = entity_->getBoundingBox();
+  if(transform_)
+    aabb.scale(transform_->scale());
+  return aabb;
 }
 
 SReal SMesh::getBoundingSphereRadius() const{

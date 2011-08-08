@@ -36,6 +36,11 @@ bool Graphics::initialize(const SString& windowTitle){
   viewport_->setBackgroundColour(Ogre::ColourValue(0.8f, 0.7f, 0.6f, 1.0f));
   viewport_->setCamera(defaultCamera_);
 
+  renderWindow_->setActive(true);
+
+  return true;
+}
+void Graphics::initializeResources(){
   Ogre::String secName, typeName, archName;
   Ogre::ConfigFile cf;
   cf.load(resourcesCfg_);
@@ -52,7 +57,6 @@ bool Graphics::initialize(const SString& windowTitle){
   }
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-  renderWindow_->setActive(true);
 
   terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
   // global terrain settings cfg
@@ -65,7 +69,6 @@ bool Graphics::initialize(const SString& windowTitle){
     LOG("Failed to create Ogre::RaySceneQuery instance");
   }
   ray_scene_query_->setSortByDistance(true);
-  return true;
 }
 
 void Graphics::setActiveCamera(Ogre::Camera* camera){

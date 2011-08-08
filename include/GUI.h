@@ -7,7 +7,7 @@
 #include <Awesomium/awesomium_capi.h>
 #include "ViewPortOverlay.h"
 
-class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::KeyListener, OIS::MouseListener {
+class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader, public OIS::KeyListener, public OIS::MouseListener {
  public:
   GUI(Input* input);
   ~GUI();
@@ -20,9 +20,6 @@ class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::
   bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
   bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
-  // game specific
-  void showLosingText();
-
   void createMaterial();
 
   void loadResource(Ogre::Resource* resource);
@@ -32,6 +29,8 @@ class GUI : public OgreBites::SdkTrayListener, Ogre::ManualResourceLoader, OIS::
   void reload();
 
   SString pollCommands();
+
+  void initialise();
 
  private:
   void displayWebView();

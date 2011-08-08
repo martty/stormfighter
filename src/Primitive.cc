@@ -12,6 +12,7 @@ SPrimitive::~SPrimitive(){
 }
 
 unsigned int SPrimitive::onAdd(SString goname, STransform* transform){
+  transform_ = transform;
   entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+"_primitive", static_cast<Ogre::SceneManager::PrefabType>(type_));
   Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
   binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));

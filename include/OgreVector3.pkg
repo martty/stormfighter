@@ -273,6 +273,8 @@ namespace Ogre
 			still be considered equal
 		*/
 		bool directionEquals(const Ogre::Vector3& rhs,const Ogre::Radian& tolerance) ;
+		
+		Radian angleBetween(const Vector3& dest);
 
         // special points
         static const Ogre::Vector3 ZERO;

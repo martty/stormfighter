@@ -39,3 +39,7 @@ void SCamera::activate(){
 void SCamera::setPolygonMode(Ogre::PolygonMode mode){
   camera_->setPolygonMode(mode);
 }
+
+SAxisAlignedBox SCamera::getBoundingBox() const{
+  return camera_->getBoundingBox();
+}

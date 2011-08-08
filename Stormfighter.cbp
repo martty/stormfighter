@@ -94,7 +94,9 @@
 		<Unit filename="include\LuaBindings.h" />
 		<Unit filename="include\LuaForward.h" />
 		<Unit filename="include\LuaScript.h" />
+		<Unit filename="include\ManualObject.h" />
 		<Unit filename="include\Mesh.h" />
+		<Unit filename="include\MovableObject.h" />
 		<Unit filename="include\Physics.h" />
 		<Unit filename="include\PlatformMoverVertical.h" />
 		<Unit filename="include\PlatformPositioner.h" />
@@ -123,6 +125,7 @@
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
+		<Unit filename="scripts\manipulator.lua" />
 		<Unit filename="scripts\system.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />
@@ -146,6 +149,7 @@
 		<Unit filename="src\Logger.cc" />
 		<Unit filename="src\LuaBindings.cc" />
 		<Unit filename="src\LuaScript.cc" />
+		<Unit filename="src\ManualObject.cc" />
 		<Unit filename="src\Mesh.cc" />
 		<Unit filename="src\Physics.cc" />
 		<Unit filename="src\PlatformMoverVertical.cc" />

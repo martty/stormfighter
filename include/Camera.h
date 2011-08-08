@@ -3,12 +3,12 @@
 
 #include "common.h"
 #include <OgreCamera.h>
-#include "Component.h"
+#include "MovableObject.h"
 
 /**
  * @brief Component for GameObject, represents a camera
  */
-class SCamera : public Component {
+class SCamera : public SMovableObject {
  public:
   SCamera();
   ~SCamera();
@@ -24,6 +24,8 @@ class SCamera : public Component {
   void activate();
 
   unsigned int onAdd(SString goname, STransform* transform);
+
+  SAxisAlignedBox getBoundingBox() const;
 
  private:
 

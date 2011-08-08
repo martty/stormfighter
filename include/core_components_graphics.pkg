@@ -69,11 +69,23 @@ class STransform : public Component {
 
   void setFixedYawAxis(bool useFixed, const SVector3 fixedAxis);
 
+
+  void setInheritScale(bool inherit);
+
+  void setInheritOrientation(bool inherit);
+
+  void setVisible(bool visible, bool cascade);
+
   // DEBUG
   void showBoundingBox(bool show);
 };
 
-class SMesh : public Component {
+class SMovableObject : public Component {
+  public:
+    SAxisAlignedBox getBoundingBox() const;
+};
+
+class SMesh : public SMovableObject {
  public:
   SMesh();
   SMesh(SString meshname);
@@ -109,7 +121,7 @@ class SPrimitive : public SMesh {
   const SString type() const;
 };
 
-class SCamera : public Component {
+class SCamera : public SMovableObject {
  public:
   SCamera();
   ~SCamera();
@@ -125,7 +137,7 @@ class SCamera : public Component {
   void activate();
 };
 
-class SLight : public Component {
+class SLight : public SMovableObject {
  public:
   SLight(Ogre::Light::LightTypes type);
 
@@ -137,4 +149,41 @@ class SLight : public Component {
   void setSpecularColour(Ogre::ColourValue specular_colour);
 
   void setAsTerrainLight();
+};
+
+class SManualObject : public SMesh {
+ public:
+  SManualObject(bool isStatic);
+  ~SManualObject();
+
+  /// not really cloneable at the moment
+  SManualObject* clone() const;
+
+  unsigned int onAdd(SString goname, STransform* transform);
+
+  // ManualObject methods
+  void begin(SString materialName, OperationType opType);
+  void finish();
+
+  void position(SVector3 pos);
+  void colour(SColourValue col);
+  void normal(SVector3 normal);
+  void tangent(SVector3 tangent);
+  /// Add texture coordinate, discards w component (UV only)
+  void textureCoord(SVector3 uvw);
+
+  void index(unsigned int ind);
+  void triangle(unsigned int ind1, unsigned int ind2, unsigned int ind3);
+  void quad(unsigned int ind1, unsigned int ind2, unsigned int ind3, unsigned int ind4);
+
+  void clear();
+
+  enum OperationType {
+    OT_POINT_LIST,
+    OT_LINE_LIST,
+    OT_LINE_STRIP,
+    OT_TRIANGLE_LIST,
+    OT_TRIANGLE_STRIP,
+    OT_TRIANGLE_FAN
+  };
 };

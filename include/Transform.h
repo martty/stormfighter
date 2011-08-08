@@ -65,6 +65,12 @@ class STransform : public Component {
 
   void setFixedYawAxis(bool useFixed, const SVector3 fixedAxis);
 
+  void setInheritScale(bool inherit);
+
+  void setInheritOrientation(bool inherit);
+
+  void setVisible(bool visible, bool cascade);
+
   // PARENTING
   STransform* const parent();
   void setParent(STransform* parent);

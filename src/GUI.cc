@@ -1,5 +1,9 @@
 #include "GUI.h"
 #include "Graphics.h"
+#include <locale>
+#include <iostream>
+#include <string>
+#include <sstream>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTexture.h>
 #include <OgreBitwise.h>
@@ -8,10 +12,16 @@ GUI::GUI(Input* input){
   Ogre::Viewport* viewport = Graphics::getSingletonPtr()->defaultViewport();
   width_ = viewport->getActualWidth();
   height_ = viewport->getActualHeight();
-  awe_webcore_initialize(false,true,awe_string_empty(),awe_string_empty(),awe_string_empty(),AWE_LL_VERBOSE,awe_string_empty(),awe_string_empty(),awe_string_empty(),true, 0, false,awe_string_empty());
+  awe_webcore_initialize(false,true,false,
+                         awe_string_empty(), awe_string_empty(),awe_string_empty(),
+                         AWE_LL_VERBOSE, false,
+                         awe_string_empty(),
+                         true,
+                         awe_string_empty(),awe_string_empty(), awe_string_empty(), awe_string_empty(),awe_string_empty(),awe_string_empty(),
+                         true, 0, false, false, awe_string_empty());
   // Create a new WebView instance with a certain width and height, using the
   // WebCore we just created
-  webView_ = awe_webcore_create_webview(width_, height_);
+  webView_ = awe_webcore_create_webview(width_, height_, false);
   SString page = "../../media/ui/test.html";
   awe_webview_set_transparent(webView_, true);
   url_str_ = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
@@ -27,21 +37,28 @@ GUI::GUI(Input* input){
   trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);
   trayManager_->showLogo(OgreBites::TL_BOTTOMRIGHT);
   trayManager_->hideCursor();
-  input->setGUI(this, this);
   counter = 0.0f;
-  for (int i = 0; i < 10000; i++){
+  input->setGUI(this, this);
+}
+
+void GUI::initialise() {
+  bool loaded = false;
+  for (int i = 0; i < 1000; i++){
     // We must call WebCore::update in our update loop.
     awe_webcore_update();
     if (!awe_webview_is_loading_page(webView_)){
         //Sleep(100);
         awe_webcore_update();
+        loaded = true;
+        LOG("loaded at = "+STRING(i));
         break;
     }
     // Sleep a little bit so we don't consume too much CPU while waiting
     // for the page to finish loading.
     //Sleep(1);
   }
-  displayWebView();
+  if(loaded)
+    displayWebView();
   awe_webview_focus(webView_);
 }
 
@@ -135,8 +152,6 @@ void GUI::displayWebView(){
   // For new data, because of the way HardwarePixelBuffers work (no copy
   // subregions from *Memory*), we have to copy each line over individually
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
-    if(!temp_)
-      temp_ = new unsigned char[awe_renderbuffer_get_width(renderBuffer)*awe_renderbuffer_get_height(renderBuffer)*4];
     //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
     Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer), awe_renderbuffer_get_height(renderBuffer), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer)));
     pixelBuffer->blitFromMemory(pbox);
@@ -162,29 +177,17 @@ bool GUI::keyReleased(const OIS::KeyEvent &keyEventRef) {
 
 bool GUI::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
   awe_webview_inject_mouse_down(webView_,  AWE_MB_LEFT);
-  if (trayManager_->injectMouseDown(evt, id))
-    return true;
-    /* normal mouse processing here... */
   return false;
 }
 
 bool GUI::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
   awe_webview_inject_mouse_up(webView_,  AWE_MB_LEFT);
-  if (trayManager_->injectMouseUp(evt, id))
-    return false;
-  /* normal mouse processing here... */
   return false;
 }
 
 bool GUI::mouseMoved(const OIS::MouseEvent& evt) {
   awe_webview_inject_mouse_move(webView_, evt.state.X.abs, evt.state.Y.abs);
-  if (trayManager_->injectMouseMove(evt))
-    return true;
   return false;
-}
-
-void GUI::showLosingText(){
-  trayManager_->showOkDialog("You have lost!", "Do not despair, try again!");
 }
 
 void GUI::loadResource(Ogre::Resource* resource){
@@ -224,12 +227,30 @@ void GUI::reload(){
 }
 
 SString GUI::pollCommands(){
+  if (awe_webview_is_loading_page(webView_))
+    return SString(";");
   awe_string* js = awe_string_create_from_ascii("pollCommands();", strlen("pollCommands();"));
-  awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 0);
-  awe_string* result_string = awe_jsvalue_to_string(res);
-  char* str = new char[awe_string_get_length(result_string)];
-  awe_string_to_utf8(result_string, str, awe_string_get_length(result_string));
+  awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 30);
+  if(awe_jsvalue_get_type(res) == JSVALUE_TYPE_NULL || !res){
+    awe_string_destroy(js);
+    awe_jsvalue_destroy(res);
+    return SString(";");
+  } else if (awe_jsvalue_get_type(res) == JSVALUE_TYPE_STRING){ // warning: magic! :D
+    awe_string* result_string = awe_jsvalue_to_string(res);
+    size_t len = awe_string_to_utf8(result_string, NULL, 0);
+    wchar_t wchr[len];
+    awe_string_to_wide(result_string, wchr, len);
+    std::wstring str(wchr);
+    std::ostringstream stm ;
+    const std::ctype<char>& ctfacet = std::use_facet< std::ctype<char> >( stm.getloc() ) ;
+    for( size_t i=0 ; i<len ; ++i )
+      stm << ctfacet.narrow( str[i], 0 ) ;
+    awe_string_destroy(result_string);
+    awe_jsvalue_destroy(res);
+    awe_string_destroy(js);
+    return SString(stm.str());
+  }
   awe_jsvalue_destroy(res);
-  awe_string_destroy(result_string);
-  return SString(str);
+  awe_string_destroy(js);
+  return SString(";");
 }

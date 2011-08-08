@@ -3,9 +3,9 @@
 
 #include "common.h"
 #include <OgreLight.h>
-#include "Component.h"
+#include "MovableObject.h"
 
-class SLight : public Component {
+class SLight : public SMovableObject {
  public:
   SLight(Ogre::Light::LightTypes type);
 
@@ -19,6 +19,8 @@ class SLight : public Component {
   void setDiffuseColour(Ogre::ColourValue diffuse_colour);
   /// Set specular colour
   void setSpecularColour(Ogre::ColourValue specular_colour);
+
+  SAxisAlignedBox getBoundingBox() const;
 
   /// Sets this light the light which is used to compute lightmaps for terrains
   void setAsTerrainLight();

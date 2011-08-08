@@ -3,12 +3,12 @@
 
 #include "common.h"
 #include <OgreEntity.h>
-#include "Component.h"
+#include "MovableObject.h"
 
 /**
  * @brief Mesh (triangle appearance) component of a GameObject
  */
-class SMesh : public Component {
+class SMesh : public SMovableObject {
  public:
   /// Create an empty Mesh component (mesh can be changed at any time)
   SMesh();
@@ -32,7 +32,7 @@ class SMesh : public Component {
 
   void setMaterialName(SString materialName);
 
-  const Ogre::AxisAlignedBox* getBounds();
+  SAxisAlignedBox getBoundingBox() const;
 
   SReal getBoundingSphereRadius() const;
 
@@ -51,6 +51,8 @@ class SMesh : public Component {
 
   /// true if there is a proper entity; if false, this should NOT enter hierarchy
   bool valid_;
+
+  STransform* transform_;
  private:
 
   SString meshname_;

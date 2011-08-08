@@ -18,8 +18,4 @@ class StormfighterApp {
   void setPhysicsDeltaTime(SReal pdt);
 
   SReal inline physicsDeltaTime();
-
-  // game specific
-  void lose();
-  void win();
 };

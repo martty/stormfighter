@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "Light.h"
 #include "Primitive.h"
+#include "ManualObject.h"
 
 #include "RigidBody.h"
 #include "SphereCollider.h"

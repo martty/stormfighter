@@ -62,27 +62,30 @@ class GameObject {
   void addChild(GameObject* go);
   /// Set parent GameObject
   void setParent(GameObject* go);
+  GameObject* parent(); /// Parent of this GameObject
 
   ///Find object with given name
   GameObject* find(const SString& name);
   ///Find object
   GameObject* find(const GameObject* go);
 
-  /// Removes child from hierarchy (does NOT destroy)
-  void removeChild(GameObject* go);
   ///Destroy all children (call their destructors)
   void clearChildren();
+
+  SAxisAlignedBox getBoundingBox();
 
  protected:
   GameObject* next(); ///The next GameObject in the list
   GameObject* children(); ///The root of the children list
-  GameObject* parent(); /// Parent of this GameObject
   void setNext(GameObject* go); ///Set next sibling in list(use this for insertation&deletion)
 
  private:
   void init(bool isRoot);
   /// Handling unique names in the format of name_n
   SString static getUniqueName(SString basename);
+
+  /// Removes child from hierarchy (does NOT destroy)
+  void removeChild(GameObject* go);
 
   /// Adds a collision (for Physics)
   void addCollision(CollisionData* collisionData);

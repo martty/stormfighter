@@ -35,14 +35,15 @@ class GameObject {
   void addChild(GameObject* go);
   /// Set parent GameObject
   void setParent(GameObject* go);
+  GameObject* parent(); /// Parent of this GameObject
 
   ///Find object with given name
   GameObject* find(const SString& name);
   ///Find object
   GameObject* find(const GameObject* go);
 
-  /// Removes child from hierarchy (does NOT destroy)
-  void removeChild(GameObject* go);
   ///Destroy all children (call their destructors)
   void clearChildren();
+
+  SAxisAlignedBox getBoundingBox();
 };
