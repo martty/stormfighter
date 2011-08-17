@@ -26,9 +26,9 @@ class SMesh : public SMovableObject {
   virtual unsigned int onAdd(SString goname, STransform* transform);
 
   /// Set or change mesh
-//  void setMesh(SString meshname);
+  void setMeshName(SString meshname);
   /// Get mesh name
-//  SString meshname();
+  SString meshName();
 
   void setMaterialName(SString materialName);
 
@@ -48,6 +48,7 @@ class SMesh : public SMovableObject {
 
  protected:
   Ogre::Entity* entity_;
+  SString goname_;
 
   /// true if there is a proper entity; if false, this should NOT enter hierarchy
   bool valid_;

@@ -46,6 +46,15 @@ GameObject* Hierarchy::_cloneGameObject(SString name){
   return go;
 }
 
+void Hierarchy::addChildToRoot(GameObject* go){
+  if(go != root_)
+    root_->addChild(go);
+}
+
+GameObject* Hierarchy::getRoot(){
+  return root_;
+}
+
 void Hierarchy::destroyGameObject(SString name){
   return;
 }

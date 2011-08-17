@@ -2,7 +2,7 @@ class SScript : public Component{
  public:
   SScript* clone() const { return new SScript(type_, calls_); }
 
-  const SString type() const {return type_;}
+  tolua_readonly tolua_property SString type;
 };
 
 class SLuaScript : public SScript{

@@ -20,6 +20,7 @@ class GameObject {
 
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
+  ComponentVector allComponents(); /// Returns all components in this GameObject
   Component* component(const SString& type); /// Returns component with given type
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
   STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
@@ -35,7 +36,11 @@ class GameObject {
   void addChild(GameObject* go);
   /// Set parent GameObject
   void setParent(GameObject* go);
+  /// Sets the root as this GameObjects's parent
+  void reParent();
   GameObject* parent(); /// Parent of this GameObject
+
+  GameObjectList children(); /// Returns all children of this GameObject
 
   ///Find object with given name
   GameObject* find(const SString& name);

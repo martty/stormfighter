@@ -146,11 +146,18 @@ void GameObject::setParent(GameObject* parent){
   parent->addChild(this);
 }
 
+void GameObject::reParent(){
+  // reparenting root is not allowed
+  if(isRoot_)
+    return;
+  application_->hierarchy()->addChildToRoot(this);
+}
+
 GameObject* GameObject::next(){
     return next_;
 }
 
-GameObject* GameObject::children(){
+GameObject* GameObject::child(){
     return children_;
 }
 
@@ -162,6 +169,13 @@ void GameObject::setNext(GameObject* go){
     next_ = go;
 }
 
+GameObjectList GameObject::children(){
+  GameObjectList golist;
+  for(GameObject* g = children_; g != NULL; g = g->next()){
+    golist.push_back(g);
+  }
+  return golist;
+}
 // BFS implementation of find (probably more efficient in usual scenegraphs)
 GameObject* GameObject::find(const SString& name){
   GameObject* found = NULL;
@@ -242,6 +256,14 @@ Component* GameObject::component(const SString& name){
 
 bool GameObject::hasComponent(const SString& name) const{
   return ( components_.find(name) != components_.end() );
+}
+
+ComponentVector GameObject::allComponents() {
+  ComponentVector all;
+  for(ComponentMap::iterator it = components_.begin(); it != components_.end(); it++){
+    all.push_back((*it).second);
+  }
+  return all;
 }
 
 STransform* GameObject::transform(){

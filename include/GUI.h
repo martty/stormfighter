@@ -38,6 +38,8 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
   awe_webview* webView_;
   awe_string* url_str_;
 
+  int getWebKeyFromOISKey(OIS::KeyCode kc);
+
   unsigned char* temp_;
 
   SReal counter;

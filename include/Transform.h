@@ -38,19 +38,19 @@ class STransform : public Component {
   SString const type() const { return "Transform"; }
 
   // POSITION, ORIENTATION, SCALE (local space)
-  SVector3 const position() const{return node_->getPosition();}
-  SQuaternion const orientation() const{return node_->getOrientation();}
-  SVector3 const scale() const{return node_->getScale();}
+  const SVector3& position() const{return node_->getPosition();}
+  const SQuaternion& orientation() const{return node_->getOrientation();}
+  const SVector3& scale() const{return node_->getScale();}
 
   void setPosition(const SVector3 position);
   void setOrientation(const SQuaternion orientation);
   void setScale(const SVector3 scale){node_->setScale(scale);}
 
-  Ogre::Matrix4 worldMatrix() const;
+  const Ogre::Matrix4& worldMatrix() const;
 
   // POSITION, ORIENTATION (world space)
-  SVector3 const worldPosition() const;
-  SQuaternion const worldOrientation() const;
+  const SVector3& worldPosition() const;
+  const SQuaternion& worldOrientation() const;
 
   // ADVANCED TRANSFORMS
 
@@ -58,6 +58,8 @@ class STransform : public Component {
 
   void move(const SVector3 delta); /// equivalent of setPosition(position()+delta)
   void moveRelative(const SVector3 delta); /// equivalent of setPosition(position()+orientation*delta)
+
+  void rotate(const SQuaternion delta); /// equivalent of setOrientation(orientation() * delta)
 
   void yaw(const Ogre::Radian angle);
   void pitch(const Ogre::Radian angle);

@@ -79,6 +79,10 @@ bool Input::isKeyDown(const OIS::KeyCode key){
   return keyboard_->isKeyDown(key);
 }
 
+bool Input::isModifierDown(const OIS::Keyboard::Modifier mod){
+  return keyboard_->isModifierDown(mod);
+}
+
 bool Input::isButtonDown(const OIS::MouseButtonID button){
   return mouse_->getMouseState().buttonDown(button);
 }

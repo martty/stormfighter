@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <Awesomium/KeyboardCodes.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTexture.h>
 #include <OgreBitwise.h>
@@ -168,10 +169,164 @@ bool GUI::keyPressed(const OIS::KeyEvent& evt){
       trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     }
   }
+  awe_webkeyboardevent wke;
+  wke.virtual_key_code = 0;
+  wke.native_key_code = evt.key;
+  wke.is_system_key = false;
+
+  // MODIFIERS (ALT, SHIFT, ...)
+  int modifiers = 0;
+  if (evt.key == OIS::KC_LMENU || evt.key == OIS::KC_RMENU)
+      modifiers = modifiers | AWE_WKM_ALT_KEY;
+  if (evt.key == OIS::KC_LCONTROL || evt.key == OIS::KC_RCONTROL)
+      modifiers = modifiers | AWE_WKM_CONTROL_KEY;
+  if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
+      modifiers = modifiers | AWE_WKM_META_KEY;
+  if (evt.key == OIS::KC_LSHIFT || evt.key == OIS::KC_RSHIFT)
+      modifiers = modifiers | AWE_WKM_SHIFT_KEY;
+  if (evt.key == OIS::KC_NUMLOCK)
+      modifiers = modifiers | AWE_WKM_IS_KEYPAD;
+  wke.modifiers = (_awe_webkey_modifiers)modifiers;
+
+  wke.virtual_key_code = getWebKeyFromOISKey(evt.key);
+
+  if(evt.text){
+    wke.text[0] = (wchar_t) evt.text;
+    wke.type = AWE_WKT_CHAR;
+    awe_webview_inject_keyboard_event( webView_, wke );
+  }
+  wke.type = AWE_WKT_KEYDOWN;
+  awe_webview_inject_keyboard_event( webView_, wke );
+
   return false;
 }
 
-bool GUI::keyReleased(const OIS::KeyEvent &keyEventRef) {
+int GUI::getWebKeyFromOISKey(OIS::KeyCode key){
+    #define mapKey(a, b) case OIS::KC_##a: return Awesomium::KeyCodes::AK_##b;
+    switch(key){
+      mapKey(BACK, BACK)
+      mapKey(TAB, TAB)
+      mapKey(RETURN, RETURN)
+      mapKey(ESCAPE, ESCAPE)
+      mapKey(SPACE, SPACE)
+      mapKey(ADD, OEM_PLUS)
+      mapKey(COMMA, OEM_COMMA)
+      mapKey(MINUS, OEM_MINUS)
+      mapKey(PERIOD, OEM_PERIOD)
+      mapKey(SLASH, OEM_2)
+      mapKey(0, 0)
+      mapKey(1, 1)
+      mapKey(2, 2)
+      mapKey(3, 3)
+      mapKey(4, 4)
+      mapKey(5, 5)
+      mapKey(6, 6)
+      mapKey(7, 7)
+      mapKey(8, 8)
+      mapKey(9, 9)
+      mapKey(COLON, OEM_1)
+      mapKey(SEMICOLON, OEM_1)
+      mapKey(EQUALS, OEM_PLUS)
+      mapKey(LBRACKET, OEM_4)
+      mapKey(RBRACKET, OEM_6)
+      mapKey(A, A)
+      mapKey(B, B)
+      mapKey(C, C)
+      mapKey(D, D)
+      mapKey(E, E)
+      mapKey(F, F)
+      mapKey(G, G)
+      mapKey(H, H)
+      mapKey(I, I)
+      mapKey(J, J)
+      mapKey(K, K)
+      mapKey(L, L)
+      mapKey(M, M)
+      mapKey(N, N)
+      mapKey(O, O)
+      mapKey(P, P)
+      mapKey(Q, Q)
+      mapKey(R, R)
+      mapKey(S, S)
+      mapKey(T, T)
+      mapKey(U, U)
+      mapKey(V, V)
+      mapKey(W, W)
+      mapKey(X, X)
+      mapKey(Y, Y)
+      mapKey(Z, Z)
+      mapKey(DELETE, DELETE)
+      mapKey(NUMPAD0, NUMPAD0)
+      mapKey(NUMPAD1, NUMPAD1)
+      mapKey(NUMPAD2, NUMPAD2)
+      mapKey(NUMPAD3, NUMPAD3)
+      mapKey(NUMPAD4, NUMPAD4)
+      mapKey(NUMPAD5, NUMPAD5)
+      mapKey(NUMPAD6, NUMPAD6)
+      mapKey(NUMPAD7, NUMPAD7)
+      mapKey(NUMPAD8, NUMPAD8)
+      mapKey(NUMPAD9, NUMPAD9)
+      mapKey(DECIMAL, DECIMAL)
+      mapKey(DIVIDE, DIVIDE)
+      mapKey(MULTIPLY, MULTIPLY)
+      mapKey(NUMPADENTER, SEPARATOR)
+      mapKey(DOWN, DOWN)
+      mapKey(RIGHT, RIGHT)
+      mapKey(LEFT, LEFT)
+      mapKey(INSERT, INSERT)
+      mapKey(HOME, HOME)
+      mapKey(END, END)
+      mapKey(F1, F1)
+      mapKey(F2, F2)
+      mapKey(F3, F3)
+      mapKey(F4, F4)
+      mapKey(F5, F5)
+      mapKey(F6, F6)
+      mapKey(F7, F7)
+      mapKey(F8, F8)
+      mapKey(F9, F9)
+      mapKey(F10, F10)
+      mapKey(F11, F11)
+      mapKey(F12, F12)
+      mapKey(F13, F13)
+      mapKey(F14, F14)
+      mapKey(F15, F15)
+      mapKey(NUMLOCK, NUMLOCK)
+      mapKey(RSHIFT, RSHIFT)
+      mapKey(LSHIFT, LSHIFT)
+      mapKey(RCONTROL, RCONTROL)
+      mapKey(LCONTROL, LCONTROL)
+      mapKey(LWIN, LWIN)
+      mapKey(RWIN, RWIN)
+    default: return Awesomium::KeyCodes::AK_UNKNOWN;
+    }
+    #undef mapKey
+}
+
+bool GUI::keyReleased(const OIS::KeyEvent &evt) {
+  awe_webkeyboardevent wke;
+  wke.virtual_key_code = 0;
+  wke.native_key_code = evt.key;
+  wke.is_system_key = false;
+
+  // MODIFIERS (ALT, SHIFT, ...)
+  int modifiers = 0;
+  if (evt.key == OIS::KC_LMENU || evt.key == OIS::KC_RMENU)
+      modifiers = modifiers | AWE_WKM_ALT_KEY;
+  if (evt.key == OIS::KC_LCONTROL || evt.key == OIS::KC_RCONTROL)
+      modifiers = modifiers | AWE_WKM_CONTROL_KEY;
+  if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
+      modifiers = modifiers | AWE_WKM_META_KEY;
+  if (evt.key == OIS::KC_LSHIFT || evt.key == OIS::KC_RSHIFT)
+      modifiers = modifiers | AWE_WKM_SHIFT_KEY;
+  if (evt.key == OIS::KC_NUMLOCK)
+      modifiers = modifiers | AWE_WKM_IS_KEYPAD;
+  wke.modifiers = (_awe_webkey_modifiers)modifiers;
+
+  wke.virtual_key_code = getWebKeyFromOISKey(evt.key);
+
+  wke.type = AWE_WKT_KEYUP;
+  awe_webview_inject_keyboard_event( webView_, wke );
   return false;
 }
 

@@ -71,6 +71,7 @@ class Input {
   void capture();
 
   bool isKeyDown(const OIS::KeyCode key);
+  bool isModifierDown(const OIS::Keyboard::Modifier mod);
   bool isButtonDown(const OIS::MouseButtonID button);
 
   int axisRelative(Axis axis);
@@ -88,8 +89,6 @@ class GUI  {
   SString pollCommands();
 };
 
-typedef std::vector<GameObject*> GameObjectList;
-
 class Hierarchy {
  public:
   void update();
@@ -102,6 +101,7 @@ class Hierarchy {
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
 
+  GameObject* getRoot();
 
   /// Returns the whole hierarchy (DFS)
   SString debug();

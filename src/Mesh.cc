@@ -28,6 +28,7 @@ SMesh* SMesh::clone() const{
 
 unsigned int SMesh::onAdd(SString goname, STransform* transform){
   transform_ = transform;
+  goname_ = goname;
   if(meshname_.empty()){
     valid_ = false;
   } else {
@@ -39,6 +40,22 @@ unsigned int SMesh::onAdd(SString goname, STransform* transform){
   }
   setState(READY);
   return NONE;
+}
+
+void SMesh::setMeshName(SString meshname){
+  if(valid_) {
+    delete entity_;
+  }
+  meshname_ = meshname;
+  entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname_+meshname_, meshname_);
+  Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
+  binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
+  transform_->attachObject(entity_);
+  valid_ = true;
+}
+
+SString SMesh::meshName(){
+  return meshname_;
 }
 
 SAxisAlignedBox SMesh::getBoundingBox() const{

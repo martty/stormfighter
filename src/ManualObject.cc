@@ -23,6 +23,7 @@ unsigned int SManualObject::onAdd(SString goname, STransform* transform){
   manual_->setDynamic(!static_);
   valid_ = false;
   setState(PREPARED);
+  return NONE;
 }
 
   // ManualObject methods

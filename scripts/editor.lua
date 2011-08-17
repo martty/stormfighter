@@ -10,6 +10,7 @@ Editor.settings.advanced.gui_poll_fps = 10;
 
 Editor.settings.manipulator = {};
 Editor.settings.manipulator.translateFactor = 0.001;
+Editor.settings.manipulator.rotateFactor = 0.0001;
 
 Editor.internal.counters = {}; -- timing
 Editor.internal.counters.gui = 0;
@@ -31,6 +32,7 @@ function Editor:init()
   self:addKey(OIS.KC_R);
   self:addKey(OIS.KC_H);
   self:addKey(OIS.KC_P);
+  self:addKey(OIS.KC_T);
   self:initialiseManipulator();
 end
 
@@ -152,32 +154,43 @@ function Editor:update()
     if(result.hitObject) then
       local goname = result.hitObject:name();
       -- GUI:executeJS("showInspector('"..result.hitObject:name().."');");
+      print(goname);
       if(goname:find("manipulator-")) then -- we picked a manipulator
         self:selectManipulatorSide(goname);
       else
         self:showManipulator(goname);
+        self:openInspector(goname);
       end
     else
       self:hideManipulator();
     end
   end
   if(self:isMouseDragged()) then
-    -- woo translation now!
     local a,drag_start,drag_end = self:isMouseDragged();
+    local drag = drag_end-drag_start;
+    local drag_length = drag:length();
     if(self.internal.manipulator.isSelected) then
-      local drag = drag_end-drag_start;
-      local drag_length = drag:length();
-      local angle = drag:angleBetween(SVector2(0,1)):valueDegrees();
-      local dir = 1;
-      if(angle > 90) then
-        dir = 1;
-      else
-        dir = -1;
-      end
-      if(self.internal.manipulator.currentSide) then -- restricted translate
-        local normal = SVector3(self.internal.manipulator.normal); --copy
-        normal = normal * drag_length * self.settings.manipulator.translateFactor * dir;
-        self.internal.manipulator.selection:transform():move(normal);
+      if(Input:isModifierDown(OIS.Modifier.Alt)) then --rotate
+        if(self.internal.manipulator.currentSide) then -- restricted translate
+          local normal = SVector3(self.internal.manipulator.normal); --copy
+          local rot = SQuaternion(SQuaternion.IDENTITY);
+          rot:FromAngleAxis(SRadian(drag_length*self.settings.manipulator.rotateFactor), normal);
+          self.internal.manipulator.selection:transform():rotate(rot);
+        end
+      else --translate
+        -- woo translation now!
+        local angle = drag:angleBetween(SVector2(0,1)):valueDegrees();
+        local dir = 1;
+        if(angle > 90) then
+          dir = 1;
+        else
+          dir = -1;
+        end
+        if(self.internal.manipulator.currentSide) then -- restricted translate
+          local normal = SVector3(self.internal.manipulator.normal); --copy
+          normal = normal * drag_length * self.settings.manipulator.translateFactor * dir;
+          self.internal.manipulator.selection:transform():move(normal);
+        end
       end
     else
       --show selection box!
@@ -194,6 +207,12 @@ function Editor:update()
         end
       end
     end
+  end
+  if(self:isKeyPressed(OIS.KC_I)) then
+    self:saveScene()
+  end
+  if(self:isKeyPressed(OIS.KC_T)) then
+    self:_test();
   end
   if(self:isKeyPressed(OIS.KC_R)) then
     -- reload UI
@@ -379,8 +398,8 @@ function Editor:showManipulator(goname)
   go:addChild(self.internal.manipulator.go);
   self.internal.manipulator.isSelected = true;
   self.internal.manipulator.selection = go;
-  self.internal.manipulator.go:transform():setPosition(bbox:getCenter());
-  self.internal.manipulator.go:transform():setScale(bbox:getSize());
+  self.internal.manipulator.go:transform().position = (bbox:getCenter());
+  self.internal.manipulator.go:transform().scale = (bbox:getSize());
   self.internal.manipulator.go:transform():setVisible(true, true);
 end
 
@@ -422,7 +441,53 @@ end
 
 function Editor:hideManipulator()
   local go = self.internal.manipulator.go;
-  go:parent():removeChild(go);
+  self.internal.manipulator.isSelected = false;
+  self.internal.manipulator.selection = nil;
+  if(self.internal.manipulator.currentSide) then
+    self:deselectCurrentManipulatorSide();
+  end
+  go:reParent();
+  go:transform().scale = SVector3(0,0,0);
+  go:transform():setVisible(false, true);
+end
+
+function Editor:saveScene()
+  print('saving');
+  -- strategy :
+  -- save off hierarchy (most important)
+  -- save off module states (if needed)
+  -- save off editor state & misc
+  local scenename = "test.object.lua"; -- this should be a setable thing
+  local root = Hierarchy:getRoot();
+  local plat = root:find('platform');
+  --plat.components
+  local seri = System:serializeGameObject(plat);
+  local f = assert(io.open(scenename, 'w'));
+  print(seri);
+  f:write(seri);
+  f:close();
+  System:deserialize(seri);
+end
+
+function Editor:openInspector(goname)
+  GUI:executeJS("inspector.clear(); inspector.show();");
+  local go = Hierarchy:find(goname);
+  local cmps = go:allComponents();
+  local tr = go:component('Transform');
+  for i=0,cmps:size()-1 do
+    local otype = 'S'..cmps[i].type;
+    cmps[i] = tolua.cast(cmps[i], otype);
+    print("inspector.addComponent('"..cmps[i].type.."');");
+    GUI:executeJS("inspector.addComponent('"..cmps[i].type.."');");
+    if(System.annotations[otype]) then
+      for field,v in pairs(System.annotations[otype].properties) do
+        print("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."',"..System:makeSetCommand(cmps[i], field)..");");
+        GUI:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."',"..System:makeSetCommand(cmps[i], field)..");");
+        print("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..System:simpleSerialize(System:getField(cmps[i], field)).."');");
+        GUI:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..System:simpleSerialize(System:getField(cmps[i], field)).."');");
+      end
+    end
+  end
 end
 
 function Editor:_testMouseFunctions()
@@ -437,5 +502,12 @@ function Editor:_testMouseFunctions()
   end
   if(self:isMouseMoved()) then
     print('move');
+  end
+end
+
+function Editor:_test()
+  for k,v in pairs(System.tracked_objects) do
+    --print(tolua.type(v));
+    print(k .. ' ' .. tolua.type(v));
   end
 end

@@ -30,6 +30,7 @@ class Input : public OIS::KeyListener, OIS::MouseListener {
   bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
   bool isKeyDown(const OIS::KeyCode key);
+  bool isModifierDown(const OIS::Keyboard::Modifier mod);
   bool isButtonDown(const OIS::MouseButtonID button);
 
   int axisRelative(Axis axis);

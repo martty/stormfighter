@@ -1,5 +1,7 @@
 $#include "common.h"
 
+$pfile "include/stdlib.pkg"
+
 typedef float Ogre::Real;
 
 $pfile "include/core_ogre.pkg"
@@ -34,8 +36,12 @@ typedef Ogre::AxisAlignedBox SAxisAlignedBox;
 /// An std::vector of SStrings
 typedef std::vector<SString> StringVector;
 
+typedef std::vector<GameObject*> GameObjectList;
+
 // include everything
 $#include "LuaForward.h"
+
+TOLUA_PROPERTY_TYPE(qt);
 
 $pfile "include/core_components_graphics.pkg"
 $pfile "include/core_components_physics.pkg"

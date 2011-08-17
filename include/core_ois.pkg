@@ -152,4 +152,12 @@ enum MouseButtonID
 		MB_Left = 0, MB_Right, MB_Middle,
 		MB_Button3, MB_Button4,	MB_Button5, MB_Button6,	MB_Button7
 	};
+class Keyboard {
+enum Modifier
+		{
+			Shift = 0x0000001,
+			Ctrl  = 0x0000010,
+			Alt   = 0x0000100
+		};
+  };
 };

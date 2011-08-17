@@ -38,6 +38,7 @@ class GameObject {
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
   Component* component(const SString& type); /// Returns component with given type
+  ComponentVector allComponents(); /// Returns all components in this GameObject
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
   STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
 
@@ -62,7 +63,10 @@ class GameObject {
   void addChild(GameObject* go);
   /// Set parent GameObject
   void setParent(GameObject* go);
+  /// Sets the root as this GameObjects's parent
+  void reParent();
   GameObject* parent(); /// Parent of this GameObject
+  GameObjectList children(); /// Returns all children of this GameObject
 
   ///Find object with given name
   GameObject* find(const SString& name);
@@ -72,12 +76,13 @@ class GameObject {
   ///Destroy all children (call their destructors)
   void clearChildren();
 
+  /// Gets an AABB which bounds this GameObject and it's descendants
   SAxisAlignedBox getBoundingBox();
 
  protected:
   GameObject* next(); ///The next GameObject in the list
-  GameObject* children(); ///The root of the children list
-  void setNext(GameObject* go); ///Set next sibling in list(use this for insertation&deletion)
+  GameObject* child(); ///The root of the children list
+  void setNext(GameObject* go); ///Set next sibling in list(use this for insertion&deletion)
 
  private:
   void init(bool isRoot);

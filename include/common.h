@@ -46,6 +46,9 @@ class GameObject;
 class Component;
 class StormfighterApp;
 
+/// An std::vector of GameObjects
+typedef std::vector<GameObject*> GameObjectList;
+
 /// Exception class
 class SException : public std::exception {
  public:

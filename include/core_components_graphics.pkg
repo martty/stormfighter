@@ -1,11 +1,8 @@
 class Component{
  public:
-  Component();
-  ~Component();
+  tolua_readonly tolua_property SString type;
 
-  const SString type() const = 0;
-
-  Component* clone() const = 0;
+  Component* clone() const;
 
   void onInit();
 
@@ -19,7 +16,7 @@ class Component{
 
   enum State {CREATED, PREPARED, READY};
 
-  State state() const;
+  tolua_readonly tolua_property State state;
 
   enum Calls {
     NONE = 0, // No calls needed
@@ -36,25 +33,20 @@ class Component{
 
 class STransform : public Component {
  public:
-  ~STransform();
 
   /// The Transform component's type string is @b "Transform"
-  const SString type() const;
+  tolua_readonly tolua_property SString type;
 
   // POSITION, ORIENTATION, SCALE (local space)
-  SVector3 position() const;
-  SQuaternion orientation() const;
-  SVector3 scale() const;
+  tolua_property SVector3 position;
+  tolua_property SQuaternion orientation;
+  tolua_property SVector3 scale;
 
-  void setPosition(const SVector3 position);
-  void setOrientation(const SQuaternion orientation);
-  void setScale(const SVector3 scale){node_->setScale(scale);}
-
-  Ogre::Matrix4 worldMatrix() const;
+  const Ogre::Matrix4& worldMatrix() const;
 
   // POSITION, ORIENTATION (world space)
-  SVector3 worldPosition() const;
-  SQuaternion worldOrientation() const;
+  tolua_readonly tolua_property SVector3 worldPosition;
+  tolua_readonly tolua_property SQuaternion worldOrientation;
 
   // ADVANCED TRANSFORMS
 
@@ -62,6 +54,8 @@ class STransform : public Component {
 
   void move(const SVector3 delta); /// equivalent of setPosition(position()+delta)
   void moveRelative(const SVector3 delta); /// equivalent of setPosition(position()+orientation*delta)
+
+  void rotate(const SQuaternion delta);
 
   void yaw(const Ogre::Radian angle);
   void pitch(const Ogre::Radian angle);
@@ -90,11 +84,11 @@ class SMesh : public SMovableObject {
   SMesh();
   SMesh(SString meshname);
 
-  ~SMesh();
-
-  const SString type() const;
+  tolua_readonly tolua_property SString type;
 
   SMesh* clone() const;
+
+  tolua_property SString meshName;
 
   void setMaterialName(SString materialName);
 
@@ -118,7 +112,7 @@ class SPrimitive : public SMesh {
 
   SPrimitive* clone() const;
 
-  const SString type() const;
+  tolua_readonly tolua_property SString type;
 };
 
 class SCamera : public SMovableObject {
@@ -128,7 +122,7 @@ class SCamera : public SMovableObject {
 
   SCamera* clone() const;
 
-  const SString type() const;
+  tolua_readonly tolua_property SString type;
 
   void setNearClipDistance(SReal distance);
   void setAspectRatio(SReal ratio);
@@ -141,7 +135,7 @@ class SLight : public SMovableObject {
  public:
   SLight(Ogre::Light::LightTypes type);
 
-  const SString type() const;
+  tolua_readonly tolua_property SString type;
 
   SLight* clone() const;
 

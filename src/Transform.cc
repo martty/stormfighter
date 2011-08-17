@@ -54,11 +54,11 @@ STransform* STransform::clone() const{
   return ntf;
 }
 
-const SVector3 STransform::worldPosition() const{
+const SVector3& STransform::worldPosition() const{
   return node_->convertLocalToWorldPosition(SVector3::ZERO);
 }
 
-const SQuaternion STransform::worldOrientation() const{
+const SQuaternion& STransform::worldOrientation() const{
   return node_->convertLocalToWorldOrientation(SQuaternion::IDENTITY);
 }
 
@@ -130,6 +130,10 @@ void STransform::moveRelative(SVector3 delta){
   setPosition(position()+orientation()*delta);
 }
 
+void STransform::rotate(SQuaternion delta){
+  node_->rotate(delta);
+}
+
 void STransform::yaw(SRadian angle){
   node_->yaw(angle);
   _notifyTransformChange();
@@ -149,7 +153,7 @@ void STransform::setFixedYawAxis(bool useFixed, const SVector3 fixedAxis){
   node_->setFixedYawAxis(useFixed, fixedAxis);
 }
 
-Ogre::Matrix4 STransform::worldMatrix() const{
+const Ogre::Matrix4& STransform::worldMatrix() const{
   Ogre::Matrix4 mat(worldOrientation());
   mat.setTrans(position());
   return mat;

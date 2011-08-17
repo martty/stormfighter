@@ -9,8 +9,6 @@
 *
 */
 
-typedef std::vector<GameObject*> GameObjectList;
-
 class Hierarchy {
  public:
   Hierarchy();
@@ -23,6 +21,12 @@ class Hierarchy {
   GameObject* createGameObject(SString name);
   /// internal for cloning
   GameObject* _cloneGameObject(SString name);
+
+  /// Returns the root GO
+  GameObject* getRoot();
+
+  /// adds a child to the root GO
+  void addChildToRoot(GameObject* go);
 
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
