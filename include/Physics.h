@@ -61,7 +61,7 @@ class Physics {
   btCollisionDispatcher* collisionDispatcher_;
   btSequentialImpulseConstraintSolver* solver_;
 
-  DebugDrawer* debugdrawer_;
+  BulletDebugDrawer* debugdrawer_;
   StormfighterApp* application_;
 
   MaskMap collisionGroups_;

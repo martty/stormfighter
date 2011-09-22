@@ -30,6 +30,9 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
 
   SString pollCommands();
 
+  /// checks whether this point is opaque in the GUI, for determining input
+  bool isInGUI(int x, int y);
+
   void initialise();
 
  private:
@@ -37,6 +40,7 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
   OgreBites::SdkTrayManager* trayManager_;
   awe_webview* webView_;
   awe_string* url_str_;
+  awe_renderbuffer* renderBuffer_;
 
   int getWebKeyFromOISKey(OIS::KeyCode kc);
 

@@ -26,6 +26,8 @@ class Ray  {
 };
 
 $pfile "include/OgreMath.pkg"
+$pfile "include/OgrePlane.pkg"
+$pfile "include/OgreSphere.pkg"
 $pfile "include/OgreVector3.pkg"
 $pfile "include/OgreQuaternion.pkg"
 $pfile "include/OgreColourValue.pkg"

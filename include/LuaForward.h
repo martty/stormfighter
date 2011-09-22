@@ -27,6 +27,7 @@
 #include "Input.h"
 #include "GUI.h"
 #include "Scripting.h"
+#include "DebugDrawer.h"
 #include "Graphics.h"
 #include "Logger.h"
 

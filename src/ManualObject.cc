@@ -30,6 +30,11 @@ unsigned int SManualObject::onAdd(SString goname, STransform* transform){
 void SManualObject::begin(SString materialName, OperationType opType){
   manual_->begin(materialName, static_cast<Ogre::RenderOperation::OperationType>(opType));
 }
+
+void SManualObject::finishSection(){
+  manual_->end();
+}
+
 void SManualObject::finish(){
   manual_->end();
   if(static_){
@@ -43,23 +48,23 @@ void SManualObject::finish(){
   }
 }
 
-void SManualObject::position(SVector3 pos){
+void SManualObject::position(const SVector3& pos){
   manual_->position(pos);
 }
 
-void SManualObject::colour(SColourValue col){
+void SManualObject::colour(const SColourValue& col){
   manual_->colour(col);
 }
 
-void SManualObject::normal(SVector3 normal){
+void SManualObject::normal(const SVector3& normal){
   manual_->normal(normal);
 }
 
-void SManualObject::tangent(SVector3 tangent){
+void SManualObject::tangent(const SVector3& tangent){
   manual_->tangent(tangent);
 }
 
-void SManualObject::textureCoord(SVector3 uvw){
+void SManualObject::textureCoord(const SVector3& uvw){
   // DISCARDS 3rd component
   manual_->textureCoord(uvw.x, uvw.y);
 }

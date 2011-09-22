@@ -1,20 +1,30 @@
 #include "Graphics.h"
+#include "DebugDrawer.h"
 #include "Library.h"
 #include "Component.h"
+#include "GameObject.h"
+#include "StormfighterApp.h"
+#include "Hierarchy.h"
 #include <OgreSubMesh.h>
 #include <OgreSubEntity.h>
+#include <OgreMaterialManager.h>
+#include <OgreHardwarePixelBuffer.h>
 
 template<> Graphics* Ogre::Singleton<Graphics>::ms_Singleton = 0;
 
-Graphics::Graphics():root_(NULL), sceneManager_(NULL), renderWindow_(NULL), viewport_(NULL), defaultCamera_(NULL){
+Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app), root_(NULL), sceneManager_(NULL), renderWindow_(NULL), viewport_(NULL), defaultCamera_(NULL){
+  windowTitle_ = windowTitle;
+  rttCamera_ = NULL;
+  debugDrawer_ = NULL;
 }
 
 Graphics::~Graphics(){
+  delete debugDrawer_;
   if(root_)
     delete root_;
 }
 
-bool Graphics::initialize(const SString& windowTitle){
+bool Graphics::initialize(){
   #ifdef _DEBUG
   resourcesCfg_ = "resources_d.cfg";
   pluginsCfg_ = "plugins_d.cfg";
@@ -26,7 +36,7 @@ bool Graphics::initialize(const SString& windowTitle){
   if(!root_->showConfigDialog())
     return false;
 
-  renderWindow_ = root_->initialise(true, windowTitle);
+  renderWindow_ = root_->initialise(true, windowTitle_);
 
   sceneManager_ = root_->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   sceneManager_->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
@@ -37,6 +47,8 @@ bool Graphics::initialize(const SString& windowTitle){
   viewport_->setCamera(defaultCamera_);
 
   renderWindow_->setActive(true);
+
+  debugDrawer_ = new DebugDrawer(sceneManager_, 0.5f);
 
   return true;
 }
@@ -259,4 +271,74 @@ void Graphics::getMeshInformation(Ogre::Entity *entity, size_t &vertex_count, Og
             ibuf->unlock();
             current_offset = next_offset;
           }
+}
+
+StringVector Graphics::getLoadedMaterialNames() {
+  StringVector vec;
+  Ogre::ResourceManager::ResourceMapIterator materialIterator = Ogre::MaterialManager::getSingleton().getResourceIterator();
+  while (materialIterator.hasMoreElements()){
+    vec.push_back(static_cast<Ogre::MaterialPtr>(materialIterator.peekNextValue())->getName());
+    materialIterator.moveNext();
+  }
+  return vec;
+}
+
+void Graphics::renderGameObjectIntoFile(GameObject* go, SString filename, SReal width, SReal height){
+  rttGameObject_ = go;
+  Ogre::TexturePtr rtt_texture = Ogre::TextureManager::getSingleton().createManual("RttTex",
+                                                                                   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                                                   Ogre::TEX_TYPE_2D, width, height,
+                                                                                   0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+  Ogre::RenderTexture *renderTexture = rtt_texture->getBuffer()->getRenderTarget();
+
+  if(!rttCamera_)
+    rttCamera_ = sceneManager_->createCamera("_rttCamera");
+  SAxisAlignedBox box = go->getBoundingBox();
+  rttCamera_->setPosition(go->transform()->position() + SVector3(0,0,box.getSize().z * 2));
+  rttCamera_->lookAt(go->transform()->position());
+  rttCamera_->setAspectRatio(width/height);
+  renderTexture->addViewport(rttCamera_);
+  renderTexture->getViewport(0)->setClearEveryFrame(true);
+  renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+  renderTexture->getViewport(0)->setOverlaysEnabled(false);
+  renderTexture->addListener(this);
+  renderTexture->update();
+  renderTexture->writeContentsToFile(filename);
+  Ogre::TextureManager::getSingleton().remove("RttTex");
+}
+
+void Graphics::tagHierarchyForVisibility(GameObject* start){
+  vismap_[start->name()] = start->transform()->isVisible();
+  GameObjectList chld = start->children();
+  //if(chld.empty()) return;
+  for(GameObjectList::iterator it = chld.begin(); it != chld.end(); it++){
+    tagHierarchyForVisibility(*it);
+  }
+}
+
+void Graphics::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt){
+  GameObject* root = application()->hierarchy()->getRoot();
+  // save of visibility data
+  tagHierarchyForVisibility(root);
+  // hide all
+  root->transform()->setVisible(false, true);
+  // show the one we want to render (and its children)
+  rttGameObject_->transform()->setVisible(true, true);
+
+  setSkyBoxEnabled(false);
+}
+
+void Graphics::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt){
+  // restore visibility data
+  for (std::map<SString, bool>::iterator it = vismap_.begin(); it != vismap_.end(); it++){
+    application()->hierarchy()->find((*it).first)->transform()->setVisible((*it).second, false);
+  }
+  setSkyBoxEnabled(true);
+}
+
+void Graphics::setSkyBoxMaterial(SString mat){
+  skyBoxMaterialName_ = mat;
+}
+void Graphics::setSkyBoxEnabled(bool enable) {
+  sceneManager_->setSkyBox(enable, skyBoxMaterialName_);
 }

@@ -26,14 +26,15 @@ class SManualObject : public SMesh {
   // ManualObject methods
   void begin(SString materialName, OperationType opType);
   // end is a reserved word in lua
+  void finishSection();
   void finish();
 
-  void position(SVector3 pos);
-  void colour(SColourValue col);
-  void normal(SVector3 normal);
-  void tangent(SVector3 tangent);
+  void position(const SVector3& pos);
+  void colour(const SColourValue& col);
+  void normal(const SVector3& normal);
+  void tangent(const SVector3& tangent);
   /// Add texture coordinate, discards w component (UV only)
-  void textureCoord(SVector3 uvw);
+  void textureCoord(const SVector3& uvw);
 
   void index(uint32_t ind);
   void triangle(uint32_t ind1, uint32_t ind2, uint32_t ind3);

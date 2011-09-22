@@ -14,6 +14,11 @@ class Graphics {
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
 
+  void renderGameObjectIntoFile(GameObject* go, SString filename, SReal width, SReal height);
+
+  /// Returns the names of loaded Materials
+  StringVector getLoadedMaterialNames();
+
   /// Set Camera to render on the default viewport
   void setActiveCamera(Ogre::Camera* camera);
   /// Get Camera of the default viewport
@@ -33,6 +38,27 @@ class Graphics {
   SRay activeCameraToViewportRay(SReal screenx, SReal screeny);
 
   SingleRayCastResult closestExactRayQuery(SRay ray);
+
+  DebugDrawer* debugDrawer();
+};
+
+
+
+class DebugDrawer{
+public:
+        void setIcoSphereRecursionLevel(int recursionLevel);
+
+        void drawLine(const Ogre::Vector3 &start, const Ogre::Vector3 &end, const Ogre::ColourValue &colour);
+        void drawCircle(const Ogre::Vector3 &centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, bool isFilled = false);
+        void drawCylinder(const Ogre::Vector3 &centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, bool isFilled = false);
+        void drawQuad(const Ogre::Vector3 vertices[4], const Ogre::ColourValue& colour, bool isFilled = false);
+        void drawCuboid(const Ogre::Vector3 vertices[8], const Ogre::ColourValue& colour, bool isFilled = false);
+        void drawSphere(const Ogre::Vector3 &centre, float radius, const Ogre::ColourValue& colour, bool isFilled = false);
+        void drawTetrahedron(const Ogre::Vector3 &centre, float scale, const Ogre::ColourValue& colour, bool isFilled = false);
+
+        bool getEnabled() { return isEnabled; }
+        void setEnabled(bool _isEnabled) { isEnabled = _isEnabled; }
+        void switchEnabled() { isEnabled = !isEnabled; }
 };
 
 struct CollisionData {
@@ -87,6 +113,8 @@ class GUI  {
   void reload();
 
   SString pollCommands();
+
+  bool isInGUI(int x, int y);
 };
 
 class Hierarchy {

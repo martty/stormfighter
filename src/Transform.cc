@@ -53,7 +53,7 @@ STransform* STransform::clone() const{
   STransform* ntf = new STransform(position(), orientation(), scale());
   return ntf;
 }
-
+// TODO: !important this is botched
 const SVector3& STransform::worldPosition() const{
   return node_->convertLocalToWorldPosition(SVector3::ZERO);
 }
@@ -170,4 +170,15 @@ void STransform::setInheritOrientation(bool inherit){
 
 void STransform::setVisible(bool visible, bool cascade){
   node_->setVisible(visible, cascade);
+}
+
+bool STransform::isVisible(){
+  bool isVisible = false;
+  Ogre::SceneNode::ObjectIterator it = node_->getAttachedObjectIterator();
+  while(it.hasMoreElements()){
+    Ogre::MovableObject* mov = it.getNext();
+    if(mov->isVisible())
+      isVisible = true;
+  }
+  return isVisible;
 }

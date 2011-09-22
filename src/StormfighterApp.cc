@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "Logger.h"
+#include "DebugDrawer.h"
 #include "Graphics.h"
 #include "Hierarchy.h"
 #include "Physics.h"
@@ -45,9 +46,9 @@ StormfighterApp::~StormfighterApp(){
 void StormfighterApp::startStormfighter(){
   std::srand ( std::time(NULL) );
   logger_ = new Logger();
-  graphics_ = new Graphics();
+  graphics_ = new Graphics(this, "StormfighterApp v0.8");
 
-  if(!graphics_->initialize("StormfighterApp v0.8"))
+  if(!graphics_->initialize())
       return;
   graphics_->initializeResources();
   log("Initializing input");
@@ -73,7 +74,8 @@ void StormfighterApp::startStormfighter(){
 }
 
 void StormfighterApp::setupStormfighterScene(){
-  graphics_->sceneManager()->setSkyBox(true, "Examples/SpaceSkyBox");
+  graphics_->setSkyBoxMaterial("Examples/SpaceSkyBox");
+  graphics_->setSkyBoxEnabled(true);
 
   // export globals to lua
   scripting_->setGlobal(input_, "Input", "Input");
@@ -186,6 +188,12 @@ bool StormfighterApp::frameStarted(const Ogre::FrameEvent& evt){
   if(input_->isKeyDown(OIS::KC_ESCAPE))
     return false;
   scripting()->executeString("lua_update();");
+  graphics_->debugDrawer()->build();
+  return true;
+}
+
+bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
+  graphics_->debugDrawer()->clear();
   return true;
 }
 

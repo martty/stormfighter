@@ -33,6 +33,7 @@ b:addChild(Hierarchy:createGameObject("whamoo"));
 a:addChild(Hierarchy:createGameObject("damm"));
 local fcc = System:loadComponent('scripts/freecameracontroller.lua');
 cam:addComponent(fcc);
+
 Editor:init();
 
 function lua_update()

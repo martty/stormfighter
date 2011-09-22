@@ -1,8 +1,9 @@
 #ifndef STORMFIGHTER_GRAPHICS_H_
 #define STORMFIGHTER_GRAPHICS_H_
 
-#include "common.h"
+#include "Module.h"
 #include <Terrain/OgreTerrain.h>
+#include <OgreRenderTargetListener.h>
 
 /**
 * @brief Class managing the graphics module (Ogre)
@@ -10,13 +11,18 @@
 *
 */
 
-class Graphics : public Ogre::Singleton<Graphics>{
+class DebugDrawer;
+
+class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTargetListener{
  public:
-  Graphics();
+  Graphics(StormfighterApp* app, const SString& windowTitle);
   ~Graphics();
 
-  bool initialize(const SString& windowTitle);
+  bool initialize();
   void initializeResources();
+
+  virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
+	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
 
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
@@ -24,6 +30,12 @@ class Graphics : public Ogre::Singleton<Graphics>{
   void addFrameListener(Ogre::FrameListener* listener);
 
   void startRendering();
+
+  /// Renders a single GameObject & saves it as a file
+  void renderGameObjectIntoFile(GameObject* go, SString filename, SReal width, SReal height);
+
+  /// Returns the names of loaded Materials
+  StringVector getLoadedMaterialNames();
 
   /// Return a SRay through active camera at (x,y) coordinates
   SRay activeCameraToViewportRay(SReal screenx, SReal screeny);
@@ -46,6 +58,11 @@ class Graphics : public Ogre::Singleton<Graphics>{
 
   /// Get SceneManager
   inline Ogre::SceneManager* sceneManager() const{ return sceneManager_; }
+
+  void setSkyBoxMaterial(SString mat);
+  void setSkyBoxEnabled(bool enable);
+
+  DebugDrawer* debugDrawer(){ return debugDrawer_; }
  private:
   DISALLOW_COPY_AND_ASSIGN(Graphics);
 
@@ -53,10 +70,20 @@ class Graphics : public Ogre::Singleton<Graphics>{
 
   Ogre::SceneManager* sceneManager_;
 
+  DebugDrawer* debugDrawer_;
+
   Ogre::String resourcesCfg_;
   Ogre::String pluginsCfg_;
 
-  Ogre::Camera*	 defaultCamera_;
+  SString windowTitle_;
+  GameObject* rttGameObject_;
+
+  SString skyBoxMaterialName_;
+
+  std::map<SString, bool> vismap_;
+
+  Ogre::Camera* defaultCamera_;
+  Ogre::Camera* rttCamera_;
   Ogre::RenderWindow*	 renderWindow_;
   Ogre::Viewport*	 viewport_;
 
@@ -67,6 +94,7 @@ class Graphics : public Ogre::Singleton<Graphics>{
   void getMeshInformation(Ogre::Entity *entity, size_t &vertex_count, Ogre::Vector3* &vertices, size_t &index_count, Ogre::uint32* &indices,
                                   const Ogre::Vector3 &position, const Ogre::Quaternion &orient,
                                   const Ogre::Vector3 &scale);
+  void tagHierarchyForVisibility(GameObject* start);
 };
 
 #endif // STORMFIGHTER_GRAPHICS_H_

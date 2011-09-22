@@ -60,8 +60,13 @@ SString SMesh::meshName(){
 
 SAxisAlignedBox SMesh::getBoundingBox() const{
   SAxisAlignedBox aabb = entity_->getBoundingBox();
-  if(transform_)
-    aabb.scale(transform_->scale());
+  if(transform_){ // if scale has a negative component, this will assert, so we must pass the abs components
+    SVector3 absscale = transform_->scale();
+    absscale.x = Ogre::Math::Abs(absscale.x);
+    absscale.y = Ogre::Math::Abs(absscale.y);
+    absscale.z = Ogre::Math::Abs(absscale.z);
+    aabb.scale(absscale);
+  }
   return aabb;
 }
 

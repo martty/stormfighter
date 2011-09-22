@@ -40,6 +40,7 @@ class StormfighterApp : public Ogre::FrameListener{
   SReal inline physicsDeltaTime() const { return physicsDeltaTime_; }
 
   bool frameStarted(const Ogre::FrameEvent& evt);
+  bool frameEnded(const Ogre::FrameEvent& evt);
 
  private:
   void setupStormfighterScene();

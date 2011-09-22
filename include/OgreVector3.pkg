@@ -244,7 +244,8 @@ namespace Ogre
             Don't call this if you think the dest vector can be close to the inverse
             of this vector, since then ANY axis of rotation is ok. 
         */
-        Ogre::Quaternion getRotationTo(const Ogre::Vector3& dest);
+        Ogre::Quaternion getRotationTo(const Ogre::Vector3& dest) const;
+		Ogre::Quaternion getRotationTo(const Ogre::Vector3& dest, const Ogre::Vector3& fallbackAxis) const;
 
         /** Returns true if this vector is zero length. */
          bool isZeroLength(void);

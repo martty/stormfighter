@@ -71,6 +71,8 @@ class STransform : public Component {
 
   void setInheritOrientation(bool inherit);
 
+  /// Returns whether all the MovableObjects are hidden on this GO
+  bool isVisible();
   void setVisible(bool visible, bool cascade);
 
   // PARENTING

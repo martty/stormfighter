@@ -10,6 +10,7 @@
 #include <OgreBitwise.h>
 
 GUI::GUI(Input* input){
+  renderBuffer_ = NULL;
   Ogre::Viewport* viewport = Graphics::getSingletonPtr()->defaultViewport();
   width_ = viewport->getActualWidth();
   height_ = viewport->getActualHeight();
@@ -22,15 +23,17 @@ GUI::GUI(Input* input){
                          true, 0, false, false, awe_string_empty());
   // Create a new WebView instance with a certain width and height, using the
   // WebCore we just created
-  webView_ = awe_webcore_create_webview(width_, height_, false);
+  LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
+  createMaterial();
+  webView_ = awe_webcore_create_webview(width_, viewTexture_->getHeight(), false);
   SString page = "../../media/ui/test.html";
   awe_webview_set_transparent(webView_, true);
   url_str_ = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
   awe_webview_load_file(webView_, url_str_, awe_string_empty());
   // Destroy our URL string
-  createMaterial();
+  LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
   OverlayPosition pos(0, 0);
-  overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, height_, pos, "awesomium_mat", 0, TIER_FRONT);
+  overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
   /*if(compensateNPOT_)
       overlay_->panel->setUV(0, 0, (Real)viewWidth/(Real)texWidth_, (Real)viewHeight/(Real)texHeight_);*/
   // init sdktraymanager
@@ -100,8 +103,9 @@ void GUI::createMaterial(){
 
 	if(!Ogre::Bitwise::isPO2(width_) || !Ogre::Bitwise::isPO2(height_)){
 		if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_NON_POWER_OF_2_TEXTURES)){
-			if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNonPOW2TexturesLimited())
+			if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNonPOW2TexturesLimited()){
 				compensateNPOT_ = true;
+			}
 		} else {
       compensateNPOT_ = true;
 		}
@@ -113,9 +117,10 @@ void GUI::createMaterial(){
 	// Create the texture
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual("awesomium_tex",
                                                                   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                                  Ogre::TEX_TYPE_2D, texWidth, texHeight, 0, Ogre::PF_BYTE_BGRA,
+                                                                  Ogre::TEX_TYPE_2D, texWidth, texHeight, 0, Ogre::PF_A8R8G8B8,
                                                                   Ogre::TU_DYNAMIC, this);
   this->viewTexture_ = texture;
+  LOG("DIMENSIONS:"+STRING(texture->getWidth())+","+STRING(texture->getHeight()));
 	Ogre::HardwarePixelBufferSharedPtr pixelBuffer = texture->getBuffer();
 	pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 	const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
@@ -143,18 +148,15 @@ void GUI::createMaterial(){
 }
 
 void GUI::displayWebView(){
-  const awe_renderbuffer* renderBuffer = awe_webview_render(webView_);
+  renderBuffer_ = const_cast<awe_renderbuffer*>(awe_webview_render(webView_));
 
   // Make sure our render buffer is not NULL-- WebView::render will return
   // NULL if the WebView process has crashed.
-  if(renderBuffer != NULL ){
+  if(renderBuffer_ != NULL ){
    // LOG("RENDER_WEBVIEW");
-
-  // For new data, because of the way HardwarePixelBuffers work (no copy
-  // subregions from *Memory*), we have to copy each line over individually
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
     //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
-    Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer), awe_renderbuffer_get_height(renderBuffer), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer)));
+    Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer_), awe_renderbuffer_get_height(renderBuffer_), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer_)));
     pixelBuffer->blitFromMemory(pbox);
   }
 }
@@ -331,12 +333,16 @@ bool GUI::keyReleased(const OIS::KeyEvent &evt) {
 }
 
 bool GUI::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
-  awe_webview_inject_mouse_down(webView_,  AWE_MB_LEFT);
+  if(isInGUI(evt.state.X.abs, evt.state.Y.abs)){
+    awe_webview_inject_mouse_down(webView_,  AWE_MB_LEFT);
+  }
   return false;
 }
 
 bool GUI::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
-  awe_webview_inject_mouse_up(webView_,  AWE_MB_LEFT);
+  if(isInGUI(evt.state.X.abs, evt.state.Y.abs)){
+    awe_webview_inject_mouse_up(webView_,  AWE_MB_LEFT);
+  }
   return false;
 }
 
@@ -408,4 +414,19 @@ SString GUI::pollCommands(){
   awe_jsvalue_destroy(res);
   awe_string_destroy(js);
   return SString(";");
+}
+
+bool GUI::isInGUI(int x, int y){
+  if(renderBuffer_){ // if we don't have renderBuffer_ yet, there is nothing displayed -> nothing in gui
+    Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
+    pixelBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
+    const Ogre::PixelBox &pb = pixelBuffer->getCurrentLock();
+    int depth = Ogre::PixelUtil::getNumElemBytes(pb.format);
+    SColourValue col;
+    Ogre::PixelUtil::unpackColour(&col, pb.format, static_cast<Ogre::uint8*>(pb.data)+pb.rowPitch*y*depth+x*depth);
+    pixelBuffer->unlock();
+    return col.a != 0.0f;
+  } else {
+    return false;
+  }
 }

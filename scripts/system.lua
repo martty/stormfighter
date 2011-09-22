@@ -1,9 +1,20 @@
--- otypedefs (we can drop the S if we want)
+-- typedefs (we can drop the S if we want)
 SVector3 = Ogre.Vector3;
+SVector3.__tostring = function(e)
+  return e.x..','..e.y..','..e.z;
+end
 SQuaternion = Ogre.Quaternion;
+SQuaternion.__tostring = function (e)
+  local vec, angle = SVector3(0,0,0),SDegree(2);
+  e:ToAngleAxis(angle,vec);
+  return tostring(vec)..':'..angle:valueDegrees();
+end
 SDegree = Ogre.Degree;
 SRadian = Ogre.Radian;
 SRay = Ogre.Ray;
+SPlane = Ogre.Plane;
+SSphere = Ogre.Sphere;
+SColourValue = Ogre.ColourValue;
 SAxisAlignedBox = Ogre.AxisAlignedBox;
 OIS.Modifier = OIS.Keyboard;
 -- ...

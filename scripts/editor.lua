@@ -11,6 +11,7 @@ Editor.settings.advanced.gui_poll_fps = 10;
 Editor.settings.manipulator = {};
 Editor.settings.manipulator.translateFactor = 0.001;
 Editor.settings.manipulator.rotateFactor = 0.0001;
+Editor.settings.manipulator.scaleFactor = 0.0001;
 
 Editor.internal.counters = {}; -- timing
 Editor.internal.counters.gui = 0;
@@ -27,13 +28,30 @@ Editor.internal.mouse.downPosition = SVector2(0,0);
 
 Editor.internal.manipulator = {};
 
+Manipulator = Editor.internal.manipulator;
+dofile('scripts/manipulator.lua');
+
 function Editor:init()
   -- show omnibar
   self:addKey(OIS.KC_R);
   self:addKey(OIS.KC_H);
   self:addKey(OIS.KC_P);
   self:addKey(OIS.KC_T);
-  self:initialiseManipulator();
+  self:addKey(OIS.KC_M);
+  self:addKey(OIS.KC_1); --select
+  self:addKey(OIS.KC_2); --translate
+  self:addKey(OIS.KC_3); --rotate
+  self:addKey(OIS.KC_4); --scale
+  self:manipulator():initialise(self);
+end
+
+function Editor:manipulator()
+  return self.internal.manipulator;
+end
+
+-- reloads the reloadable parts of the editor
+function Editor:reload()
+  dofile('scripts/manipulator.lua');
 end
 
 function Editor:addKey(keycode)
@@ -148,65 +166,20 @@ function Editor:update()
   self:handleKeyPress();
   self:handleMouse();
   self:advanceCounters();
-  if(self:isMouseClicked()) then
-    ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
-    result = Graphics:closestExactRayQuery(ray);
-    if(result.hitObject) then
-      local goname = result.hitObject:name();
-      -- GUI:executeJS("showInspector('"..result.hitObject:name().."');");
-      print(goname);
-      if(goname:find("manipulator-")) then -- we picked a manipulator
-        self:selectManipulatorSide(goname);
-      else
-        self:showManipulator(goname);
-        self:openInspector(goname);
-      end
-    else
-      self:hideManipulator();
-    end
+  if(not GUI:isInGUI(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y))) then
+    self:manipulator():update();
   end
-  if(self:isMouseDragged()) then
-    local a,drag_start,drag_end = self:isMouseDragged();
-    local drag = drag_end-drag_start;
-    local drag_length = drag:length();
-    if(self.internal.manipulator.isSelected) then
-      if(Input:isModifierDown(OIS.Modifier.Alt)) then --rotate
-        if(self.internal.manipulator.currentSide) then -- restricted translate
-          local normal = SVector3(self.internal.manipulator.normal); --copy
-          local rot = SQuaternion(SQuaternion.IDENTITY);
-          rot:FromAngleAxis(SRadian(drag_length*self.settings.manipulator.rotateFactor), normal);
-          self.internal.manipulator.selection:transform():rotate(rot);
-        end
-      else --translate
-        -- woo translation now!
-        local angle = drag:angleBetween(SVector2(0,1)):valueDegrees();
-        local dir = 1;
-        if(angle > 90) then
-          dir = 1;
-        else
-          dir = -1;
-        end
-        if(self.internal.manipulator.currentSide) then -- restricted translate
-          local normal = SVector3(self.internal.manipulator.normal); --copy
-          normal = normal * drag_length * self.settings.manipulator.translateFactor * dir;
-          self.internal.manipulator.selection:transform():move(normal);
-        end
-      end
-    else
-      --show selection box!
-    end
+  if(self:isKeyPressed(OIS.KC_1)) then
+    self:manipulator():setMode("select");
   end
-  if(self:isMouseMoved()) then
-    if(self.internal.manipulator.isSelected) then
-      ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
-      result = Graphics:closestExactRayQuery(ray);
-      if(result.hitObject) then
-        local goname = result.hitObject:name();
-        if(goname:find("manipulator-")) then -- we picked a manipulator
-          self:selectManipulatorSide(goname);
-        end
-      end
-    end
+  if(self:isKeyPressed(OIS.KC_2)) then
+    self:manipulator():setMode("translate");
+  end
+  if(self:isKeyPressed(OIS.KC_3)) then
+    self:manipulator():setMode("rotate");
+  end
+  if(self:isKeyPressed(OIS.KC_4)) then
+    self:manipulator():setMode("scale");
   end
   if(self:isKeyPressed(OIS.KC_I)) then
     self:saveScene()
@@ -220,6 +193,9 @@ function Editor:update()
   end
   if(self:isKeyPressed(OIS.KC_H)) then
     self:openHierarchyBrowser();
+  end
+  if(self:isKeyPressed(OIS.KC_M)) then
+    self:reload();
   end
   if(self:onFixedFPS('gui', self.settings.advanced.gui_poll_fps)) then
     local cmd = GUI:pollCommands();
@@ -288,169 +264,6 @@ function Editor:hierarchySelect(goname)
   --self:showManipulator(goname);
 end
 
-function Editor:initialiseManipulator()
-  local bbox = SAxisAlignedBox(SVector3(-0.5, -0.5, -0.5), SVector3(0.5, 0.5, 0.5)); -- unit sized
-  -- initalize manipulator meshes
-  self.internal.manipulator.go = Hierarchy:createGameObject("manipulator");
-  local man = self.internal.manipulator.go;
-  local obj = Hierarchy:createGameObject("manipulator-front");
-  man:transform():setInheritScale(false);
-  man:addChild(obj);
-  local mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  obj = Hierarchy:createGameObject("manipulator-back");
-  man:addChild(obj);
-  local mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  obj = Hierarchy:createGameObject("manipulator-top");
-  man:addChild(obj);
-  mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  obj = Hierarchy:createGameObject("manipulator-bottom");
-  man:addChild(obj);
-  mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  obj = Hierarchy:createGameObject("manipulator-left");
-  man:addChild(obj);
-  mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_TOP));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  obj = Hierarchy:createGameObject("manipulator-right");
-  man:addChild(obj);
-  mo = SManualObject:new(true);
-  obj:addComponent(mo);
-  mo:begin("Editor/manipulator_unselected", SManualObject.OT_TRIANGLE_LIST);
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0, 0, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
-  mo:textureCoord(SVector3(0, 0.5, 0));
-  mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_BOTTOM));
-  mo:textureCoord(SVector3(0.5, 0.5, 0));
-  mo:quad(0,1,2,3);
-  mo:finish();
-  -- hide for now
-  man:transform():setVisible(false, true);
-  -- initialize manipulator state
-  self.internal.manipulator.isSelected = false;
-  self.internal.manipulator.scale = SVector3(1.2,1.2,1.2);
-  self.internal.manipulator.isSideSelected = false;
-end
-
-function Editor:showManipulator(goname)
-  local go = Hierarchy:find(goname);
-  local bbox = go:getBoundingBox();
-  go:addChild(self.internal.manipulator.go);
-  self.internal.manipulator.isSelected = true;
-  self.internal.manipulator.selection = go;
-  self.internal.manipulator.go:transform().position = (bbox:getCenter());
-  self.internal.manipulator.go:transform().scale = (bbox:getSize());
-  self.internal.manipulator.go:transform():setVisible(true, true);
-end
-
-function Editor:selectManipulatorSide(goname)
-  local str = "manipulator-";
-  local side = goname:sub(str:len()+1);
-  local go = Hierarchy:find(goname);
-  if(self.internal.manipulator.currentSide) then
-    if(self.internal.manipulator.currentSide == go) then -- 2 selects != deselect
-      return;
-    else
-      self:deselectCurrentManipulatorSide();
-    end
-  end
-  go:component("Mesh"):setMaterialName("Editor/manipulator_selected");
-  self.internal.manipulator.currentSide = go;
-  local normal = SVector3(0,0,0);
-  if(side == "top") then
-    normal = SVector3(0,1,0);
-  elseif(side == "bottom") then
-    normal = SVector3(0,-1,0);
-  elseif(side == "left") then
-    normal = SVector3(1, 0, 0);
-  elseif(side == "right") then
-    normal = SVector3(-1, 0, 0);
-  elseif(side == "front") then
-    normal = SVector3(0, 0, -1);
-  elseif(side == "back") then
-    normal = SVector3(0, 0, 1);
-  end
-  self.internal.manipulator.normal = normal;
-end
-
-function Editor:deselectCurrentManipulatorSide()
-  self.internal.manipulator.currentSide:component("Mesh"):setMaterialName("Editor/manipulator_unselected");
-  self.internal.manipulator.currentSide = nil;
-  self.internal.manipulator.normal = nil;
-end
-
-function Editor:hideManipulator()
-  local go = self.internal.manipulator.go;
-  self.internal.manipulator.isSelected = false;
-  self.internal.manipulator.selection = nil;
-  if(self.internal.manipulator.currentSide) then
-    self:deselectCurrentManipulatorSide();
-  end
-  go:reParent();
-  go:transform().scale = SVector3(0,0,0);
-  go:transform():setVisible(false, true);
-end
-
 function Editor:saveScene()
   print('saving');
   -- strategy :
@@ -471,9 +284,10 @@ end
 
 function Editor:openInspector(goname)
   GUI:executeJS("inspector.clear(); inspector.show();");
+  GUI:executeJS("inspector.setGameObjectName('"..goname.."');");
+  print("inspector.setGameObjectName('"..goname.."');");
   local go = Hierarchy:find(goname);
   local cmps = go:allComponents();
-  local tr = go:component('Transform');
   for i=0,cmps:size()-1 do
     local otype = 'S'..cmps[i].type;
     cmps[i] = tolua.cast(cmps[i], otype);
@@ -488,6 +302,34 @@ function Editor:openInspector(goname)
       end
     end
   end
+end
+
+function Editor:_generateMaterialThumbnails()
+  local matgo = Hierarchy:createGameObject("matrtt");
+  matgo:addComponent(SPrimitive:new(SPrimitive.CUBE));
+  --matgo:transform().scale = SVector3(0.1,0.1,0.1);
+  local matstrings = Graphics:getLoadedMaterialNames();
+
+  for i=0, matstrings:size()-1 do
+    matgo:component("Mesh"):setMaterialName(matstrings[i]);
+    local matnunder = matstrings[i]:gsub("/", "_");
+    Graphics:renderGameObjectIntoFile(matgo, "media/thumbnails/materials/"..matnunder.."_thumb.png", 100, 100);
+  end
+  matgo:transform():setVisible(false, true);
+  -- TODO: remove it
+end
+
+function Editor:generateAndShowMaterialBrowser()
+  self:_generateMaterialThumbnails();
+  local matstrings = Graphics:getLoadedMaterialNames();
+
+  for i=0, matstrings:size()-1 do
+    local matnunder = matstrings[i]:gsub("/", "_");
+    local thumbpath = "media/thumbnails/materials/"..matnunder.."_thumb.png";
+    GUI:executeJS("materialbrowser.addMaterial('"..matstrings[i].."', '"..thumbpath.."');");
+    print("materialbrowser.addMaterial('"..matstrings[i].."', '"..thumbpath.."');");
+  end
+  GUI:executeJS("materialbrowser.show();");
 end
 
 function Editor:_testMouseFunctions()
@@ -506,8 +348,5 @@ function Editor:_testMouseFunctions()
 end
 
 function Editor:_test()
-  for k,v in pairs(System.tracked_objects) do
-    --print(tolua.type(v));
-    print(k .. ' ' .. tolua.type(v));
-  end
+
 end

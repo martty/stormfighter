@@ -35,8 +35,10 @@ typedef Ogre::Ray SRay;
 /// Colour class
 typedef Ogre::ColourValue SColourValue;
 
-/// AxisAlignedBox (for bounding boxes mainly)
+/// Basic mathematical objects' typedefs
 typedef Ogre::AxisAlignedBox SAxisAlignedBox;
+typedef Ogre::Sphere SSphere;
+typedef Ogre::Plane SPlane;
 
 /// An std::vector of SStrings
 typedef std::vector<SString> StringVector;

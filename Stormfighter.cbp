@@ -82,6 +82,7 @@
 		<Unit filename="include\CompoundCollider.h" />
 		<Unit filename="include\ConvexHullCollider.h" />
 		<Unit filename="include\CylinderCollider.h" />
+		<Unit filename="include\DebugDrawer.h" />
 		<Unit filename="include\FreeLookCameraController.h" />
 		<Unit filename="include\GUI.h" />
 		<Unit filename="include\GameObject.h" />
@@ -96,6 +97,7 @@
 		<Unit filename="include\LuaScript.h" />
 		<Unit filename="include\ManualObject.h" />
 		<Unit filename="include\Mesh.h" />
+		<Unit filename="include\Module.h" />
 		<Unit filename="include\MovableObject.h" />
 		<Unit filename="include\Physics.h" />
 		<Unit filename="include\PlatformMoverVertical.h" />
@@ -139,6 +141,7 @@
 		<Unit filename="src\CompoundCollider.cc" />
 		<Unit filename="src\ConvexHullCollider.cc" />
 		<Unit filename="src\CylinderCollider.cc" />
+		<Unit filename="src\DebugDrawer.cc" />
 		<Unit filename="src\FreeLookCameraController.cc" />
 		<Unit filename="src\GUI.cc" />
 		<Unit filename="src\GameObject.cc" />
@@ -151,6 +154,7 @@
 		<Unit filename="src\LuaScript.cc" />
 		<Unit filename="src\ManualObject.cc" />
 		<Unit filename="src\Mesh.cc" />
+		<Unit filename="src\Module.cc" />
 		<Unit filename="src\Physics.cc" />
 		<Unit filename="src\PlatformMoverVertical.cc" />
 		<Unit filename="src\PlatformPositioner.cc" />

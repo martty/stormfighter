@@ -27,7 +27,7 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   solver_ = new btSequentialImpulseConstraintSolver;
   dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
   Ogre::SceneNode * rootnode = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode();
-  debugdrawer_ = new DebugDrawer(rootnode, dWorld_);
+  debugdrawer_ = new BulletDebugDrawer(rootnode, dWorld_);
   debugdrawer_->setDebugMode(false);
   dWorld_->setDebugDrawer(debugdrawer_);
 

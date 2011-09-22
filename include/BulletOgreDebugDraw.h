@@ -139,7 +139,7 @@ private:
   bool mDirty;
 };
 
-class DebugDrawer : public btIDebugDraw
+class BulletDebugDrawer : public btIDebugDraw
 {
 protected:
 	Ogre::SceneNode *mNode;
@@ -149,7 +149,7 @@ protected:
 
 public:
 
-	DebugDrawer(Ogre::SceneNode *node, btDynamicsWorld *world)
+	BulletDebugDrawer(Ogre::SceneNode *node, btDynamicsWorld *world)
 		: mNode(node),
 		  mWorld(world),
 		  mDebugOn(true)
@@ -164,7 +164,7 @@ public:
 		mLineDrawer->setMaterial("BtOgre/DebugLines");
 	}
 
-	~DebugDrawer()
+	~BulletDebugDrawer()
 	{
 		delete mLineDrawer;
 	}
