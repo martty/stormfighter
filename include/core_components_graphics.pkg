@@ -35,7 +35,6 @@ class STransform : public Component {
  public:
 
   /// The Transform component's type string is @b "Transform"
-  tolua_readonly tolua_property SString type;
 
   // POSITION, ORIENTATION, SCALE (local space)
   tolua_property SVector3 position;
@@ -84,8 +83,6 @@ class SMesh : public SMovableObject {
   SMesh();
   SMesh(SString meshname);
 
-  tolua_readonly tolua_property SString type;
-
   SMesh* clone() const;
 
   tolua_property SString meshName;
@@ -111,8 +108,6 @@ class SPrimitive : public SMesh {
   ~SPrimitive();
 
   SPrimitive* clone() const;
-
-  tolua_readonly tolua_property SString type;
 };
 
 class SCamera : public SMovableObject {
@@ -121,8 +116,6 @@ class SCamera : public SMovableObject {
   ~SCamera();
 
   SCamera* clone() const;
-
-  tolua_readonly tolua_property SString type;
 
   void setNearClipDistance(SReal distance);
   void setAspectRatio(SReal ratio);
@@ -134,8 +127,6 @@ class SCamera : public SMovableObject {
 class SLight : public SMovableObject {
  public:
   SLight(Ogre::Light::LightTypes type);
-
-  tolua_readonly tolua_property SString type;
 
   SLight* clone() const;
 

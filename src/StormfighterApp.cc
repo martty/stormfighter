@@ -200,7 +200,9 @@ bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
   hierarchy_->initialize(this);
-  log(hierarchy_->debug());
+  //log(hierarchy_->debug());
+  log("Running deferred initializations");
+  scripting()->executeString("System:_deferredInit();");
   log("Start main loop...");
 
   graphics_->defaultRenderWindow()->resetStatistics();

@@ -7,12 +7,14 @@ using namespace Ogre;
 SMesh::SMesh(){
   entity_ = NULL;
   meshname_ = "";
+  materialname_ = "";
   setState(CREATED);
 }
 
 SMesh::SMesh(SString meshname){
   entity_ = NULL;
   meshname_ = meshname;
+  materialname_ = "";
   setState(CREATED);
 }
 
@@ -39,6 +41,9 @@ unsigned int SMesh::onAdd(SString goname, STransform* transform){
     valid_ = true;
   }
   setState(READY);
+  if(!materialname_.empty()){
+      setMaterialName(materialname_);
+  }
   return NONE;
 }
 
@@ -59,27 +64,38 @@ SString SMesh::meshName(){
 }
 
 SAxisAlignedBox SMesh::getBoundingBox() const{
-  SAxisAlignedBox aabb = entity_->getBoundingBox();
-  if(transform_){ // if scale has a negative component, this will assert, so we must pass the abs components
-    SVector3 absscale = transform_->scale();
-    absscale.x = Ogre::Math::Abs(absscale.x);
-    absscale.y = Ogre::Math::Abs(absscale.y);
-    absscale.z = Ogre::Math::Abs(absscale.z);
-    aabb.scale(absscale);
+  if(entity_){
+    SAxisAlignedBox aabb = entity_->getBoundingBox();
+    if(transform_){ // if scale has a negative component, this will assert, so we must pass the abs components
+      SVector3 absscale = transform_->scale();
+      absscale.x = Ogre::Math::Abs(absscale.x);
+      absscale.y = Ogre::Math::Abs(absscale.y);
+      absscale.z = Ogre::Math::Abs(absscale.z);
+      aabb.scale(absscale);
+    }
+    return aabb;
   }
-  return aabb;
+  return SAxisAlignedBox();
 }
 
 SReal SMesh::getBoundingSphereRadius() const{
-  return entity_->getMesh()->getBoundingSphereRadius();
+  if(entity_)
+    return entity_->getMesh()->getBoundingSphereRadius();
+  return 0;
 }
 
 void SMesh::setMaterialName(SString materialName){
-  entity_->setMaterialName(materialName);
+  if(state() == READY && entity_)
+    entity_->setMaterialName(materialName);
+  else {
+    materialname_ = materialName;
+    LOG("STA");
+  }
 }
 
 bool SMesh::animated() const{
-  return entity_->hasSkeleton() || entity_->hasVertexAnimation();
+  if(entity_)
+    return entity_->hasSkeleton() || entity_->hasVertexAnimation();
 }
 
 void SMesh::setAnimationStateEnabled(SString animstate, bool enabled){

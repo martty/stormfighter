@@ -7,7 +7,9 @@ class SScript : public Component{
 
 class SLuaScript : public SScript{
  public:
-  SLuaScript(SString type, SString callpath);
+  SLuaScript(SString type);
+
+  void setTrackingId(int id);
 
   // Override these for functionality
   void onInit();

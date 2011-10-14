@@ -38,7 +38,7 @@ void SBoxCollider::onInit(){
   VertexIndexToShape* vits;
   vits = new StaticMeshToShapeConverter(mesh->entity());
   collisionShape_ = vits->createBox();
-  collisionShape_->setLocalScaling(Convert::toBullet(object()->transform()->scale()));
+  collisionShape_->setLocalScaling(Convert::toBullet(object()->transform()->worldScale()));
   setState(READY);
   delete vits;
 }

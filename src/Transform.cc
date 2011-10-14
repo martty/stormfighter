@@ -62,6 +62,10 @@ const SQuaternion& STransform::worldOrientation() const{
   return node_->convertLocalToWorldOrientation(SQuaternion::IDENTITY);
 }
 
+const SVector3& STransform::worldScale() const{
+  return node_->_getDerivedScale();
+}
+
 void STransform::setPosition(SVector3 position){
   node_->setPosition(position);
   // notify rigidbodies in hierarchy

@@ -16,6 +16,7 @@ SRigidBody::SRigidBody(SReal mass){
   group_ = "default";
   collidesWith_.clear();
   collidesWith_.push_back("all");
+  constraints_.clear();
   setState(PREPARED);
 }
 
@@ -56,7 +57,8 @@ void SRigidBody::setWorldTransform(const btTransform &newTransform){
 void SRigidBody::onInit(){
   // search for a collider component in GO & children
   // TOOD: autoCompound & autoTrimesh
-  internalTransform_ = Convert::transform(object()->transform()->worldPosition(), object()->transform()->worldOrientation());
+  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
+  internalTransform_ = Convert::transform(object()->transform()->worldPosition(), worldOri);
   SCollider* collider = NULL;
   if(object()->firstComponentInChildren("Collider")){
     collider = static_cast<SCollider*>(object()->firstComponentInChildren("Collider"));
@@ -110,6 +112,47 @@ void SRigidBody::setKinematic(bool isKinematic){
     }
   } else {
     isKinematic_ = isKinematic;
+  }
+}
+
+void SRigidBody::setLinearVelocity(SVector3 linvel){
+  if(state() == READY){
+    rigidBody_->setLinearVelocity(Convert::toBullet(linvel));
+  }
+}
+SVector3 SRigidBody::linearVelocity(){
+  if(state() == READY){
+    return Convert::toOgre(rigidBody_->getLinearVelocity());
+  }
+  return SVector3::ZERO;
+}
+
+void SRigidBody::setAngularVelocity(SVector3 angvel){
+  if(state() == READY){
+    rigidBody_->setAngularVelocity(Convert::toBullet(angvel));
+  }
+}
+
+SVector3 SRigidBody::angularVelocity(){
+  if(state() == READY){
+    return Convert::toOgre(rigidBody_->getAngularVelocity());
+  }
+  return SVector3::ZERO;
+}
+
+void SRigidBody::addPoint2PointConstraint(const SVector3& pivotInA){
+  if(state() == READY){
+    btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, Convert::toBullet(pivotInA));
+    constraints_.push_back(constraint);
+    application()->physics()->addConstraint(constraint);
+  }
+}
+
+void SRigidBody::addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB){
+  if(state() == READY){
+    btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, *(rbB->rigidBody()), Convert::toBullet(pivotInA), Convert::toBullet(pivotInB));
+    constraints_.push_back(constraint);
+    application()->physics()->addConstraint(constraint);
   }
 }
 

@@ -18,7 +18,7 @@ class SScript : public Component{
 
   virtual ~SScript(){}
 
-  SScript* clone() const { return new SScript(type_, calls_); }
+  virtual SScript* clone() const { return new SScript(type_, calls_); }
 
   unsigned int onAdd(SString objectname, STransform* transform){return calls_;}
 

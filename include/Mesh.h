@@ -54,9 +54,7 @@ class SMesh : public SMovableObject {
   bool valid_;
 
   STransform* transform_;
- private:
-
-  SString meshname_;
+  SString meshname_, materialname_;
 };
 
 #endif

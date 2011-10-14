@@ -7,9 +7,12 @@
 class SLuaScript : public SScript{
  public:
   /** Default constructor */
-  SLuaScript(SString type, SString callpath);
+  SLuaScript(SString type);
   /** Default destructor */
   ~SLuaScript();
+
+  void setTrackingId(int id);
+  virtual SLuaScript* clone() const { return new SLuaScript(type_); }
 
   // Override these for functionality
   void onInit();
@@ -22,7 +25,7 @@ class SLuaScript : public SScript{
   /// to be called when the holder GameObject collider, every tick
   void onCollisionStay(const CollisionData* collisionData);
  private:
-  SString callpath_;
+  int id_;
 };
 
 #endif // STORMFIGHTER_LUASCRIPT_H_

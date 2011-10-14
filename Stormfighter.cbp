@@ -124,10 +124,12 @@
 		<Unit filename="include\core_modules.pkg" />
 		<Unit filename="include\core_ogre.pkg" />
 		<Unit filename="include\core_ois.pkg" />
+		<Unit filename="scripts\bombarder.lua" />
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
 		<Unit filename="scripts\manipulator.lua" />
+		<Unit filename="scripts\middlepad.lua" />
 		<Unit filename="scripts\system.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />

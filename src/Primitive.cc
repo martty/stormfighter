@@ -1,5 +1,6 @@
 #include "Primitive.h"
 #include "Graphics.h"
+#include <OgreSubEntity.h>
 
 using namespace Ogre;
 
@@ -19,9 +20,14 @@ unsigned int SPrimitive::onAdd(SString goname, STransform* transform){
   transform->attachObject(entity_);
   valid_ = true;
   setState(READY);
+  if(!materialname_.empty()){
+      setMaterialName(materialname_);
+  }
   return NONE;
 }
 
 SPrimitive* SPrimitive::clone() const{
-  return new SPrimitive(type_);
+  SPrimitive* sp = new SPrimitive(type_);
+  sp->setMaterialName(entity_->getSubEntity(0)->getMaterialName());
+  return sp;
 }

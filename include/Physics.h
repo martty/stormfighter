@@ -4,7 +4,8 @@
 #include <btBulletDynamicsCommon.h>
 #include "common.h"
 #include <OgreSceneNode.h>
-#include "BulletOgreDebugDraw.h"
+
+class BulletDebugDrawer;
 
 struct CollisionData {
   Ogre::Vector3 pointOnA;
@@ -36,6 +37,8 @@ class Physics {
   void addRigidBody(btRigidBody* rigidBody, SString group, StringVector collidesWith);
 
   void removeRigidBody(btRigidBody* rigidBody);
+
+  void addConstraint(btTypedConstraint* constraint);
 
   void addCollisionGroup(SString name);
 

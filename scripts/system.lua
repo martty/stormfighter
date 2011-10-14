@@ -44,6 +44,9 @@ System.object_counter = 0;
 
 Components = {};
 
+System.defers = {};
+System.deferred_functions = {};
+
 function System:loadComponent(filename)
   local f = assert(loadfile(filename));
   component = f();
@@ -54,7 +57,9 @@ function System:_addComponent(component)
   self.n_active_components = self.n_active_components + 1;
   local ac = self.active_components;
   local type = component.meta.type or error('set name for component!');
-  new_component = SLuaScript:new(type, 'System.active_components['..self.n_active_components..']');
+  component._type = type;
+  new_component = SLuaScript:new(type);
+  --'System.active_components['..self.n_active_components..']'
   new_component._onInit = component.onInit or empty_function;
   new_component._onUpdate = component.onUpdate or empty_function;
   new_component._onPhysicsUpdate = component.onPhysicsUpdate or empty_function;
@@ -66,9 +71,27 @@ function System:_addComponent(component)
   for key, value in pairs(component) do
     new_component[key] = value;
   end
+  new_component.type = function (comp) return comp._type; end
   ac[self.n_active_components] = {};
   ac[self.n_active_components] = new_component;
   return new_component;
+end
+
+function System._fireComponentEvent(tracking_id, event_name, param)
+  local obj = System:getObject(tracking_id);
+  if(event_name == "onCollisionStay") then
+    obj:_onCollisionStay(param);
+  elseif(event_name == "onCollisionEnter") then
+    obj:_onCollisionEnter(param);
+  elseif(event_name == "onCollisionExit") then
+    obj:_onCollisionExit(param);
+  elseif(event_name == "onInit") then
+    obj:_onInit();
+  elseif(event_name == "onUpdate") then
+    obj:_onUpdate();
+  elseif(event_name == "onPhysicsUpdate") then
+    obj:_onPhysicsUpdate();
+  end
 end
 
 --provide 2D vector :)
@@ -82,6 +105,7 @@ function System:_initialise()
   self:_annotateBasicTypes();
   self:_annotateCoreComponents();
   self:_registerComponents();
+  self:_setupDeferredFunctions();
 end
 
 function System:_hijackModules()
@@ -106,7 +130,30 @@ function System:_hijackGameObject()
   GameObject.addComponent = function (go, cmp)
     old2(go, cmp);
     self:track(cmp);
+    if(tolua.type(cmp) == "SLuaScript") then -- we need to add events
+      cmp:setTrackingId(cmp.tracking_id);
+    end
     return cmp;
+  end
+
+  local old3 = GameObject.clone;
+  GameObject.clone = function (go, newname)
+    local ngo = nil;
+    if(newname) then
+      ngo = old3(go, newname);
+    else
+      ngo = old3(go);
+    end
+    self:track(ngo);
+    local cmps = ngo:allComponents();
+    for i=0,cmps:size()-1 do
+      self:track(cmps[i]);
+      print(cmps[i].type);
+      if(cmps[i].type == "LuaScript") then -- we need to add events
+        cmp:setTrackingId(cmp.tracking_id);
+      end
+    end
+    return ngo;
   end
 end
 
@@ -174,7 +221,7 @@ function System:track(object)
   if(tolua.type(object) == "GameObject") then
     print('now tracking: '..object:name());
   else
-    print('now tracking: '..object.type);
+    print('now tracking: '..tolua.type(object));
   end
 end
 
@@ -215,6 +262,36 @@ end
 --       -->"System:setField(System:getObject(1234), 'position',"
 function System:makeSetCommand(object, field)
   return [["System:setField(System:getObject(]]..object.tracking_id..[[), ']]..field..[[',"]];
+end
+
+function System:_setupDeferredFunctions()
+  self:_defer(SRigidBody, "addPoint2PointConstraint");
+end
+
+function System:_defer(class, func)
+  self.deferred_functions[func] = class[func];
+  class[func] = function (obj, ...)
+    System:_deferredCall(obj, func, arg);
+  end
+end
+
+function System:_deferredCall(object, funcname, args)
+  table.insert(self.defers, {object, funcname, System.deferred_functions[funcname], args});
+end
+
+-- some component attributes can only be modified after they have been initalized
+-- this function is used to make those changes, but be transparent to the user
+-- unless such attributes are queried beforehand
+function System:_deferredInit()
+  for k,v in pairs(self.defers) do
+    local obj = v[1];
+    local funcname = v[2];
+    local func = v[3];
+    local args = v[4];
+    func(obj, unpack(args));
+    -- restore function call
+    _G[tolua.type(obj)][funcname]=func;
+  end
 end
 
 -- serializes a basic type : lua builtins and math objects (eg. SVector3)
@@ -288,7 +365,13 @@ function System:serialize(object, ident)
   return serial;
 end
 --]]
-function System:serializeNative(o)
+function System:serializeNative(o, level)
+  if(level == nil) then
+    level = 0;
+  end
+  if(level > 3) then
+    return '';
+  end
   local serial = '';
   if o == nil then
     serial = serial .. '""';
@@ -299,13 +382,16 @@ function System:serializeNative(o)
   elseif type(o) == "table" then
     serial = serial..("{\n")
     for k,v in pairs(o) do
-      serial = serial .. "  ".. k .. " = "
-      serial = serial .. self:serializeNative(v)
+      serial = serial .. "  ".. tostring(k) .. " = "
+      serial = serial .. self:serializeNative(v, level + 1)
       serial = serial .. ",\n"
     end
     serial = serial .. "}\n"
+  elseif type(o) == "function" then
+    serial = tostring(o);
   else
-    error("cannot serialize a " .. type(o))
+    --error("cannot serialize a " .. type(o))
+    serial = tostring(o);
   end
   return serial;
 end

@@ -34,7 +34,16 @@ class SRigidBody : public Component, public btMotionState {
 	void setCollisionGroup(SString group);
 	void setCollidesWith(StringVector collidesWith);
 
+  // CONSTRAINTS
+	void addPoint2PointConstraint(const SVector3& pivotInA);
+	void addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
+
 	void setDamping(SReal linear, SReal angular);
+
+	void setLinearVelocity(SVector3 linvel);
+	SVector3 linearVelocity();
+	void setAngularVelocity(SVector3 angvel);
+	SVector3 angularVelocity();
 
 	// FORCES & the like
 	void applyCentralImpulse(Ogre::Vector3 direction);
@@ -43,6 +52,11 @@ class SRigidBody : public Component, public btMotionState {
 	void disableDebugDraw();
 
 	static inline SRigidBody* cast(Component* cmp) {return static_cast<SRigidBody*>(cmp);}
+
+	btRigidBody* rigidBody() { return rigidBody_; }
+
+	void add();
+	void remove();
 
  private:
   void init(SReal mass);
@@ -62,8 +76,6 @@ class SRigidBody : public Component, public btMotionState {
 
 	bool flag(unsigned int flag) const;
 
-	void remove();
-	void add();
 	void flush();
 
   SReal mass_;
@@ -74,6 +86,7 @@ class SRigidBody : public Component, public btMotionState {
 
   SString group_;
   StringVector collidesWith_;
+  std::vector< btTypedConstraint* > constraints_;
 
   btTransform internalTransform_; // for motionstate
 };

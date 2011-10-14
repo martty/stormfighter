@@ -51,6 +51,7 @@ class STransform : public Component {
   // POSITION, ORIENTATION (world space)
   const SVector3& worldPosition() const;
   const SQuaternion& worldOrientation() const;
+  const SVector3& worldScale() const;
 
   // ADVANCED TRANSFORMS
 

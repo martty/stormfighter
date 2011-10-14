@@ -17,6 +17,8 @@
 #include <OgreMath.h>
 #include <LinearMath/btIDebugDraw.h>
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
+#include "Graphics.h"
+#include "DebugDrawer.h"
 
 #include "BulletOgreGlue.h"
 
@@ -145,14 +147,14 @@ protected:
 	Ogre::SceneNode *mNode;
 	btDynamicsWorld *mWorld;
 	DynamicLines *mLineDrawer;
-	bool mDebugOn;
+	int mDebug;
 
 public:
 
 	BulletDebugDrawer(Ogre::SceneNode *node, btDynamicsWorld *world)
 		: mNode(node),
 		  mWorld(world),
-		  mDebugOn(true)
+		  mDebug(DBG_DrawWireframe)
 	{
 		mLineDrawer = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
 		mNode->attachObject(mLineDrawer);
@@ -171,31 +173,35 @@ public:
 
 	void step()
 	{
-		if (mDebugOn)
+		if (mDebug)
 		{
 			mWorld->debugDrawWorld();
-			mLineDrawer->update();
+			//mLineDrawer->update();
 			mNode->needUpdate();
-			mLineDrawer->clear();
+			//mLineDrawer->clear();
 		}
 		else
 		{
-			mLineDrawer->clear();
-			mLineDrawer->update();
+			//mLineDrawer->clear();
+			//mLineDrawer->update();
 			mNode->needUpdate();
 		}
 	}
 
 	void drawLine(const btVector3& from,const btVector3& to,const btVector3& color)
 	{
-		mLineDrawer->addPoint(Convert::toOgre(from));
-		mLineDrawer->addPoint(Convert::toOgre(to));
+		//mLineDrawer->addPoint(Convert::toOgre(from));
+		//mLineDrawer->addPoint(Convert::toOgre(to));
+		Ogre::ColourValue cval(color.x(), color.y(), color.z());
+		Graphics::getSingleton().debugDrawer()->drawLine(Convert::toOgre(from), Convert::toOgre(to), cval);
 	}
 
 	void drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance,int lifeTime,const btVector3& color)
 	{
-		mLineDrawer->addPoint(Convert::toOgre(PointOnB));
-		mLineDrawer->addPoint(Convert::toOgre(PointOnB) + (Convert::toOgre(normalOnB) * distance * 20));
+	  Ogre::ColourValue cval(color.x(), color.y(), color.z());
+    Graphics::getSingleton().debugDrawer()->drawSphere(Convert::toOgre(PointOnB),distance*10, cval, true);
+		//mLineDrawer->addPoint(Convert::toOgre(PointOnB));
+		//mLineDrawer->addPoint(Convert::toOgre(PointOnB) + (Convert::toOgre(normalOnB) * distance * 20));
 	}
 
 	void reportErrorWarning(const char* warningString)
@@ -208,18 +214,16 @@ public:
 	}
 
 	//0 for off, anything else for on.
-	void setDebugMode(int isOn)
+	void setDebugMode(int mode)
 	{
-		mDebugOn = (isOn == 0) ? false : true;
-
-		if (!mDebugOn)
-			mLineDrawer->clear();
+		mDebug = mode;
+    mLineDrawer->clear();
 	}
 
 	//0 for off, anything else for on.
-	int	getDebugMode() const
+	int getDebugMode() const
 	{
-		return mDebugOn;
+		return mDebug;
 	}
 
 };
