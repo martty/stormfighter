@@ -5,11 +5,13 @@
 #include <OgreSceneNode.h>
 #include "Component.h"
 
+namespace SF {
+
 /**
  * @brief Mandatory component for GameObject, sets position, orientation and scale
  */
-class STransform : public Component {
- friend class SRigidBody;
+class Transform : public Component {
+ friend class RigidBody;
  public:
   /**
    * @brief Contructor of transform
@@ -17,25 +19,22 @@ class STransform : public Component {
    * @param orientation Rotation quaternion
    * @param scale Scale vector
    */
-  STransform(SVector3 position, SQuaternion orientation, SVector3 scale);
+  Transform(SVector3 position, SQuaternion orientation, SVector3 scale);
 
   /// Same as above but without rotation & scale
-  explicit STransform(SVector3 position);
+  explicit Transform(SVector3 position);
 
   /// Construct Transform, which may or may not be root (identity)
-  explicit STransform(bool isRoot);
+  explicit Transform(bool isRoot);
 
   /// Construct non-root identity Transform
-  STransform();
+  Transform();
 
   /// Destroy transform component
-  ~STransform();
+  ~Transform();
 
   /// clones the component
-  STransform* clone() const;
-
-  /// The Transform component's type string is @b "Transform"
-  SString const type() const { return "Transform"; }
+  Transform* clone() const;
 
   // POSITION, ORIENTATION, SCALE (local space)
   const SVector3& position() const{return node_->getPosition();}
@@ -51,6 +50,7 @@ class STransform : public Component {
   // POSITION, ORIENTATION (world space)
   const SVector3& worldPosition() const;
   const SQuaternion& worldOrientation() const;
+  const SVector3& worldScale() const;
 
   // ADVANCED TRANSFORMS
 
@@ -76,21 +76,24 @@ class STransform : public Component {
   void setVisible(bool visible, bool cascade);
 
   // PARENTING
-  STransform* const parent();
-  void setParent(STransform* parent);
-  void addChild(STransform* child);
+  Transform* const parent();
+  void setParent(Transform* parent);
+  void addChild(Transform* child);
 
   // DEBUG
   void showBoundingBox(bool show);
 
   // Ogre specific
-  /// Attach Ogre::MovableObject to this STransform
+  /// Attach Ogre::MovableObject to this Transform
   void attachObject(Ogre::MovableObject* object);
-  /// Detach Ogre::MovableObject from this STransform
+  /// Detach Ogre::MovableObject from this Transform
   void detachObject(Ogre::MovableObject* object);
 
+ protected:
+  SString name() const { return "Transform"; }
+
  private:
-  DISALLOW_COPY_AND_ASSIGN(STransform);
+  DISALLOW_COPY_AND_ASSIGN(Transform);
    // INTERNAL FOR MOTIONSTATE
   void _setPosition(SVector3 position){node_->setPosition(position);}
   void _setOrientation(SQuaternion orientation){node_->setOrientation(orientation);}
@@ -103,5 +106,7 @@ class STransform : public Component {
 
   void init(SVector3 position, SQuaternion orientation, SVector3 scale);
 };
+
+}; // namespace SF
 
 #endif

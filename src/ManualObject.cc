@@ -3,21 +3,23 @@
 #include "Transform.h"
 #include <OgreManualObject.h>
 
-SManualObject::SManualObject(bool isStatic):manual_(NULL){
+namespace SF {
+
+ManualObject::ManualObject(bool isStatic):manual_(NULL){
   static_ = true;
   setState(CREATED);
 }
 
-SManualObject::~SManualObject(){
+ManualObject::~ManualObject(){
   //dtor
 }
 
-SManualObject* SManualObject::clone() const {
-  SManualObject* mo = new SManualObject(static_);
+ManualObject* ManualObject::clone() const {
+  ManualObject* mo = new ManualObject(static_);
   return mo;
 }
 
-unsigned int SManualObject::onAdd(SString goname, STransform* transform){
+unsigned int ManualObject::onAdd(SString goname, Transform* transform){
   transform_ = transform;
   manual_ = Graphics::getSingleton().sceneManager()->createManualObject(goname+"_manual");
   manual_->setDynamic(!static_);
@@ -27,15 +29,15 @@ unsigned int SManualObject::onAdd(SString goname, STransform* transform){
 }
 
   // ManualObject methods
-void SManualObject::begin(SString materialName, OperationType opType){
+void ManualObject::begin(SString materialName, OperationType opType){
   manual_->begin(materialName, static_cast<Ogre::RenderOperation::OperationType>(opType));
 }
 
-void SManualObject::finishSection(){
+void ManualObject::finishSection(){
   manual_->end();
 }
 
-void SManualObject::finish(){
+void ManualObject::finish(){
   manual_->end();
   if(static_){
     Ogre::MeshPtr mesh = manual_->convertToMesh(manual_->getName()+"mesh");
@@ -48,39 +50,41 @@ void SManualObject::finish(){
   }
 }
 
-void SManualObject::position(const SVector3& pos){
+void ManualObject::position(const SVector3& pos){
   manual_->position(pos);
 }
 
-void SManualObject::colour(const SColourValue& col){
+void ManualObject::colour(const SColourValue& col){
   manual_->colour(col);
 }
 
-void SManualObject::normal(const SVector3& normal){
+void ManualObject::normal(const SVector3& normal){
   manual_->normal(normal);
 }
 
-void SManualObject::tangent(const SVector3& tangent){
+void ManualObject::tangent(const SVector3& tangent){
   manual_->tangent(tangent);
 }
 
-void SManualObject::textureCoord(const SVector3& uvw){
+void ManualObject::textureCoord(const SVector3& uvw){
   // DISCARDS 3rd component
   manual_->textureCoord(uvw.x, uvw.y);
 }
 
-void SManualObject::index(uint32_t ind){
+void ManualObject::index(uint32_t ind){
   manual_->index(ind);
 }
 
-void SManualObject::triangle(uint32_t ind1, uint32_t ind2, uint32_t ind3){
+void ManualObject::triangle(uint32_t ind1, uint32_t ind2, uint32_t ind3){
   manual_->triangle(ind1, ind2, ind3);
 }
 
-void SManualObject::quad(uint32_t ind1, uint32_t ind2, uint32_t ind3, uint32_t ind4){
+void ManualObject::quad(uint32_t ind1, uint32_t ind2, uint32_t ind3, uint32_t ind4){
   manual_->quad(ind1, ind2, ind3, ind4);
 }
 
-void SManualObject::clear(){
+void ManualObject::clear(){
   manual_->clear();
 }
+
+}; // namespace SF

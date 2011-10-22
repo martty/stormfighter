@@ -1,5 +1,7 @@
 #include "Hierarchy.h"
 
+namespace SF {
+
 Hierarchy::Hierarchy(){
   // set up root GO
   root_ = new GameObject(true);
@@ -91,3 +93,5 @@ SString Hierarchy::debug(){
   }
   return str;
 }
+
+}; // namespace SF

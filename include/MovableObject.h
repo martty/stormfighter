@@ -4,9 +4,13 @@
 #include "common.h"
 #include "Component.h"
 
-class SMovableObject : public Component {
+namespace SF {
+
+class MovableObject : public Component {
   public:
     virtual SAxisAlignedBox getBoundingBox() const = 0;
 };
+
+}; // namespace SF
 
 #endif

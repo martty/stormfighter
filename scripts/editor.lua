@@ -306,7 +306,7 @@ end
 
 function Editor:_generateMaterialThumbnails()
   local matgo = Hierarchy:createGameObject("matrtt");
-  matgo:addComponent(SPrimitive:new(SPrimitive.CUBE));
+  matgo:addComponent(Primitive:new(Primitive.CUBE));
   --matgo:transform().scale = SVector3(0.1,0.1,0.1);
   local matstrings = Graphics:getLoadedMaterialNames();
 

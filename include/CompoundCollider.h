@@ -3,6 +3,8 @@
 
 #include "Collider.h"
 
+namespace SF{
+
 /**
 * @brief Traverses scene hierarchy below current GO, and adds the colliders it finds to one big shape if autocfg; you can add them manually too
 *
@@ -10,16 +12,19 @@
 *
 */
 
-class SCompoundCollider : public SCollider {
-  public:
-    /// Autocfg, finds and adds colliders
-    SCompoundCollider();
-    /** Default destructor */
-    ~SCompoundCollider();
+class CompoundCollider : public Collider {
+ public:
+  /// Autocfg, finds and adds colliders
+  CompoundCollider();
+  /** Default destructor */
+  ~CompoundCollider();
 
-    void onInit();
+  void onInit();
 
-    const SString type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/CompoundCollider"; }
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_COMPOUNDCOLLIDER_H_

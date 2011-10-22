@@ -9,13 +9,15 @@
 #include "Component.h"
 #include "GameObject.h"
 
+namespace SF {
+
 typedef std::pair<int, int> Coordinate;
 typedef std::map<Coordinate, Ogre::Terrain::ImportData*> CoordinateImportData;
 
 /**
  * @brief Terrain class, holds a number individual terrain tiles, which can be independently specified/loaded/unloaded.
  */
-class STerrain : public Component {
+class Terrain : public Component {
  public:
   /**
   * @brief Create terrain with given values
@@ -23,11 +25,9 @@ class STerrain : public Component {
   * @param terrainSize The number of vertices along the side of one tile of terrain (2^N + 1)
   * @param worldSize The size of one tile of terrain in world units
   */
-  STerrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize);
+  Terrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize);
 
-  SString const type() const { return "Terrain"; }
-
-  STerrain* clone() const;
+  Terrain* clone() const;
 
   // TODO: default settings
 
@@ -41,7 +41,7 @@ class STerrain : public Component {
   /// Set the scaling of input data
   void setInputScalingTo(int x, int y, SReal inputScale);
   // TODO: more importdata settings
-  unsigned int onAdd(SString goname, STransform* transform);
+  unsigned int onAdd(SString goname, Transform* transform);
 
   SReal* heightData(int x, int y);
   SReal worldSize();
@@ -53,8 +53,11 @@ class STerrain : public Component {
 
   Ogre::Vector3 normalAt(Ogre::Vector3 point);
 
+ protected:
+  SString name() const { return "Terrain"; }
+
  private:
-  STerrain();
+  Terrain();
   /// prepares an importdata for filling in user values
   Ogre::Terrain::ImportData* prepareImportData(int x, int y);
 
@@ -71,5 +74,7 @@ class STerrain : public Component {
 
   void init(Ogre::Terrain::Alignment aligment, uint16_t terrainSize, SReal worldSize);
 };
+
+}; // namespace SF
 
 #endif

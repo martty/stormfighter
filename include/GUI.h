@@ -7,6 +7,8 @@
 #include <Awesomium/awesomium_capi.h>
 #include "ViewPortOverlay.h"
 
+namespace SF {
+
 class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader, public OIS::KeyListener, public OIS::MouseListener {
  public:
   GUI(Input* input);
@@ -56,5 +58,7 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
   ViewportOverlay* overlay_;
   awe_string* base;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_GUI_H_

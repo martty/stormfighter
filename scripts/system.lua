@@ -44,6 +44,33 @@ System.object_counter = 0;
 
 Components = {};
 
+System.defers = {};
+System.deferred_functions = {};
+
+function System.deepcopy(object)
+  local lookup_table = {}
+  local function _copy(object)
+    if type(object) ~= "table" then
+        return object
+    elseif lookup_table[object] then
+        return lookup_table[object]
+    end
+    local new_table = {}
+    lookup_table[object] = new_table
+    for index, value in pairs(object) do
+        new_table[_copy(index)] = _copy(value)
+    end
+    return setmetatable(new_table, getmetatable(object))
+  end
+  return _copy(object)
+end
+
+function System.stripped_type(object)
+  local stripped_classname = tolua.type(object);
+  local _,ind = stripped_classname:find("::");
+  return stripped_classname:sub(ind+1);
+end
+
 function System:loadComponent(filename)
   local f = assert(loadfile(filename));
   component = f();
@@ -54,7 +81,9 @@ function System:_addComponent(component)
   self.n_active_components = self.n_active_components + 1;
   local ac = self.active_components;
   local type = component.meta.type or error('set name for component!');
-  new_component = SLuaScript:new(type, 'System.active_components['..self.n_active_components..']');
+  component.type = type;
+  new_component = LuaScript:new(type);
+  --'System.active_components['..self.n_active_components..']'
   new_component._onInit = component.onInit or empty_function;
   new_component._onUpdate = component.onUpdate or empty_function;
   new_component._onPhysicsUpdate = component.onPhysicsUpdate or empty_function;
@@ -71,17 +100,43 @@ function System:_addComponent(component)
   return new_component;
 end
 
+function System._fireComponentEvent(tracking_id, event_name, param)
+  local obj = System:getObject(tracking_id);
+  if(event_name == "onCollisionStay") then
+    obj:_onCollisionStay(param);
+  elseif(event_name == "onCollisionEnter") then
+    obj:_onCollisionEnter(param);
+  elseif(event_name == "onCollisionExit") then
+    obj:_onCollisionExit(param);
+  elseif(event_name == "onInit") then
+    obj:_onInit();
+  elseif(event_name == "onUpdate") then
+    obj:_onUpdate();
+  elseif(event_name == "onPhysicsUpdate") then
+    obj:_onPhysicsUpdate();
+  end
+end
+
 --provide 2D vector :)
 function SVector2(x,y)
   return SVector3(x,y,0);
 end
 
 function System:_initialise()
+  -- dump SF.* into global namespace
+  local global_env = getfenv(0);
+  for k,v in pairs(SF) do
+    if( not global_env[k] ) then -- do not overwrite globals
+      global_env[k] = v;
+    end
+  end
+  setfenv(0, global_env);
   self:_hijackGameObject();
   self:_hijackModules();
   self:_annotateBasicTypes();
   self:_annotateCoreComponents();
   self:_registerComponents();
+  self:_setupDeferredFunctions();
 end
 
 function System:_hijackModules()
@@ -98,7 +153,12 @@ function System:_hijackGameObject()
   local old = GameObject.component;
   -- add automatic casting to component get
   GameObject.component = function (go, otype)
-    return tolua.cast(old(go, otype), "S"..otype);
+    local cmp = old(go, otype);
+    if(cmp.group == "LuaScript") then
+      return tolua.cast(cmp, "SF::LuaScript");
+    else
+      return tolua.cast(cmp, "SF::"..cmp.type);
+    end
   end
   -- annotate gameobject
   -- add component tracking + syntactic sugar for chaining
@@ -106,13 +166,42 @@ function System:_hijackGameObject()
   GameObject.addComponent = function (go, cmp)
     old2(go, cmp);
     self:track(cmp);
+    if(tolua.type(cmp) == "SF::LuaScript") then -- we need to add events
+      cmp:setTrackingId(cmp.tracking_id);
+    end
     return cmp;
+  end
+
+  local old3 = GameObject.clone;
+  GameObject.clone = function (go, newname)
+    local ngo = nil;
+    if(newname) then
+      ngo = old3(go, newname);
+    else
+      ngo = old3(go);
+    end
+    self:track(ngo);
+    local cmps = ngo:allComponents();
+    print("Cloned and now tracking:");
+    for i=0,cmps:size()-1 do
+      self:track(cmps[i]);
+      print(cmps[i].type);
+      if(cmps[i].group == "LuaScript") then -- we need to add events
+        local script = tolua.cast(cmps[i], "SF::LuaScript");
+        script:setTrackingId(cmps[i].tracking_id);
+        local old_script = go:component(script.type);
+        local old_peer = tolua.getpeer(old_script);
+        local new_peer = System.deepcopy(old_peer);
+        tolua.setpeer(script, new_peer);
+      end
+    end
+    return ngo;
   end
 end
 
 function System:_registerComponents()
-  self:registerComponent('STransform', STransform.new);
-  self:registerComponent('SPrimitive', SPrimitive.new);
+  self:registerComponent('Transform', Transform.new);
+  self:registerComponent('Primitive', Primitive.new);
 end
 
 function System:registerComponent(cname, newfun)
@@ -135,13 +224,13 @@ function System:_annotateBasicTypes()
 end
 
 function System:_annotateCoreComponents()
-  --STransform
-  self:annotate('STransform', 'position', 'SVector3');
-  self:annotate('STransform', 'orientation', 'SQuaternion');
-  self:annotate('STransform', 'scale', 'SVector3');
+  --Transform
+  self:annotate('Transform', 'position', 'SVector3');
+  self:annotate('Transform', 'orientation', 'SQuaternion');
+  self:annotate('Transform', 'scale', 'SVector3');
 
-  self:annotate('SMesh', 'meshName', 'string');
-  self:annotate('SPrimitive', 'meshName', 'string');
+  self:annotate('Mesh', 'meshName', 'string');
+  self:annotate('Primitive', 'meshName', 'string');
 end
 
 function System:annotate(object, field, otype, method, get, set, options)
@@ -171,11 +260,6 @@ function System:track(object)
   self.object_counter = self.object_counter + 1;
   object.tracking_id = self.object_counter;
   self.tracked_objects[self.object_counter] = object;
-  if(tolua.type(object) == "GameObject") then
-    print('now tracking: '..object:name());
-  else
-    print('now tracking: '..object.type);
-  end
 end
 
 function System:getObject(tracking_id)
@@ -215,6 +299,37 @@ end
 --       -->"System:setField(System:getObject(1234), 'position',"
 function System:makeSetCommand(object, field)
   return [["System:setField(System:getObject(]]..object.tracking_id..[[), ']]..field..[[',"]];
+end
+
+function System:_setupDeferredFunctions()
+  self:_defer(SF.RigidBody, "addPoint2PointConstraint");
+end
+
+function System:_defer(class, func)
+  self.deferred_functions[func] = class[func];
+  class[func] = function (obj, ...)
+    System:_deferredCall(obj, func, arg);
+  end
+end
+
+function System:_deferredCall(object, funcname, args)
+  table.insert(self.defers, {object, funcname, System.deferred_functions[funcname], args});
+end
+
+-- some component attributes can only be modified after they have been initalized
+-- this function is used to make those changes, but be transparent to the user
+-- unless such attributes are queried beforehand
+function System:_deferredInit()
+  for k,v in pairs(self.defers) do
+    local obj = v[1];
+    local funcname = v[2];
+    local func = v[3];
+    local args = v[4];
+    func(obj, unpack(args));
+    -- restore function call
+
+    SF[System.stripped_type(obj)][funcname]=func;
+  end
 end
 
 -- serializes a basic type : lua builtins and math objects (eg. SVector3)
@@ -288,7 +403,13 @@ function System:serialize(object, ident)
   return serial;
 end
 --]]
-function System:serializeNative(o)
+function System:serializeNative(o, level)
+  if(level == nil) then
+    level = 0;
+  end
+  if(level > 3) then
+    return '';
+  end
   local serial = '';
   if o == nil then
     serial = serial .. '""';
@@ -299,13 +420,16 @@ function System:serializeNative(o)
   elseif type(o) == "table" then
     serial = serial..("{\n")
     for k,v in pairs(o) do
-      serial = serial .. "  ".. k .. " = "
-      serial = serial .. self:serializeNative(v)
+      serial = serial .. "  ".. tostring(k) .. " = "
+      serial = serial .. self:serializeNative(v, level + 1)
       serial = serial .. ",\n"
     end
     serial = serial .. "}\n"
+  elseif type(o) == "function" then
+    serial = tostring(o);
   else
-    error("cannot serialize a " .. type(o))
+    --error("cannot serialize a " .. type(o))
+    serial = tostring(o);
   end
   return serial;
 end

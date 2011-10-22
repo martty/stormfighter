@@ -4,24 +4,28 @@
 #include "common.h"
 #include "Collider.h"
 
-class SBoxCollider : public SCollider
+namespace SF {
+
+class BoxCollider : public Collider
 {
  public:
   /// Constructor, setting the halfextents of the box
-  SBoxCollider(Ogre::Vector3 halfextents);
+  BoxCollider(Ogre::Vector3 halfextents);
   /// Constructor, using autocfg
-  SBoxCollider();
+  BoxCollider();
   /** Default destructor */
-  ~SBoxCollider();
+  ~BoxCollider();
 
-  SBoxCollider* clone() const;
+  BoxCollider* clone() const;
 
   void onInit();
 
-  SString const type() const { return "Collider"; }
-
+ protected:
+  SString name() const { return "Collider/BoxCollider"; }
  private:
   void init(Ogre::Vector3 halfextents);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_BOXCOLLIDER_H_

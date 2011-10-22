@@ -3,6 +3,8 @@
 
 #include <OgreSingleton.h>
 
+namespace SF {
+
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
@@ -20,5 +22,7 @@ class Logger : public Ogre::Singleton<Logger>{
 
   Ogre::Log*	 defaultLog_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_LOGGER_H_

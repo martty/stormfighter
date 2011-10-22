@@ -1,17 +1,17 @@
 #include "Terrain.h"
 #include "Graphics.h"
 
-using namespace Ogre;
+namespace SF {
 
-STerrain::STerrain() {
+Terrain::Terrain() {
   init(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
 }
 
-STerrain::STerrain(Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
+Terrain::Terrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
   init(alignment, terrainSize, worldSize);
 }
 
-void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
+void Terrain::init(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
   terrainGroup_ = OGRE_NEW Ogre::TerrainGroup(Graphics::getSingletonPtr()->sceneManager(), alignment, terrainSize, worldSize);
 
   // Configure default import settings for if we use imported image
@@ -36,13 +36,13 @@ void STerrain::init(Terrain::Alignment alignment, uint16_t terrainSize, SReal wo
   setState(CREATED);
 }
 
-STerrain* STerrain::clone() const {
+Terrain* Terrain::clone() const {
   // TODO: clone all
-  STerrain* terr = new STerrain();
+  Terrain* terr = new Terrain();
   return terr;
 }
 
-void STerrain::defineTerrain(long x, long y){
+void Terrain::defineTerrain(long x, long y){
   Ogre::String filename = terrainGroup_->generateFilename(x, y);
   if (Ogre::ResourceGroupManager::getSingleton().resourceExists(terrainGroup_->getResourceGroup(), filename)) {
     terrainGroup_->defineTerrain(x, y);
@@ -62,7 +62,7 @@ void STerrain::defineTerrain(long x, long y){
   }
 }
 
-void STerrain::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img) {
+void Terrain::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img) {
   img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   if (flipX)
     img.flipAroundY();
@@ -70,7 +70,7 @@ void STerrain::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img) {
     img.flipAroundX();
 }
 
-void STerrain::initBlendMaps(Ogre::Terrain* terrain){
+void Terrain::initBlendMaps(Ogre::Terrain* terrain){
   Ogre::TerrainLayerBlendMap* blendMap0 = terrain->getLayerBlendMap(1);
   Ogre::TerrainLayerBlendMap* blendMap1 = terrain->getLayerBlendMap(2);
   Ogre::Real minHeight0 = 1;
@@ -96,44 +96,44 @@ void STerrain::initBlendMaps(Ogre::Terrain* terrain){
   blendMap1->update();
 }
 
-Terrain::ImportData* STerrain::prepareImportData(int x, int y){
+Ogre::Terrain::ImportData* Terrain::prepareImportData(int x, int y){
   Coordinate coord(x,y);
   CoordinateImportData::iterator it = importdatas_.find(coord);
   if (it != importdatas_.end()){
       return (*it).second;
   } else {
-    importdatas_[coord] = new Terrain::ImportData(terrainGroup_->getDefaultImportSettings()); // copy of default
+    importdatas_[coord] = new Ogre::Terrain::ImportData(terrainGroup_->getDefaultImportSettings()); // copy of default
     return importdatas_[coord];
   }
   return NULL; // never reached
 }
 
-void STerrain::addLayerTo(int x, int y, SReal worldSize, SString texture_diffusespecular, SString texture_normalheight){
-  Terrain::ImportData* import = prepareImportData(x,y);
+void Terrain::addLayerTo(int x, int y, SReal worldSize, SString texture_diffusespecular, SString texture_normalheight){
+  Ogre::Terrain::ImportData* import = prepareImportData(x,y);
   int layer = import->layerList.size(); // the next layer
   import->layerList.resize(layer+1);
   import->layerList[layer].worldSize = worldSize;
   import->layerList[layer].textureNames.push_back(texture_diffusespecular);
   import->layerList[layer].textureNames.push_back(texture_normalheight);
 }
-void STerrain::setHeightImageTo(int x, int y, SString heightmap){
-  Terrain::ImportData* import = prepareImportData(x,y);
-  Image* img = OGRE_NEW Image();
+void Terrain::setHeightImageTo(int x, int y, SString heightmap){
+  Ogre::Terrain::ImportData* import = prepareImportData(x,y);
+  Ogre::Image* img = OGRE_NEW Ogre::Image();
   img->load(heightmap, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   import->inputImage = img;
   import->deleteInputData = true; // let Ogre delete the Image
 }
-void STerrain::setConstantHeightTo(int x, int y, SReal height){
-  Terrain::ImportData* import = prepareImportData(x,y);
+void Terrain::setConstantHeightTo(int x, int y, SReal height){
+  Ogre::Terrain::ImportData* import = prepareImportData(x,y);
   import->constantHeight = height;
 }
 
-void STerrain::setInputScalingTo(int x, int y, SReal inputscale){
-  Terrain::ImportData* import = prepareImportData(x,y);
+void Terrain::setInputScalingTo(int x, int y, SReal inputscale){
+  Ogre::Terrain::ImportData* import = prepareImportData(x,y);
   import->inputScale = inputscale;
 }
 
-unsigned int STerrain::onAdd(SString goname, STransform* transform){
+unsigned int Terrain::onAdd(SString goname, Transform* transform){
   terrainGroup_->setFilenameConvention(goname+"_terrain", Ogre::String("dat"));
   terrainGroup_->setOrigin(transform->position());
 
@@ -157,35 +157,35 @@ unsigned int STerrain::onAdd(SString goname, STransform* transform){
   return NONE;
 }
 
-SReal* STerrain::heightData(int x, int y){
+SReal* Terrain::heightData(int x, int y){
   return terrainGroup_->getTerrain(x,y)->getHeightData();
 }
 
-SReal STerrain::minHeight(int x, int y){
+SReal Terrain::minHeight(int x, int y){
   return terrainGroup_->getTerrain(x,y)->getMinHeight();
 }
 
-SReal STerrain::maxHeight(int x, int y){
+SReal Terrain::maxHeight(int x, int y){
   return terrainGroup_->getTerrain(x,y)->getMaxHeight();
 }
 
-SReal STerrain::worldSize(){
+SReal Terrain::worldSize(){
   return terrainGroup_->getTerrainWorldSize();
 }
 
-uint16_t STerrain::terrainSize(int x, int y){
+uint16_t Terrain::terrainSize(int x, int y){
   return terrainGroup_->getTerrain(x,y)->getSize();
 }
 
-Ogre::Vector3 STerrain::terrainPosition(int x, int y){
+Ogre::Vector3 Terrain::terrainPosition(int x, int y){
   return terrainGroup_->getTerrain(x,y)->getPosition();
 }
 
-void STerrain::setMaterialNameTo(int x, int y, SString matname){
+void Terrain::setMaterialNameTo(int x, int y, SString matname){
 //  terrainGroup_->getTerrain(x,y)->setMaterialName(matname);
 }
 
-Ogre::Vector3 STerrain::normalAt(Ogre::Vector3 point){
+Ogre::Vector3 Terrain::normalAt(Ogre::Vector3 point){
   long x, y;
   terrainGroup_->convertWorldPositionToTerrainSlot(point, &x, &y);
   Ogre::Vector3 pos1, pos2, pos3;
@@ -201,3 +201,5 @@ Ogre::Vector3 STerrain::normalAt(Ogre::Vector3 point){
   Ogre::Vector3 normal = -(pos2-pos1).crossProduct((pos3-pos1));
   return normal.normalisedCopy();
 }
+
+}; // namespace SF

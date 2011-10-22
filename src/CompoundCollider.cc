@@ -3,20 +3,22 @@
 #include "StormfighterApp.h"
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
-SCompoundCollider::SCompoundCollider(){
+namespace SF {
+
+CompoundCollider::CompoundCollider(){
   autoConfig_ = true;
 }
 
-SCompoundCollider::~SCompoundCollider(){
+CompoundCollider::~CompoundCollider(){
 }
 
-void SCompoundCollider::onInit(){
+void CompoundCollider::onInit(){
   btCompoundShape* comp = new btCompoundShape();
   collisionShape_ = comp;
   GameObject* go = object();
   ComponentVector colliders = go->allComponentInChildren("Collider");
   for(ComponentVector::iterator it = colliders.begin(); it != colliders.end(); it++){
-    SCollider* sc = static_cast<SCollider*>(*it);
+    Collider* sc = static_cast<Collider*>(*it);
     if(sc == this)
       continue;
     if(sc->state() == PREPARED){
@@ -29,3 +31,5 @@ void SCompoundCollider::onInit(){
     comp->addChildShape(chtr, sc->collisionShape());
   }
 }
+
+}; // namespace SF

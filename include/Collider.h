@@ -5,30 +5,33 @@
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include "Component.h"
 
+namespace SF {
+
 /**
 * @brief Parent class for all colliders (abstract)
 *
 */
-class SCollider : public Component
+class Collider : public Component
 {
  public:
   /** Default constructor, by default we do not have autocfg */
-  SCollider(){collisionShape_ = NULL; autoConfig_ = false; }
+  Collider(){collisionShape_ = NULL; autoConfig_ = false; }
   /** Default destructor */
-  virtual ~SCollider(){delete collisionShape_;}
+  virtual ~Collider(){delete collisionShape_;}
 
-  virtual SCollider* clone() const;
-
-  virtual SString const type () const{return "Collider";}
+  virtual Collider* clone() const;
 
   btCollisionShape* collisionShape(){return collisionShape_;}
 
   virtual btTransform shapeTransform();
 
  protected:
+  SString name() const = 0;
   btCollisionShape* collisionShape_;
   /// define whether this collider should size and orient itself based on the other components in the GO
   bool autoConfig_;
 };
+
+}; // namespace SF
 
 #endif

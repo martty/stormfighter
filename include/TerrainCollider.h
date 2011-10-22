@@ -3,20 +3,24 @@
 
 #include "Collider.h"
 
+namespace SF {
 
-class STerrainCollider : public SCollider
+class TerrainCollider : public Collider
 {
   public:
     /** Default constructor */
-    STerrainCollider();
+    TerrainCollider();
     /** Default destructor */
-    ~STerrainCollider();
+    ~TerrainCollider();
 
-    STerrainCollider* clone() const;
+    TerrainCollider* clone() const;
 
     void onInit();
 
-    SString const type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/TerrainCollider"; }
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_TERRAINCOLLIDER_H_

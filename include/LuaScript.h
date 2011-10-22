@@ -3,13 +3,17 @@
 
 #include "Script.h"
 
+namespace SF {
 
-class SLuaScript : public SScript{
+class LuaScript : public Script{
  public:
   /** Default constructor */
-  SLuaScript(SString type, SString callpath);
+  LuaScript(SString type);
   /** Default destructor */
-  ~SLuaScript();
+  ~LuaScript();
+
+  void setTrackingId(int id);
+  virtual LuaScript* clone() const { return new LuaScript(mytype_); }
 
   // Override these for functionality
   void onInit();
@@ -21,8 +25,12 @@ class SLuaScript : public SScript{
   void onCollisionExit(const CollisionData* collisionData);
   /// to be called when the holder GameObject collider, every tick
   void onCollisionStay(const CollisionData* collisionData);
+ protected:
+  SString name() const { return "LuaScript/"+mytype_; }
  private:
-  SString callpath_;
+  int id_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_LUASCRIPT_H_

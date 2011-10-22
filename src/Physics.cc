@@ -3,7 +3,10 @@
 #include "StormfighterApp.h"
 #include "Graphics.h"
 #include "Hierarchy.h"
+#include "BulletOgreDebugDraw.h"
 #include <limits>
+
+namespace SF {
 
 Physics::Physics(StormfighterApp* app){
   application_ = app;
@@ -28,9 +31,8 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   dWorld_ = new btDiscreteDynamicsWorld(collisionDispatcher_,broadphase_,solver_,collisionConfiguration_);
   Ogre::SceneNode * rootnode = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode();
   debugdrawer_ = new BulletDebugDrawer(rootnode, dWorld_);
-  debugdrawer_->setDebugMode(false);
+  debugdrawer_->setDebugMode(BulletDebugDrawer::DBG_DrawWireframe | BulletDebugDrawer::DBG_DrawContactPoints | BulletDebugDrawer::DBG_DrawConstraints);
   dWorld_->setDebugDrawer(debugdrawer_);
-
   dWorld_->setInternalTickCallback(&Physics::tickCallback, NULL, false);
   gContactProcessedCallback = &Physics::contactProcessedCallback;
   dWorld_->setWorldUserInfo(application_);
@@ -60,6 +62,10 @@ void Physics::addRigidBody(btRigidBody* rigidbody, short type, short collidesWit
 
 void Physics::removeRigidBody(btRigidBody* rigidBody){
   dWorld_->removeRigidBody(rigidBody);
+}
+
+void Physics::addConstraint(btTypedConstraint* constraint){
+  dWorld_->addConstraint(constraint);
 }
 
 void Physics::tickCallback(btDynamicsWorld* world, btScalar timeStep){
@@ -167,3 +173,5 @@ void Physics::addRigidBody(btRigidBody* rigidBody, SString group, StringVector c
 void Physics::setDebugDraw(bool draw){
   debugdrawer_->setDebugMode(draw);
 }
+
+}; // namespace SF

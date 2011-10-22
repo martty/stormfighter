@@ -11,6 +11,8 @@
 #define DEBUG true
 #define TEST true||DEBUG
 
+namespace SF {
+
 /// String class
 typedef std::string SString;
 
@@ -67,6 +69,8 @@ struct SingleRayCastResult {
   GameObject* hitObject;
   Ogre::Vector3 hitPoint;
 };
+
+}; // namespace SF
 
 // UGLY but EASY!
 #ifdef DEBUG

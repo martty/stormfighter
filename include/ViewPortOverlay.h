@@ -40,6 +40,8 @@
 #include <OgrePanelOverlayElement.h>
 #include <OgreRenderTargetListener.h>
 
+namespace SF {
+
 /**
 * An enumeration of relative positions for OverlayPosition.
 */
@@ -154,5 +156,7 @@ public:
 	void viewportAdded(const Ogre::RenderTargetViewportEvent& evt);
 	void viewportRemoved(const Ogre::RenderTargetViewportEvent& evt);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_VIEWPORTOVERLAY_H_

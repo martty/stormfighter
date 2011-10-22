@@ -75,15 +75,12 @@
 		<Unit filename="include\BulletOgreMeshToShape.h" />
 		<Unit filename="include\Camera.h" />
 		<Unit filename="include\CapsuleCollider.h" />
-		<Unit filename="include\CharacterController.h" />
-		<Unit filename="include\ChaseCameraController.h" />
 		<Unit filename="include\Collider.h" />
 		<Unit filename="include\Component.h" />
 		<Unit filename="include\CompoundCollider.h" />
 		<Unit filename="include\ConvexHullCollider.h" />
 		<Unit filename="include\CylinderCollider.h" />
 		<Unit filename="include\DebugDrawer.h" />
-		<Unit filename="include\FreeLookCameraController.h" />
 		<Unit filename="include\GUI.h" />
 		<Unit filename="include\GameObject.h" />
 		<Unit filename="include\Graphics.h" />
@@ -99,9 +96,14 @@
 		<Unit filename="include\Mesh.h" />
 		<Unit filename="include\Module.h" />
 		<Unit filename="include\MovableObject.h" />
+		<Unit filename="include\OgreAxisAlignedBox.pkg" />
+		<Unit filename="include\OgreColourValue.pkg" />
+		<Unit filename="include\OgreMath.pkg" />
+		<Unit filename="include\OgrePlane.pkg" />
+		<Unit filename="include\OgreQuaternion.pkg" />
+		<Unit filename="include\OgreSphere.pkg" />
+		<Unit filename="include\OgreVector3.pkg" />
 		<Unit filename="include\Physics.h" />
-		<Unit filename="include\PlatformMoverVertical.h" />
-		<Unit filename="include\PlatformPositioner.h" />
 		<Unit filename="include\Primitive.h" />
 		<Unit filename="include\RigidBody.h" />
 		<Unit filename="include\Script.h" />
@@ -114,7 +116,6 @@
 		<Unit filename="include\Transform.h" />
 		<Unit filename="include\TrimeshCollider.h" />
 		<Unit filename="include\ViewPortOverlay.h" />
-		<Unit filename="include\WaterRiser.h" />
 		<Unit filename="include\common.h" />
 		<Unit filename="include\core_application.pkg" />
 		<Unit filename="include\core_components_graphics.pkg" />
@@ -124,25 +125,25 @@
 		<Unit filename="include\core_modules.pkg" />
 		<Unit filename="include\core_ogre.pkg" />
 		<Unit filename="include\core_ois.pkg" />
+		<Unit filename="include\stdlib.pkg" />
+		<Unit filename="scripts\bombarder.lua" />
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
 		<Unit filename="scripts\manipulator.lua" />
+		<Unit filename="scripts\middlepad.lua" />
 		<Unit filename="scripts\system.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />
 		<Unit filename="src\BulletOgreMeshToShape.cc" />
 		<Unit filename="src\Camera.cc" />
 		<Unit filename="src\CapsuleCollider.cc" />
-		<Unit filename="src\CharacterController.cc" />
-		<Unit filename="src\ChaseCameraController.cc" />
 		<Unit filename="src\Collider.cc" />
 		<Unit filename="src\Component.cc" />
 		<Unit filename="src\CompoundCollider.cc" />
 		<Unit filename="src\ConvexHullCollider.cc" />
 		<Unit filename="src\CylinderCollider.cc" />
 		<Unit filename="src\DebugDrawer.cc" />
-		<Unit filename="src\FreeLookCameraController.cc" />
 		<Unit filename="src\GUI.cc" />
 		<Unit filename="src\GameObject.cc" />
 		<Unit filename="src\Graphics.cc" />
@@ -156,8 +157,6 @@
 		<Unit filename="src\Mesh.cc" />
 		<Unit filename="src\Module.cc" />
 		<Unit filename="src\Physics.cc" />
-		<Unit filename="src\PlatformMoverVertical.cc" />
-		<Unit filename="src\PlatformPositioner.cc" />
 		<Unit filename="src\Primitive.cc">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -170,7 +169,6 @@
 		<Unit filename="src\Transform.cc" />
 		<Unit filename="src\TrimeshCollider.cc" />
 		<Unit filename="src\ViewPortOverlay.cc" />
-		<Unit filename="src\WaterRiser.cc" />
 		<Unit filename="src\common.cc" />
 		<Unit filename="src\main.cc" />
 		<Extensions>

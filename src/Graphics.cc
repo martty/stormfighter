@@ -10,6 +10,8 @@
 #include <OgreMaterialManager.h>
 #include <OgreHardwarePixelBuffer.h>
 
+namespace SF {
+
 template<> Graphics* Ogre::Singleton<Graphics>::ms_Singleton = 0;
 
 Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app), root_(NULL), sceneManager_(NULL), renderWindow_(NULL), viewport_(NULL), defaultCamera_(NULL){
@@ -342,3 +344,5 @@ void Graphics::setSkyBoxMaterial(SString mat){
 void Graphics::setSkyBoxEnabled(bool enable) {
   sceneManager_->setSkyBox(enable, skyBoxMaterialName_);
 }
+
+}; // namespace SF

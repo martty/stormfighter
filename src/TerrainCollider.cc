@@ -2,24 +2,26 @@
 #include "Terrain.h"
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
-STerrainCollider::STerrainCollider(){
+namespace SF {
+
+TerrainCollider::TerrainCollider(){
   autoConfig_ = true;
 }
 
-STerrainCollider::~STerrainCollider(){
+TerrainCollider::~TerrainCollider(){
 }
 
-STerrainCollider* STerrainCollider::clone() const {
+TerrainCollider* TerrainCollider::clone() const {
   // collision shape sharing
-  STerrainCollider* tcol = new STerrainCollider();
+  TerrainCollider* tcol = new TerrainCollider();
   tcol->collisionShape_ = collisionShape_;
   return tcol;
 }
 
-void STerrainCollider::onInit(){
+void TerrainCollider::onInit(){
 if(!autoConfig_) // if we are not using autocfg, then this component is already READY
     return;
-  STerrain* terrain = static_cast<STerrain*>(object()->component("Terrain"));
+  Terrain* terrain = static_cast<Terrain*>(object()->component("Terrain"));
   // FIXME: we should not use (0,0)
   SReal* heightDataPT = terrain->heightData(0,0);
   SReal minHeight = terrain->minHeight(0,0);
@@ -38,3 +40,5 @@ if(!autoConfig_) // if we are not using autocfg, then this component is already 
   collisionShape_->setLocalScaling(localScaling);
   setState(READY);
 }
+
+}; // namespace SF

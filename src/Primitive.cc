@@ -1,17 +1,18 @@
 #include "Primitive.h"
 #include "Graphics.h"
+#include <OgreSubEntity.h>
 
-using namespace Ogre;
+namespace SF {
 
-SPrimitive::SPrimitive(PrimitiveType type) : SMesh(){
+Primitive::Primitive(PrimitiveType type) : Mesh(){
   type_ = type;
   setState(CREATED);
 }
 
-SPrimitive::~SPrimitive(){
+Primitive::~Primitive(){
 }
 
-unsigned int SPrimitive::onAdd(SString goname, STransform* transform){
+unsigned int Primitive::onAdd(SString goname, Transform* transform){
   transform_ = transform;
   entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+"_primitive", static_cast<Ogre::SceneManager::PrefabType>(type_));
   Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
@@ -19,9 +20,16 @@ unsigned int SPrimitive::onAdd(SString goname, STransform* transform){
   transform->attachObject(entity_);
   valid_ = true;
   setState(READY);
+  if(!materialname_.empty()){
+      setMaterialName(materialname_);
+  }
   return NONE;
 }
 
-SPrimitive* SPrimitive::clone() const{
-  return new SPrimitive(type_);
+Primitive* Primitive::clone() const{
+  Primitive* sp = new Primitive(type_);
+  sp->setMaterialName(entity_->getSubEntity(0)->getMaterialName());
+  return sp;
 }
+
+}; // namespace SF

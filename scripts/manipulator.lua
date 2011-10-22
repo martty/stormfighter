@@ -281,9 +281,9 @@ function Manipulator:findOrCreate()
   local obj = Hierarchy:createGameObject("manipulator-front");
   man:transform():setInheritScale(false);
   man:addChild(obj);
-  local mo = SManualObject:new(true);
+  local mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
@@ -292,9 +292,9 @@ function Manipulator:findOrCreate()
   mo:finish();
   obj = Hierarchy:createGameObject("manipulator-back");
   man:addChild(obj);
-  local mo = SManualObject:new(true);
+  local mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_BOTTOM));
@@ -303,9 +303,9 @@ function Manipulator:findOrCreate()
   mo:finish();
   obj = Hierarchy:createGameObject("manipulator-top");
   man:addChild(obj);
-  mo = SManualObject:new(true);
+  mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
@@ -314,9 +314,9 @@ function Manipulator:findOrCreate()
   mo:finish();
   obj = Hierarchy:createGameObject("manipulator-bottom");
   man:addChild(obj);
-  mo = SManualObject:new(true);
+  mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
@@ -325,9 +325,9 @@ function Manipulator:findOrCreate()
   mo:finish();
   obj = Hierarchy:createGameObject("manipulator-left");
   man:addChild(obj);
-  mo = SManualObject:new(true);
+  mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_LEFT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));
@@ -336,9 +336,9 @@ function Manipulator:findOrCreate()
   mo:finish();
   obj = Hierarchy:createGameObject("manipulator-right");
   man:addChild(obj);
-  mo = SManualObject:new(true);
+  mo = ManualObject:new(true);
   obj:addComponent(mo);
-  mo:begin("Editor/manipulator_transparent", SManualObject.OT_TRIANGLE_LIST);
+  mo:begin("Editor/manipulator_transparent", ManualObject.OT_TRIANGLE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_BOTTOM));
   mo:position(bbox:getCorner(SAxisAlignedBox.FAR_RIGHT_TOP));
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
@@ -348,10 +348,10 @@ function Manipulator:findOrCreate()
   -- make edge lines
   obj = Hierarchy:createGameObject("manipulator-edges");
   man:addChild(obj);
-  mo = SManualObject:new(true);
+  mo = ManualObject:new(true);
   obj:addComponent(mo);
   local edge_colour = SColourValue.Black;
-  mo:begin("Editor/manipulator_edge", SManualObject.OT_LINE_LIST);
+  mo:begin("Editor/manipulator_edge", ManualObject.OT_LINE_LIST);
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_RIGHT_TOP));
   mo:colour(edge_colour);
   mo:position(bbox:getCorner(SAxisAlignedBox.NEAR_LEFT_TOP));

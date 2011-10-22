@@ -1,5 +1,7 @@
 #include "BulletOgreDebugDraw.h"
 
+namespace SF {
+
 using Ogre::VertexElementSemantic;
 using Ogre::VertexElementType;
 using namespace Ogre;
@@ -264,3 +266,5 @@ using namespace Ogre;
 
 	  mDirty = false;
 	}
+
+}; // namespace SF

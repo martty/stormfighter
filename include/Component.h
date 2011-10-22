@@ -3,8 +3,10 @@
 
 #include "common.h"
 
+namespace SF {
+
 struct CollisionData;
-class STransform;
+class Transform;
 
 /**
  * @brief Compenents are responsible for a part of a GameObject's behavior, appearance, etc.
@@ -17,8 +19,11 @@ class Component{
   /// destroys component
   virtual ~Component(){return;}
 
+  /// returns group of component as string
+  virtual const SString& group() const;
+
   /// returns type of component as string
-  SString const virtual type() const = 0;
+  virtual const SString& type() const;
 
   /// clones the component
   virtual Component* clone() const = 0;
@@ -28,7 +33,7 @@ class Component{
   * @param objectname Name of the GO, so that the component can appropriately name
   * @param transform Transform component of the GO
   */
-  virtual unsigned int onAdd(SString objectname, STransform* transform){ return NONE; }
+  virtual unsigned int onAdd(SString objectname, Transform* transform){ return NONE; }
   /**
    * @brief Exposes the GameObject and the Application to the component
    * @param object GameObject in which the component acts
@@ -70,12 +75,19 @@ class Component{
 
 protected:
   void setState(State new_state);
+
+  virtual SString name() const = 0;
  private:
   GameObject* object_;
   StormfighterApp* application_;
   State state_;
 
+  mutable SString group_;
+  mutable SString type_;
+
   void init(){}
 };
+
+}; // namespace SF
 
 #endif

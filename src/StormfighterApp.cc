@@ -24,12 +24,8 @@
 #include "TerrainCollider.h"
 #include "CompoundCollider.h"
 #include "CylinderCollider.h"
-#include "FreeLookCameraController.h"
-#include "ChaseCameraController.h"
-#include "CharacterController.h"
-#include "PlatformMoverVertical.h"
-#include "PlatformPositioner.h"
-#include "WaterRiser.h"
+
+namespace SF {
 
 StormfighterApp::StormfighterApp(){
   physics_ = NULL;
@@ -78,13 +74,13 @@ void StormfighterApp::setupStormfighterScene(){
   graphics_->setSkyBoxEnabled(true);
 
   // export globals to lua
-  scripting_->setGlobal(input_, "Input", "Input");
-  scripting_->setGlobal(hierarchy_, "Hierarchy", "Hierarchy");
-  scripting_->setGlobal(gui_, "GUI", "GUI");
-  scripting_->setGlobal(physics_, "Physics", "Physics");
-  scripting_->setGlobal(logger_, "Logger", "Logger");
-  scripting_->setGlobal(graphics_, "Graphics", "Graphics");
-  scripting_->setGlobal(this, "StormfighterApp", "Application");
+  scripting_->setGlobal(input_, "SF::Input", "Input");
+  scripting_->setGlobal(hierarchy_, "SF::Hierarchy", "Hierarchy");
+  scripting_->setGlobal(gui_, "SF::GUI", "GUI");
+  scripting_->setGlobal(physics_, "SF::Physics", "Physics");
+  scripting_->setGlobal(logger_, "SF::Logger", "Logger");
+  scripting_->setGlobal(graphics_, "SF::Graphics", "Graphics");
+  scripting_->setGlobal(this, "SF::StormfighterApp", "Application");
 
   if(!scripting_->parseFile("scripts/init.lua"))
     exit(1);
@@ -94,7 +90,7 @@ void StormfighterApp::setupStormfighterScene(){
   physics_->addCollisionGroup("faller");
 /*
   GameObject* lighty = hierarchy_->createGameObject("Light");
-  SLight* light = new SLight(Ogre::Light::LT_POINT);
+  Light* light = new Light(Ogre::Light::LT_POINT);
   lighty->addComponent(light);
   light->setDiffuseColour(Ogre::ColourValue(1,1,1));
   lighty->transform()->setPosition(Ogre::Vector3(0,100,0));
@@ -102,38 +98,38 @@ void StormfighterApp::setupStormfighterScene(){
   light->setAsTerrainLight();
 
   GameObject* terrain = hierarchy_->createGameObject("Terrain");
-  STerrain* t = new STerrain(Ogre::Terrain::ALIGN_X_Z, 129, 1200.0f);
+  Terrain* t = new Terrain(Ogre::Terrain::ALIGN_X_Z, 129, 1200.0f);
   //t->addLayerTo(0,0,100,"dirt_grayrocky_diffusespecular.dds","dirt_grayrocky_normalheight.dds");
   t->addLayerTo(0,0,30,"grass_green-01_diffusespecular.dds","grass_green-01_normalheight.dds");
   //t->addLayerTo(0,0,200,"growth_weirdfungus-03_diffusespecular.dds","growth_weirdfungus-03_normalheight.dds");
   t->setHeightImageTo(0,0,"terrain.png");
   terrain->addComponent(t);
-  terrain->addComponent(new STerrainCollider());
-  SRigidBody* rb = new SRigidBody(0);
+  terrain->addComponent(new TerrainCollider());
+  RigidBody* rb = new RigidBody(0);
   rb->setCollisionGroup("terrain");
   terrain->addComponent(rb);
   rb->disableDebugDraw();
 
   GameObject* player = hierarchy_->createGameObject("Player");
   GameObject* mesh = hierarchy_->createGameObject("PlayerMesh");
-  mesh->addComponent(new SMesh("robot.mesh"));
-  mesh->addComponent(new SCylinderCollider());
+  mesh->addComponent(new Mesh("robot.mesh"));
+  mesh->addComponent(new CylinderCollider());
   mesh->transform()->setPosition(SVector3(0, -48, 0));
   mesh->transform()->yaw(Ogre::Degree(90));
   player->addChild(mesh);
   player->transform()->setPosition(Ogre::Vector3(0, 100, 0));
-  SRigidBody* sr = new SRigidBody(0);
+  RigidBody* sr = new RigidBody(0);
   sr->setKinematic(true);
   sr->setDamping(0.0f,1.0f);
   sr->setCallbacks(true);
   sr->setCollisionGroup("player");
 
-  //player->addComponent(new SCompoundCollider());
+  //player->addComponent(new CompoundCollider());
   player->addComponent(sr);
   player->addComponent(new SCharacterController());
 
   GameObject* chaseCam = hierarchy_->createGameObject("chaseCam");
-  SCamera* c = new SCamera();
+  Camera* c = new Camera();
   chaseCam->addComponent(c);
   c->setNearClipDistance(1);
   c->setAspectRatio(graphics_->getDefaultAspectRatio());
@@ -143,7 +139,7 @@ void StormfighterApp::setupStormfighterScene(){
 
 
   GameObject* cam = hierarchy_->createGameObject("cammy");
-  c = new SCamera();
+  c = new Camera();
   cam->addComponent(c);
   cam->addComponent(new SFreeLookCameraController());
   c->setNearClipDistance(1);
@@ -153,13 +149,13 @@ void StormfighterApp::setupStormfighterScene(){
   cam->transform()->lookAt(Ogre::Vector3(0,0,0));
 
   GameObject* plane = hierarchy_->createGameObject("platform");
-  plane->addComponent(new SBoxCollider());
+  plane->addComponent(new BoxCollider());
   plane->transform()->setScale(SVector3(1, 0.1, 1));
   plane->transform()->setPosition(SVector3(100, 60, 0));
-  plane->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  plane->addComponent(new Primitive(Ogre::SceneManager::PT_CUBE));
   //spr->setMaterialName("Examples/BumpyMetal");
-  SRigidBody* rby = new SRigidBody(0);
-  // FIXME: setting event generation manually on SRigidBody
+  RigidBody* rby = new RigidBody(0);
+  // FIXME: setting event generation manually on RigidBody
   rby->setKinematic(true);
   plane->addComponent(rby);
 
@@ -167,18 +163,18 @@ void StormfighterApp::setupStormfighterScene(){
   glob->addComponent(new SPlatformPositioner(plane));
 
   GameObject* water = hierarchy_->createGameObject("Water");
-  water->addComponent(new SPrimitive(Ogre::SceneManager::PT_CUBE));
+  water->addComponent(new Primitive(Ogre::SceneManager::PT_CUBE));
   water->transform()->setScale(SVector3(1000, 0.01, 1000));
-  SMesh::cast(water->component("Mesh"))->setMaterialName("Examples/WaterStream");
+  Mesh::cast(water->component("Mesh"))->setMaterialName("Examples/WaterStream");
   water->transform()->setPosition(SVector3(0, -10, 0));
   //water->addComponent(new SWaterRiser());
-  water->addComponent(new SBoxCollider());
-  water->addComponent(new SRigidBody(0));
-  SRigidBody::cast(water->component("RigidBody"))->setKinematic(true);
-  SRigidBody::cast(water->component("RigidBody"))->setCollisionResponse(false);
+  water->addComponent(new BoxCollider());
+  water->addComponent(new RigidBody(0));
+  RigidBody::cast(water->component("RigidBody"))->setKinematic(true);
+  RigidBody::cast(water->component("RigidBody"))->setCollisionResponse(false);
   StringVector st;
   st.push_back("player");
-  SRigidBody::cast(water->component("RigidBody"))->setCollidesWith(st);
+  RigidBody::cast(water->component("RigidBody"))->setCollidesWith(st);
   */
 }
 
@@ -200,7 +196,9 @@ bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
   hierarchy_->initialize(this);
-  log(hierarchy_->debug());
+  //log(hierarchy_->debug());
+  log("Running deferred initializations");
+  scripting()->executeString("System:_deferredInit();");
   log("Start main loop...");
 
   graphics_->defaultRenderWindow()->resetStatistics();
@@ -214,3 +212,5 @@ void StormfighterApp::runStormfighter(){
 void StormfighterApp::log(const SString& message){
   logger_->logMessage(message);
 }
+
+}; // namespace SF

@@ -9,6 +9,8 @@
 #include <OgreTexture.h>
 #include <OgreBitwise.h>
 
+namespace SF {
+
 GUI::GUI(Input* input){
   renderBuffer_ = NULL;
   Ogre::Viewport* viewport = Graphics::getSingletonPtr()->defaultViewport();
@@ -430,3 +432,5 @@ bool GUI::isInGUI(int x, int y){
     return false;
   }
 }
+
+}; // namespace SF

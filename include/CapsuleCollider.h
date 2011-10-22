@@ -3,24 +3,28 @@
 
 #include "Collider.h"
 
+namespace SF {
 
-class SCapsuleCollider : public SCollider
+class CapsuleCollider : public Collider
 {
  public:
   /** Default constructor */
-  SCapsuleCollider(SReal radius, SReal height);
+  CapsuleCollider(SReal radius, SReal height);
   /// autocfg
-  SCapsuleCollider();
+  CapsuleCollider();
   /** Default destructor */
-  ~SCapsuleCollider();
+  ~CapsuleCollider();
 
 
   //void onInit();
 
-  SString const type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/CapsuleCollider"; }
 
  private:
   void init(SReal radius, SReal height);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_CAPSULECOLLIDER_H

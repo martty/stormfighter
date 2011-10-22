@@ -4,7 +4,12 @@
 #include <btBulletDynamicsCommon.h>
 #include "common.h"
 #include <OgreSceneNode.h>
-#include "BulletOgreDebugDraw.h"
+
+extern ContactProcessedCallback gContactProcessedCallback;
+
+namespace SF{
+
+class BulletDebugDrawer;
 
 struct CollisionData {
   Ogre::Vector3 pointOnA;
@@ -18,8 +23,6 @@ struct CollisionData {
 };
 
 typedef std::map<SString, short> MaskMap;
-
-extern ContactProcessedCallback gContactProcessedCallback;
 
 class Physics {
  public:
@@ -36,6 +39,8 @@ class Physics {
   void addRigidBody(btRigidBody* rigidBody, SString group, StringVector collidesWith);
 
   void removeRigidBody(btRigidBody* rigidBody);
+
+  void addConstraint(btTypedConstraint* constraint);
 
   void addCollisionGroup(SString name);
 
@@ -67,5 +72,7 @@ class Physics {
   MaskMap collisionGroups_;
   int collision_group_counter;
 };
+
+}; // namespace SF
 
 #endif // STORMIFIGHTER_PHYSICS_H_

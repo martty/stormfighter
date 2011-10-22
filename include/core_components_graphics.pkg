@@ -1,5 +1,6 @@
 class Component{
  public:
+  tolua_readonly tolua_property SString group;
   tolua_readonly tolua_property SString type;
 
   Component* clone() const;
@@ -31,11 +32,10 @@ class Component{
 };
 
 
-class STransform : public Component {
+class Transform : public Component {
  public:
 
   /// The Transform component's type string is @b "Transform"
-  tolua_readonly tolua_property SString type;
 
   // POSITION, ORIENTATION, SCALE (local space)
   tolua_property SVector3 position;
@@ -74,19 +74,17 @@ class STransform : public Component {
   void showBoundingBox(bool show);
 };
 
-class SMovableObject : public Component {
+class MovableObject : public Component {
   public:
     SAxisAlignedBox getBoundingBox() const;
 };
 
-class SMesh : public SMovableObject {
+class Mesh : public MovableObject {
  public:
-  SMesh();
-  SMesh(SString meshname);
+  Mesh();
+  Mesh(SString meshname);
 
-  tolua_readonly tolua_property SString type;
-
-  SMesh* clone() const;
+  Mesh* clone() const;
 
   tolua_property SString meshName;
 
@@ -99,30 +97,26 @@ class SMesh : public SMovableObject {
   void addAnimationTime(SString animstate, SReal time);
 };
 
-class SPrimitive : public SMesh {
+class Primitive : public Mesh {
  public:
   enum PrimitiveType {
     CUBE = Ogre::SceneManager::PT_CUBE,
     SPHERE = Ogre::SceneManager::PT_SPHERE,
     PLANE = Ogre::SceneManager::PT_PLANE
   };
-  SPrimitive(PrimitiveType type);
+  Primitive(PrimitiveType type);
 
-  ~SPrimitive();
+  ~Primitive();
 
-  SPrimitive* clone() const;
-
-  tolua_readonly tolua_property SString type;
+  Primitive* clone() const;
 };
 
-class SCamera : public SMovableObject {
+class Camera : public MovableObject {
  public:
-  SCamera();
-  ~SCamera();
+  Camera();
+  ~Camera();
 
-  SCamera* clone() const;
-
-  tolua_readonly tolua_property SString type;
+  Camera* clone() const;
 
   void setNearClipDistance(SReal distance);
   void setAspectRatio(SReal ratio);
@@ -131,13 +125,11 @@ class SCamera : public SMovableObject {
   void activate();
 };
 
-class SLight : public SMovableObject {
+class Light : public MovableObject {
  public:
-  SLight(Ogre::Light::LightTypes type);
+  Light(Ogre::Light::LightTypes type);
 
-  tolua_readonly tolua_property SString type;
-
-  SLight* clone() const;
+  Light* clone() const;
 
   void setDiffuseColour(Ogre::ColourValue diffuse_colour);
   void setSpecularColour(Ogre::ColourValue specular_colour);
@@ -145,15 +137,15 @@ class SLight : public SMovableObject {
   void setAsTerrainLight();
 };
 
-class SManualObject : public SMesh {
+class ManualObject : public Mesh {
  public:
-  SManualObject(bool isStatic);
-  ~SManualObject();
+  ManualObject(bool isStatic);
+  ~ManualObject();
 
   /// not really cloneable at the moment
-  SManualObject* clone() const;
+  ManualObject* clone() const;
 
-  unsigned int onAdd(SString goname, STransform* transform);
+  unsigned int onAdd(SString goname, Transform* transform);
 
   // ManualObject methods
   void begin(SString materialName, OperationType opType);

@@ -1,13 +1,15 @@
-class SScript : public Component{
+class Script : public Component{
  public:
-  SScript* clone() const { return new SScript(type_, calls_); }
+  Script* clone() const;
 
   tolua_readonly tolua_property SString type;
 };
 
-class SLuaScript : public SScript{
+class LuaScript : public Script{
  public:
-  SLuaScript(SString type, SString callpath);
+  LuaScript(SString type);
+
+  void setTrackingId(int id);
 
   // Override these for functionality
   void onInit();

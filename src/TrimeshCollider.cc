@@ -3,18 +3,22 @@
 #include "Mesh.h"
 #include "GameObject.h"
 
-STrimeshCollider::STrimeshCollider(){
+namespace SF {
+
+TrimeshCollider::TrimeshCollider(){
   autoConfig_ = true;
   setState(PREPARED);
 }
 
-STrimeshCollider::~STrimeshCollider(){
+TrimeshCollider::~TrimeshCollider(){
 }
 
-void STrimeshCollider::onInit(){
-  SMesh* mesh = static_cast<SMesh*>(object()->component("Mesh"));
+void TrimeshCollider::onInit(){
+  Mesh* mesh = static_cast<Mesh*>(object()->componentGroup("Mesh"));
   VertexIndexToShape* vits = new StaticMeshToShapeConverter(mesh->entity());
   collisionShape_ = vits->createTrimesh();
   collisionShape_->setLocalScaling(Convert::toBullet(object()->transform()->scale()));
   setState(READY);
 }
+
+}; // namespace SF

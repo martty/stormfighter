@@ -5,6 +5,8 @@
 #include <OgreManualObject.h>
 #include <OgreAxisAlignedBox.h>
 
+namespace SF {
+
 IcoSphere::IcoSphere()
 	: index(0)
 {
@@ -675,3 +677,5 @@ void DebugDrawer::addQuadIndices(int index1, int index2, int index3, int index4)
 	triangleIndices.push_back(index3);
 	triangleIndices.push_back(index4);
 }
+
+}; // namespace SF

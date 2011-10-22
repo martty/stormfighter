@@ -5,15 +5,15 @@
 #include <OgreLight.h>
 #include "MovableObject.h"
 
-class SLight : public SMovableObject {
+namespace SF {
+
+class Light : public MovableObject {
  public:
-  SLight(Ogre::Light::LightTypes type);
+  Light(Ogre::Light::LightTypes type);
 
-  SString const type() const { return "Terrain"; }
+  Light* clone() const;
 
-  SLight* clone() const;
-
-  unsigned int onAdd(SString goname, STransform* transform);
+  unsigned int onAdd(SString goname, Transform* transform);
 
   /// Set diffuse colour
   void setDiffuseColour(Ogre::ColourValue diffuse_colour);
@@ -25,9 +25,14 @@ class SLight : public SMovableObject {
   /// Sets this light the light which is used to compute lightmaps for terrains
   void setAsTerrainLight();
 
+ protected:
+  SString name() const { return "Light"; }
+
  private:
   Ogre::Light* light_;
   Ogre::Light::LightTypes type_;
 };
+
+}; // namespace SF
 
 #endif

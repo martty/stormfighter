@@ -9,7 +9,7 @@ int main(int argc, char **argv){
 #endif
     try
     {
-        StormfighterApp app;
+        SF::StormfighterApp app;
         app.startStormfighter();
     }
     catch(std::exception& e){

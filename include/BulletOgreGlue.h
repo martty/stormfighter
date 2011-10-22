@@ -9,6 +9,8 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
+namespace SF {
+
 class Convert {
 public:
 	Convert() {};
@@ -33,5 +35,7 @@ public:
 	  return btTransform(toBullet(orientation), toBullet(position));
 	}
 };
+
+}; // namespace SF
 
 #endif

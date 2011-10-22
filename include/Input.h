@@ -9,6 +9,8 @@
 
 #include <OgreRenderWindow.h>
 
+namespace SF {
+
 /**
 * @brief Class managing input
 *
@@ -48,5 +50,7 @@ class Input : public OIS::KeyListener, OIS::MouseListener {
   OIS::KeyListener* guiKey_;
   OIS::MouseListener* guiMouse_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_INPUT_H_

@@ -1,7 +1,5 @@
 class StormfighterApp {
  public:
-  StormfighterApp();
-  ~StormfighterApp();
 
   void log(SString message);
 

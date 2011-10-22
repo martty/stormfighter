@@ -1,1 +1,72 @@
+class Collider : public Component
+{
+ public:
+  Collider* clone() const;
+
+  btCollisionShape* collisionShape();
+
+  btTransform shapeTransform();
+};
+
+class BoxCollider : public Collider
+{
+ public:
+  /// Constructor, setting the halfextents of the box
+  BoxCollider(Ogre::Vector3 halfextents);
+  /// Constructor, using autocfg
+  BoxCollider();
+  /** Default destructor */
+  ~BoxCollider();
+
+  BoxCollider* clone() const;
+
+  void onInit();
+};
+
+
+class RigidBody : public Component{
+ public:
+  /** Default constructor */
+  RigidBody(SReal mass);
+  /** Default destructor */
+  ~RigidBody();
+
+  RigidBody* clone() const;
+
+	void onInit();
+
+	void setKinematic(bool isKinematic);
+	//void setStatic(bool isStatic);
+	void setCollisionResponse(bool hasResponse);
+	void setCallbacks(bool hasCallbacks);
+
+	bool kinematic() const;
+	bool static_() const;
+  bool trigger() const;
+  SReal mass() const;
+
+	void setCollisionGroup(SString group);
+	void setCollidesWith(StringVector collidesWith);
+
+	// CONSTRAINTS
+	void addPoint2PointConstraint(const SVector3& pivotInA);
+	void addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
+
+	void setDamping(SReal linear, SReal angular);
+
+	// FORCES & the like
+	void applyCentralImpulse(Ogre::Vector3 direction);
+
+	void setLinearVelocity(SVector3 linvel);
+	SVector3 linearVelocity();
+	void setAngularVelocity(SVector3 angvel);
+	SVector3 angularVelocity();
+
+	/// does not draw this rigidbody in debug drawing
+	void disableDebugDraw();
+
+	void add();
+	void remove();
+};
+
 

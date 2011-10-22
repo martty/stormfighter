@@ -21,6 +21,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <OgreMesh.h>
 
+namespace SF {
+
 typedef std::vector<Ogre::Vector3> Vector3Array;
 
 typedef std::map<unsigned char, Vector3Array*> BoneIndex;
@@ -136,5 +138,7 @@ protected:
 	Ogre::Vector3       *mTransformedVerticesTemp;
 	size_t               mTransformedVerticesTempSize;
 };
+
+}; // namespace SF
 
 #endif

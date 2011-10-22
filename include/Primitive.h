@@ -6,10 +6,12 @@
 #include <OgreSceneManager.h>
 #include "Transform.h"
 
+namespace SF {
+
 /**
  * @brief Prefab primitive from Ogre
  */
-class SPrimitive : public SMesh {
+class Primitive : public Mesh {
  public:
   enum PrimitiveType {
     CUBE = Ogre::SceneManager::PT_CUBE,
@@ -17,19 +19,20 @@ class SPrimitive : public SMesh {
     PLANE = Ogre::SceneManager::PT_PLANE
   };
   /// Create a Primitive component of type
-  SPrimitive(PrimitiveType type);
+  Primitive(PrimitiveType type);
 
   /// Destructor
-  ~SPrimitive();
+  ~Primitive();
 
-  SPrimitive* clone() const;
+  Primitive* clone() const;
 
-  /// The mesh component's type string is "Mesh/Primitive"
-  SString const type() const { return "Mesh"; }
-
-  virtual unsigned int onAdd(SString goname, STransform* transform);
+  virtual unsigned int onAdd(SString goname, Transform* transform);
+ protected:
+  SString name() const { return "Mesh/Primitive"; }
  private:
   PrimitiveType type_;
 };
+
+}; // namespace SF
 
 #endif

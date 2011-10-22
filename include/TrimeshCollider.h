@@ -3,25 +3,30 @@
 
 #include "Collider.h"
 
+namespace SF {
+
 /**
 * @brief Static triangle mesh for collision (no movement)
 *
 *
 */
-class STrimeshCollider : public SCollider {
+class TrimeshCollider : public Collider {
   public:
   /// Constructor, autocfg
-  STrimeshCollider();
+  TrimeshCollider();
   /// Constructor, explicit mesh
-  //STrimeshCollider(Ogre::MeshPtr)
+  //TrimeshCollider(Ogre::MeshPtr)
   /** Default destructor */
-  ~STrimeshCollider();
+  ~TrimeshCollider();
 
   void onInit();
 
-  SString const type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/TrimeshCollider"; }
 };
 
 // TODO: add support for batching multiple meshes into one big trimesh -> less expensive (needs GO hierarchy)
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_TRIMESHCOLLIDER_H_
