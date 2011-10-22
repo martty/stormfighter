@@ -5,6 +5,8 @@
 #include <map>
 #include <OgreFrameListener.h>
 
+namespace SF {
+
 class Logger;
 class Graphics;
 class Physics;
@@ -57,6 +59,8 @@ class StormfighterApp : public Ogre::FrameListener{
   double deltaTime_;
   SReal physicsDeltaTime_;
 };
+
+}; // namespace SF
 
 #endif
 

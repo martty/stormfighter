@@ -6,6 +6,8 @@
 #include "BulletOgreDebugDraw.h"
 #include <limits>
 
+namespace SF {
+
 Physics::Physics(StormfighterApp* app){
   application_ = app;
   collisionGroups_.clear();
@@ -171,3 +173,5 @@ void Physics::addRigidBody(btRigidBody* rigidBody, SString group, StringVector c
 void Physics::setDebugDraw(bool draw){
   debugdrawer_->setDebugMode(draw);
 }
+
+}; // namespace SF

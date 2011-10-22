@@ -3,30 +3,35 @@
 
 #include "Collider.h"
 
+namespace SF {
+
 /**
 * @brief Convex hull collider
 *
 *
 */
-class SConvexHullCollider : public SCollider {
+class ConvexHullCollider : public Collider {
  public:
   /// Constructor, autocfg + check mesh for animation
-  SConvexHullCollider();
+  ConvexHullCollider();
   /// Constructor, autocfg, set animation by param
-  SConvexHullCollider(bool isAnimated);
+  ConvexHullCollider(bool isAnimated);
   /// Constructor, explicit mesh & animation
   //SMeshCollider(Ogre::MeshPtr)
   /** Default destructor */
-  ~SConvexHullCollider();
+  ~ConvexHullCollider();
 
   btTransform shapeTransform();
 
   void onInit();
 
-  SString const type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/ConvexHullCollider"; }
  private:
   bool isAnimated_;
   bool isBaked_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_MESHCOLLIDER_H_

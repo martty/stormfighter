@@ -2,10 +2,11 @@
 local fcc = {};
 
 fcc.meta = {};
-fcc.meta.type = "hingetester";
+fcc.meta.type = "bombarder";
 fcc.meta.group = "User"; -- default
 
 function fcc:onInit()
+  print("INITING");
   self.rb = self:object():component("RigidBody");
   self:object():transform():setInheritScale(false);
   self.rb:setDamping(0.0, 1.0);
@@ -24,12 +25,8 @@ function fcc:onUpdate()
     --self:object():transform().position = pos-self.target:transform().position;
     local cmps = self.target:allComponents(); --:updateCollider();
     for i = 0, cmps:size()-1 do
-      if(cmps[i].type) then
-        print("type");
-        print(cmps[i].type)
-      else
-        print(cmps[i]:type());
-      end
+      print("type");
+      print(cmps[i].type)
     end
     self.fset = false;
   end
@@ -45,7 +42,7 @@ function fcc:onPhysicsUpdate()
 end
 
 function fcc:onCollisionEnter(cdata)
-  if(cdata.other:name() == "middlepad" and self.set == false) then
+  if(cdata.other:name() ~= "platform" and self.set == false) then
 
     local ptA = cdata.pointOnA;
     ptA.y = 10;

@@ -3,15 +3,15 @@
 #include "GameObject.h"
 #include "StormfighterApp.h"
 
-using namespace Ogre;
+namespace SF {
 
-SLight::SLight(Light::LightTypes type){
+Light::Light(Ogre::Light::LightTypes type){
   light_ = NULL;
   type_ = type;
   setState(CREATED);
 }
 
-unsigned int SLight::onAdd(SString goname, STransform* tf){
+unsigned int Light::onAdd(SString goname, Transform* tf){
   light_ = Graphics::getSingletonPtr()->sceneManager()->createLight(goname);
   light_->setType(type_);
   tf->attachObject(light_);
@@ -19,26 +19,28 @@ unsigned int SLight::onAdd(SString goname, STransform* tf){
   return NONE;
 }
 
-SLight* SLight::clone() const{
+Light* Light::clone() const{
   // TODO: clone all parameters
-  SLight* light = new SLight(type_);
+  Light* light = new Light(type_);
   return light;
 }
 
-void SLight::setDiffuseColour(ColourValue col){
+void Light::setDiffuseColour(SColourValue col){
   light_->setDiffuseColour(col);
 }
 
-void SLight::setSpecularColour(ColourValue col){
+void Light::setSpecularColour(SColourValue col){
   light_->setSpecularColour(col);
 }
 
-void SLight::setAsTerrainLight(){
+void Light::setAsTerrainLight(){
   if(application()){
     application()->graphics()->setTerrainLight(light_);
   }
 }
 
-SAxisAlignedBox SLight::getBoundingBox() const{
+SAxisAlignedBox Light::getBoundingBox() const{
   return light_->getBoundingBox();
 }
+
+}; // namespace SF

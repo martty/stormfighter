@@ -5,25 +5,24 @@
 #include <OgreEntity.h>
 #include "MovableObject.h"
 
+namespace SF{
+
 /**
  * @brief Mesh (triangle appearance) component of a GameObject
  */
-class SMesh : public SMovableObject {
+class Mesh : public MovableObject {
  public:
   /// Create an empty Mesh component (mesh can be changed at any time)
-  SMesh();
+  Mesh();
   /// Create a Mesh component with meshname mesh loaded
-  SMesh(SString meshname);
+  Mesh(SString meshname);
 
   /// Destructor
-  ~SMesh();
+  ~Mesh();
 
-  /// The mesh component's type string is "Mesh"
-  SString const type() const { return "Mesh"; }
+  virtual Mesh* clone() const;
 
-  virtual SMesh* clone() const;
-
-  virtual unsigned int onAdd(SString goname, STransform* transform);
+  virtual unsigned int onAdd(SString goname, Transform* transform);
 
   /// Set or change mesh
   void setMeshName(SString meshname);
@@ -44,17 +43,21 @@ class SMesh : public SMovableObject {
 
   Ogre::Entity* entity(){return entity_;}
 
-  static SMesh* cast(Component* cmp) { return static_cast<SMesh*>(cmp); }
+  static Mesh* cast(Component* cmp) { return static_cast<Mesh*>(cmp); }
 
  protected:
+  SString name() const { return "Mesh"; }
+
   Ogre::Entity* entity_;
   SString goname_;
 
   /// true if there is a proper entity; if false, this should NOT enter hierarchy
   bool valid_;
 
-  STransform* transform_;
+  Transform* transform_;
   SString meshname_, materialname_;
 };
+
+}; // namespace SF
 
 #endif

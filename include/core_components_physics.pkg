@@ -1,42 +1,37 @@
-class SCollider : public Component
+class Collider : public Component
 {
  public:
-  /** Default constructor, by default we do not have autocfg */
-  SCollider();
-  /** Default destructor */
-  ~SCollider();
-
-  SCollider* clone() const;
+  Collider* clone() const;
 
   btCollisionShape* collisionShape();
 
   btTransform shapeTransform();
 };
 
-class SBoxCollider : public SCollider
+class BoxCollider : public Collider
 {
  public:
   /// Constructor, setting the halfextents of the box
-  SBoxCollider(Ogre::Vector3 halfextents);
+  BoxCollider(Ogre::Vector3 halfextents);
   /// Constructor, using autocfg
-  SBoxCollider();
+  BoxCollider();
   /** Default destructor */
-  ~SBoxCollider();
+  ~BoxCollider();
 
-  SBoxCollider* clone() const;
+  BoxCollider* clone() const;
 
   void onInit();
 };
 
 
-class SRigidBody : public Component{
+class RigidBody : public Component{
  public:
   /** Default constructor */
-  SRigidBody(SReal mass);
+  RigidBody(SReal mass);
   /** Default destructor */
-  ~SRigidBody();
+  ~RigidBody();
 
-  SRigidBody* clone() const;
+  RigidBody* clone() const;
 
 	void onInit();
 
@@ -55,7 +50,7 @@ class SRigidBody : public Component{
 
 	// CONSTRAINTS
 	void addPoint2PointConstraint(const SVector3& pivotInA);
-	void addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
+	void addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
 
 	void setDamping(SReal linear, SReal angular);
 

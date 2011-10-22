@@ -1,7 +1,9 @@
 #include "Collider.h"
 #include "GameObject.h"
 
-btTransform SCollider::shapeTransform(){
+namespace SF {
+
+btTransform Collider::shapeTransform(){
   if(hasInterface()){
     return Convert::transform(object()->transform()->worldPosition(), object()->transform()->worldOrientation());
   } else {
@@ -11,8 +13,8 @@ btTransform SCollider::shapeTransform(){
   }
 }
 
-SCollider* SCollider::clone() const{
-  SCollider* sco = new SCollider();
-  sco->collisionShape_ = collisionShape_;
-  return sco;
+Collider* Collider::clone() const{
+  return NULL; // FIXME
 }
+
+}; // namespace SF

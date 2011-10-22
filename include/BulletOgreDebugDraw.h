@@ -22,6 +22,8 @@
 
 #include "BulletOgreGlue.h"
 
+namespace SF {
+
 class DynamicRenderable : public Ogre::SimpleRenderable
 {
 public:
@@ -227,5 +229,7 @@ public:
 	}
 
 };
+
+}; // namespace SF
 
 #endif

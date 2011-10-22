@@ -6,6 +6,8 @@
 #include "Component.h"
 #include "Transform.h"
 
+namespace SF {
+
 // Nem szeretek sokat irni
 typedef std::map<SString, Component*> ComponentMap ;
 typedef std::map<SString, int> NameCountMap;
@@ -38,12 +40,15 @@ class GameObject {
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
   Component* component(const SString& type); /// Returns component with given type
+  Component* componentGroup(const SString& group); /// Returns the component which is in the given group (not usable with Script)
   ComponentVector allComponents(); /// Returns all components in this GameObject
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
-  STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
+  bool hasComponentGroup(const SString& group) const;   /// Returns true if GameObject has component with group "group"
+  Transform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
 
   // Advanced components
   Component* firstComponentInChildren(const SString& type); /// Get the first component of type, searched first in this GameObject, then children
+  Component* firstComponentGroupInChildren(const SString& group); /// Get the first component of type, searched first in this GameObject, then children
   ComponentVector allComponentInChildren(const SString& type); /// Get all components of type, searched first in this GameObject, then children
 
   // Component management
@@ -96,6 +101,7 @@ class GameObject {
   void addCollision(CollisionData* collisionData);
 
   Component* _firstComponentInChildren(const SString& type); /// internal helper
+  Component* _firstComponentGroupInChildren(const SString& group); /// internal helper
   void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
 
   GameObject* _find(const SString& name);
@@ -104,7 +110,7 @@ class GameObject {
   SString name_;
   ComponentMap components_;
   std::vector<SString> component_groups_;
-  STransform* transform_;
+  Transform* transform_;
   CollisionMap collisionmap_;
 
   GameObject* next_; /// Next sibling in list
@@ -118,5 +124,7 @@ class GameObject {
   /// map for registering components to calls
   CallsMap callsdispatch_;
 };
+
+}; // namespace SF
 
 #endif

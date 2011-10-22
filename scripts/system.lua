@@ -47,6 +47,30 @@ Components = {};
 System.defers = {};
 System.deferred_functions = {};
 
+function System.deepcopy(object)
+  local lookup_table = {}
+  local function _copy(object)
+    if type(object) ~= "table" then
+        return object
+    elseif lookup_table[object] then
+        return lookup_table[object]
+    end
+    local new_table = {}
+    lookup_table[object] = new_table
+    for index, value in pairs(object) do
+        new_table[_copy(index)] = _copy(value)
+    end
+    return setmetatable(new_table, getmetatable(object))
+  end
+  return _copy(object)
+end
+
+function System.stripped_type(object)
+  local stripped_classname = tolua.type(object);
+  local _,ind = stripped_classname:find("::");
+  return stripped_classname:sub(ind+1);
+end
+
 function System:loadComponent(filename)
   local f = assert(loadfile(filename));
   component = f();
@@ -57,8 +81,8 @@ function System:_addComponent(component)
   self.n_active_components = self.n_active_components + 1;
   local ac = self.active_components;
   local type = component.meta.type or error('set name for component!');
-  component._type = type;
-  new_component = SLuaScript:new(type);
+  component.type = type;
+  new_component = LuaScript:new(type);
   --'System.active_components['..self.n_active_components..']'
   new_component._onInit = component.onInit or empty_function;
   new_component._onUpdate = component.onUpdate or empty_function;
@@ -71,7 +95,6 @@ function System:_addComponent(component)
   for key, value in pairs(component) do
     new_component[key] = value;
   end
-  new_component.type = function (comp) return comp._type; end
   ac[self.n_active_components] = {};
   ac[self.n_active_components] = new_component;
   return new_component;
@@ -100,6 +123,14 @@ function SVector2(x,y)
 end
 
 function System:_initialise()
+  -- dump SF.* into global namespace
+  local global_env = getfenv(0);
+  for k,v in pairs(SF) do
+    if( not global_env[k] ) then -- do not overwrite globals
+      global_env[k] = v;
+    end
+  end
+  setfenv(0, global_env);
   self:_hijackGameObject();
   self:_hijackModules();
   self:_annotateBasicTypes();
@@ -122,7 +153,12 @@ function System:_hijackGameObject()
   local old = GameObject.component;
   -- add automatic casting to component get
   GameObject.component = function (go, otype)
-    return tolua.cast(old(go, otype), "S"..otype);
+    local cmp = old(go, otype);
+    if(cmp.group == "LuaScript") then
+      return tolua.cast(cmp, "SF::LuaScript");
+    else
+      return tolua.cast(cmp, "SF::"..cmp.type);
+    end
   end
   -- annotate gameobject
   -- add component tracking + syntactic sugar for chaining
@@ -130,7 +166,7 @@ function System:_hijackGameObject()
   GameObject.addComponent = function (go, cmp)
     old2(go, cmp);
     self:track(cmp);
-    if(tolua.type(cmp) == "SLuaScript") then -- we need to add events
+    if(tolua.type(cmp) == "SF::LuaScript") then -- we need to add events
       cmp:setTrackingId(cmp.tracking_id);
     end
     return cmp;
@@ -146,11 +182,17 @@ function System:_hijackGameObject()
     end
     self:track(ngo);
     local cmps = ngo:allComponents();
+    print("Cloned and now tracking:");
     for i=0,cmps:size()-1 do
       self:track(cmps[i]);
       print(cmps[i].type);
-      if(cmps[i].type == "LuaScript") then -- we need to add events
-        cmp:setTrackingId(cmp.tracking_id);
+      if(cmps[i].group == "LuaScript") then -- we need to add events
+        local script = tolua.cast(cmps[i], "SF::LuaScript");
+        script:setTrackingId(cmps[i].tracking_id);
+        local old_script = go:component(script.type);
+        local old_peer = tolua.getpeer(old_script);
+        local new_peer = System.deepcopy(old_peer);
+        tolua.setpeer(script, new_peer);
       end
     end
     return ngo;
@@ -158,8 +200,8 @@ function System:_hijackGameObject()
 end
 
 function System:_registerComponents()
-  self:registerComponent('STransform', STransform.new);
-  self:registerComponent('SPrimitive', SPrimitive.new);
+  self:registerComponent('Transform', Transform.new);
+  self:registerComponent('Primitive', Primitive.new);
 end
 
 function System:registerComponent(cname, newfun)
@@ -182,13 +224,13 @@ function System:_annotateBasicTypes()
 end
 
 function System:_annotateCoreComponents()
-  --STransform
-  self:annotate('STransform', 'position', 'SVector3');
-  self:annotate('STransform', 'orientation', 'SQuaternion');
-  self:annotate('STransform', 'scale', 'SVector3');
+  --Transform
+  self:annotate('Transform', 'position', 'SVector3');
+  self:annotate('Transform', 'orientation', 'SQuaternion');
+  self:annotate('Transform', 'scale', 'SVector3');
 
-  self:annotate('SMesh', 'meshName', 'string');
-  self:annotate('SPrimitive', 'meshName', 'string');
+  self:annotate('Mesh', 'meshName', 'string');
+  self:annotate('Primitive', 'meshName', 'string');
 end
 
 function System:annotate(object, field, otype, method, get, set, options)
@@ -218,11 +260,6 @@ function System:track(object)
   self.object_counter = self.object_counter + 1;
   object.tracking_id = self.object_counter;
   self.tracked_objects[self.object_counter] = object;
-  if(tolua.type(object) == "GameObject") then
-    print('now tracking: '..object:name());
-  else
-    print('now tracking: '..tolua.type(object));
-  end
 end
 
 function System:getObject(tracking_id)
@@ -265,7 +302,7 @@ function System:makeSetCommand(object, field)
 end
 
 function System:_setupDeferredFunctions()
-  self:_defer(SRigidBody, "addPoint2PointConstraint");
+  self:_defer(SF.RigidBody, "addPoint2PointConstraint");
 end
 
 function System:_defer(class, func)
@@ -290,7 +327,8 @@ function System:_deferredInit()
     local args = v[4];
     func(obj, unpack(args));
     -- restore function call
-    _G[tolua.type(obj)][funcname]=func;
+
+    SF[System.stripped_type(obj)][funcname]=func;
   end
 end
 

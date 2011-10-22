@@ -6,20 +6,20 @@
 #include "Component.h"
 #include "Transform.h"
 
-class SRigidBody : public Component, public btMotionState {
+namespace SF {
+
+class RigidBody : public Component, public btMotionState {
  friend class Physics;
- friend class STransform;
+ friend class Transform;
  public:
   /** Default constructor */
-  SRigidBody(SReal mass);
+  RigidBody(SReal mass);
   /** Default destructor */
-  ~SRigidBody();
+  ~RigidBody();
 
-  SRigidBody* clone() const;
+  RigidBody* clone() const;
 
 	void onInit();
-
-	SString const type() const { return "RigidBody"; }
 
 	void setKinematic(bool isKinematic);
 	void setStatic(bool isStatic);
@@ -36,7 +36,7 @@ class SRigidBody : public Component, public btMotionState {
 
   // CONSTRAINTS
 	void addPoint2PointConstraint(const SVector3& pivotInA);
-	void addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
+	void addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
 
 	void setDamping(SReal linear, SReal angular);
 
@@ -51,12 +51,15 @@ class SRigidBody : public Component, public btMotionState {
 	/// does not draw this rigidbody in debug drawing
 	void disableDebugDraw();
 
-	static inline SRigidBody* cast(Component* cmp) {return static_cast<SRigidBody*>(cmp);}
+	static inline RigidBody* cast(Component* cmp) {return static_cast<RigidBody*>(cmp);}
 
 	btRigidBody* rigidBody() { return rigidBody_; }
 
 	void add();
 	void remove();
+
+ protected:
+  SString name() const { return "RigidBody"; }
 
  private:
   void init(SReal mass);
@@ -65,7 +68,7 @@ class SRigidBody : public Component, public btMotionState {
   /// get btTransform of object (internal, for Physics)
   void getWorldTransform(btTransform &retVal) const;
 
-  /// set position (only for kinematic objects, for STransform)
+  /// set position (only for kinematic objects, for Transform)
 	void setKinematicTransform(Ogre::Vector3 position, Ogre::Quaternion orientation);
   /// set world transform (internal, for Physics)
 	void setWorldTransform(const btTransform &transform);
@@ -90,5 +93,7 @@ class SRigidBody : public Component, public btMotionState {
 
   btTransform internalTransform_; // for motionstate
 };
+
+}; // namespace SF
 
 #endif // RIGIDBODY_H

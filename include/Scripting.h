@@ -11,6 +11,8 @@ extern "C" {
 
 #include "tolua++.h"
 
+namespace SF {
+
 class Scripting {
  public:
   /** Default constructor */
@@ -37,5 +39,7 @@ class Scripting {
  private:
   lua_State* luaState_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_SCRIPTING_H_

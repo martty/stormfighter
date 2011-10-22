@@ -3,23 +3,27 @@
 
 #include "Collider.h"
 
+namespace SF {
 
-class SCylinderCollider : public SCollider
+class CylinderCollider : public Collider
 {
  public:
   /** Default constructor */
-  SCylinderCollider(SVector3 halfextents);
+  CylinderCollider(SVector3 halfextents);
   /// autocfg
-  SCylinderCollider();
+  CylinderCollider();
   /** Default destructor */
-  ~SCylinderCollider();
+  ~CylinderCollider();
 
   void onInit();
 
-  SString const type() const { return "Collider"; }
+ protected:
+  SString name() const { return "Collider/CylinderCollider"; }
 
  private:
   void init(SVector3 halfextents);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_CYLINDERCOLLIDER_H

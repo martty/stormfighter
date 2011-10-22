@@ -1,6 +1,8 @@
 #include "Input.h"
 #include <OgreStringConverter.h>
 
+namespace SF {
+
 Input::Input(Ogre::RenderWindow* renderWindow){
   const bool events = true;
 
@@ -107,3 +109,5 @@ void Input::setGUI(OIS::KeyListener* key, OIS::MouseListener* mouse){
   guiKey_ = key;
   guiMouse_ = mouse;
 }
+
+}; // namespace SF

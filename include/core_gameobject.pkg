@@ -23,7 +23,7 @@ class GameObject {
   ComponentVector allComponents(); /// Returns all components in this GameObject
   Component* component(const SString& type); /// Returns component with given type
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
-  STransform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
+  Transform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
 
   // Advanced components
   Component* firstComponentInChildren(const SString& type); /// Get the first component of type, searched first in this GameObject, then children

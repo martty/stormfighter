@@ -1,6 +1,8 @@
 #include "Logger.h"
 #include <OgreLogManager.h>
 
+namespace SF {
+
 template<> Logger* Ogre::Singleton<Logger>::ms_Singleton = 0;
 
 Logger::Logger(){
@@ -16,3 +18,5 @@ Logger::~Logger(){
 void Logger::logMessage(const SString& message){
   defaultLog_->logMessage(message);
 }
+
+}; // namespace SF

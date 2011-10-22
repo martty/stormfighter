@@ -5,28 +5,30 @@
 #include "BulletOgreMeshToShape.h"
 #include "StormfighterApp.h"
 
-SCylinderCollider::SCylinderCollider(SVector3 halfextents){
+namespace SF {
+
+CylinderCollider::CylinderCollider(SVector3 halfextents){
   init(halfextents);
 }
 
-SCylinderCollider::~SCylinderCollider(){
+CylinderCollider::~CylinderCollider(){
   //dtor
 }
 
 
-SCylinderCollider::SCylinderCollider(){
+CylinderCollider::CylinderCollider(){
   autoConfig_ = true;
 }
 
-void SCylinderCollider::init(SVector3 halfextents){
+void CylinderCollider::init(SVector3 halfextents){
   collisionShape_ = new btCylinderShape(Convert::toBullet(halfextents));
   setState(READY);
 }
 
-void SCylinderCollider::onInit(){
+void CylinderCollider::onInit(){
   if(!autoConfig_) // if we are not using autocfg, then this component is already READY
     return;
-  SMesh* mesh = static_cast<SMesh*>(object()->component("Mesh"));
+  Mesh* mesh = static_cast<Mesh*>(object()->componentGroup("Mesh"));
   VertexIndexToShape* vits;
   vits = new StaticMeshToShapeConverter(mesh->entity());
   collisionShape_ = vits->createCylinder();
@@ -34,3 +36,5 @@ void SCylinderCollider::onInit(){
   setState(READY);
   delete vits;
 }
+
+}; // namespace SF

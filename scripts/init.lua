@@ -5,6 +5,10 @@ dofile('scripts/system.lua');
 --collectgarbage("stop");
 System:_initialise();
 
+for k,v in pairs(SF) do
+  print(k)
+end
+
 platform = Hierarchy:createGameObject("platform");
 sideA = Hierarchy:createGameObject("sideA");
 neutral = Hierarchy:createGameObject("neutral");
@@ -14,22 +18,22 @@ platform:transform().scale = (SVector3(1, 0.1, 1));
 
 platform:addChild(sideA);platform:addChild(neutral);platform:addChild(sideB);
 
-sideA:addComponent(SPrimitive:new(SPrimitive.CUBE));
-sideB:addComponent(SPrimitive:new(SPrimitive.CUBE));
-neutral:addComponent(SPrimitive:new(SPrimitive.CUBE));
+sideA:addComponent(Primitive:new(Primitive.CUBE));
+sideB:addComponent(Primitive:new(Primitive.CUBE));
+neutral:addComponent(Primitive:new(Primitive.CUBE));
 
 sideA:transform().position = SVector3(-55, 1, 0);
 sideB:transform().position = SVector3(55, 0, 0);
 neutral:transform().scale = SVector3(0.1, 1, 1);
 
-sideA:component("Mesh"):setMaterialName("Torqube/SideA");
-neutral:component("Mesh"):setMaterialName("Torqube/Neutral");
-sideB:component("Mesh"):setMaterialName("Torqube/SideB");
+sideA:component("Primitive"):setMaterialName("Torqube/SideA");
+neutral:component("Primitive"):setMaterialName("Torqube/Neutral");
+sideB:component("Primitive"):setMaterialName("Torqube/SideB");
 
 smallcube = Hierarchy:createGameObject("smallcube");
 smallcube:transform().scale = SVector3(0.05, 0.05, 0.05);
-smallcube:addComponent(SPrimitive:new(SPrimitive.CUBE));
-smallcube:component("Mesh"):setMaterialName("Torqube/Railfixtures");
+smallcube:addComponent(Primitive:new(Primitive.CUBE));
+smallcube:component("Primitive"):setMaterialName("Torqube/Railfixtures");
 local dx, dy, dz = 100, 7, 45;
 smallcube:transform().position = SVector3(dx, dy, dz);
 smallcube:clone():transform().position = SVector3(dx, dy, -dz);
@@ -38,8 +42,8 @@ smallcube:clone():transform().position = SVector3(-dx, dy, -dz);
 
 rail = Hierarchy:createGameObject("rail");
 rail:transform().scale = SVector3(0.01, 0.05, 0.90);
-rail:addComponent(SPrimitive:new(SPrimitive.CUBE));
-rail:component("Mesh"):setMaterialName("Torqube/Rail");
+rail:addComponent(Primitive:new(Primitive.CUBE));
+rail:component("Primitive"):setMaterialName("Torqube/Rail");
 rail:transform().position = SVector3(dx, dy, 0);
 rail:clone():transform().position = SVector3(-dx, dy, 0);
 
@@ -48,34 +52,33 @@ middlepad = System:loadComponent('scripts/middlepad.lua');
 
 local test = Hierarchy:createGameObject("middlepad");
 test:transform().position = SVector3(0, 10, 0);
-local mesh = Hierarchy:createGameObject("middlepad_mesh");
-mesh:addComponent(SPrimitive:new(SPrimitive.CUBE));
-mesh:component("Mesh"):setMaterialName("Torqube/Railfixtures");
+local mesh = Hierarchy:createGameObject("middlepadmesh");
+mesh:addComponent(Primitive:new(Primitive.CUBE));
+mesh:component("Primitive"):setMaterialName("Torqube/Railfixtures");
 mesh:transform().scale = SVector3(0.1, 0.1, 0.3);
 test:addChild(mesh);
-mesh:addComponent(SBoxCollider:new());
-test:addComponent(SRigidBody:new(1));
+mesh:addComponent(BoxCollider:new());
+test:addComponent(RigidBody:new(1));
 test:component("RigidBody"):addPoint2PointConstraint(SVector3(0,-1,0));
 test:addComponent(middlepad);
 
 
-platform:addComponent(SBoxCollider:new(SVector3(105, 5, 50)));
-platform:addComponent(SRigidBody:new(0));
+platform:addComponent(BoxCollider:new(SVector3(105, 5, 50)));
+platform:addComponent(RigidBody:new(0));
 
 htest = System:loadComponent('scripts/bombarder.lua');
 
 test = smallcube:clone();
 test:transform().scale = SVector3(0.1, 0.1, 0.1);
 test:transform().position = SVector3(30, 10, 10);
-test:addComponent(SBoxCollider:new());
-test:addComponent(SRigidBody:new(1));
+test:addComponent(BoxCollider:new());
+test:addComponent(RigidBody:new(1));
 test:addComponent(htest);
-print("track-----");
-test:clone():transform().position = SVector3(60, 10, 20);
+test:clone():transform().position = SVector3(40, 10, -10);
 test:clone():transform().position = SVector3(40, 10, 30);
 
 local cam = Hierarchy:createGameObject("cammy");
-c = SCamera:new();
+c = Camera:new();
 cam:addComponent(c);
 c:setNearClipDistance(1);
 c:setAspectRatio(Graphics:getDefaultAspectRatio());
@@ -93,6 +96,8 @@ b:addChild(Hierarchy:createGameObject("whamoo"));
 a:addChild(Hierarchy:createGameObject("damm"));
 local fcc = System:loadComponent('scripts/freecameracontroller.lua');
 cam:addComponent(fcc);
+
+print(Hierarchy:debug());
 
 --Editor:init();
 function lua_update()

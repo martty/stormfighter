@@ -6,23 +6,23 @@
 #include "StormfighterApp.h"
 #include "GameObject.h"
 
+namespace SF {
+
 struct CollisionData;
 
-class SScript : public Component{
+class Script : public Component{
  public:
-  SScript(){type_="Script"; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
+  Script(){mytype_="Script"; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
 
-  SScript(SString type){type_ = type; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
+  Script(SString type){mytype_ = type; calls_=INIT|UPDATE|PHYSICS_UPDATE|COLLISION;}
 
-  SScript(SString type, unsigned int calls){type_ = type; calls_ = calls;}
+  Script(SString type, unsigned int calls){mytype_ = type; calls_ = calls;}
 
-  virtual ~SScript(){}
+  virtual ~Script(){}
 
-  virtual SScript* clone() const { return new SScript(type_, calls_); }
+  virtual Script* clone() const { return new Script(mytype_, calls_); }
 
-  unsigned int onAdd(SString objectname, STransform* transform){return calls_;}
-
-  const SString type() const {return type_;}
+  unsigned int onAdd(SString objectname, Transform* transform){return calls_;}
 
   // Override these for functionality
   virtual void onInit() {}
@@ -35,16 +35,19 @@ class SScript : public Component{
   /// to be called when the holder GameObject collider, every tick
   virtual void onCollisionStay(const CollisionData* collisionData){}
  protected:
-    // ALIASES (less typing, more fun! at the price of increased compilation time.. :S)
+  SString name() const { return "Script/"+mytype_; }
+  // ALIASES (less typing, more fun! at the price of increased compilation time.. :S)
   // Application aliases
   inline Input* input() const { return application()->input(); }
   inline Physics* physics() const { return application()->physics(); }
   inline SReal deltaTime() const { return application()->deltaTime(); }
   // Object aliases
-  inline STransform* transform() const { return object()->transform(); }
+  inline Transform* transform() const { return object()->transform(); }
 
-  SString type_;
+  SString mytype_;
   unsigned int calls_;
 };
+
+}; // namespace SF
 
 #endif

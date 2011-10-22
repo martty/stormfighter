@@ -2,6 +2,8 @@
 #include "LuaBindings.h"
 #include <stdio.h>
 
+namespace SF {
+
 Scripting::Scripting(){
   luaState_ = lua_open();
   luaL_openlibs(luaState_);
@@ -74,3 +76,5 @@ void Scripting::executeFunctionCall(int numberOfArguments, int numberOfResults){
     LOG(lua_tostring(luaState_, -1));
   }
 }
+
+}; // namespace SF

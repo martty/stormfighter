@@ -34,7 +34,7 @@
 
 #include <OgreRenderTarget.h>
 
-using namespace Ogre;
+namespace SF {
 
 ViewportOverlay::ViewportOverlay(const Ogre::String& name, Ogre::Viewport* viewport, int width, int height,
 	const OverlayPosition& pos, const Ogre::String& matName, Ogre::uchar zOrder, Tier tier)
@@ -44,9 +44,9 @@ ViewportOverlay::ViewportOverlay(const Ogre::String& name, Ogre::Viewport* viewp
 		OGRE_EXCEPT(Ogre::Exception::ERR_RT_ASSERTION_FAILED,
 			"Z-order is out of bounds, must be within [0, 199].", "ViewportOverlay::ViewportOverlay");
 
-	OverlayManager& overlayManager = OverlayManager::getSingleton();
+	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
-	panel = static_cast<PanelOverlayElement*>(overlayManager.createOverlayElement("Panel", name + "Panel"));
+	panel = static_cast<Ogre::PanelOverlayElement*>(overlayManager.createOverlayElement("Panel", name + "Panel"));
 	panel->setMetricsMode(Ogre::GMM_PIXELS);
 	panel->setMaterialName(matName);
 	panel->setDimensions(width, height);
@@ -68,8 +68,8 @@ ViewportOverlay::~ViewportOverlay()
 	if(overlay)
 	{
 		overlay->remove2D(panel);
-		OverlayManager::getSingletonPtr()->destroyOverlayElement(panel);
-		OverlayManager::getSingletonPtr()->destroy(overlay);
+		Ogre::OverlayManager::getSingletonPtr()->destroyOverlayElement(panel);
+		Ogre::OverlayManager::getSingletonPtr()->destroy(overlay);
 	}
 }
 
@@ -292,3 +292,5 @@ OverlayPosition::OverlayPosition() {
     data.abs.left = 0;
     data.abs.top = 0;
 }
+
+}; // namespace SF

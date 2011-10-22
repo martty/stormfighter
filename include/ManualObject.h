@@ -4,7 +4,9 @@
 #include "common.h"
 #include "Mesh.h"
 
-class SManualObject : public SMesh {
+namespace SF{
+
+class ManualObject : public Mesh {
  public:
   enum OperationType {
     OT_POINT_LIST = Ogre::RenderOperation::OT_POINT_LIST,
@@ -15,13 +17,13 @@ class SManualObject : public SMesh {
     OT_TRIANGLE_FAN = Ogre::RenderOperation::OT_TRIANGLE_FAN
   };
 
-  SManualObject(bool isStatic);
-  ~SManualObject();
+  ManualObject(bool isStatic);
+  ~ManualObject();
 
   /// not really cloneable at the moment
-  SManualObject* clone() const;
+  ManualObject* clone() const;
 
-  unsigned int onAdd(SString goname, STransform* transform);
+  unsigned int onAdd(SString goname, Transform* transform);
 
   // ManualObject methods
   void begin(SString materialName, OperationType opType);
@@ -41,9 +43,13 @@ class SManualObject : public SMesh {
   void quad(uint32_t ind1, uint32_t ind2, uint32_t ind3, uint32_t ind4);
 
   void clear();
+ protected:
+  SString name() const { return "Mesh/ManualObject"; }
  private:
   Ogre::ManualObject* manual_;
   bool static_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_MANUALOBJECT_H_

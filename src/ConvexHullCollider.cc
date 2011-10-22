@@ -3,18 +3,20 @@
 #include "Mesh.h"
 #include "GameObject.h"
 
-SConvexHullCollider::SConvexHullCollider(){
+namespace SF {
+
+ConvexHullCollider::ConvexHullCollider(){
   autoConfig_ = true;
   isAnimated_ = false;
   isBaked_ = true;
   setState(CREATED);
 }
 
-SConvexHullCollider::~SConvexHullCollider(){
+ConvexHullCollider::~ConvexHullCollider(){
 }
 
-void SConvexHullCollider::onInit(){
-  SMesh* mesh = static_cast<SMesh*>(object()->component("Mesh"));
+void ConvexHullCollider::onInit(){
+  Mesh* mesh = static_cast<Mesh*>(object()->componentGroup("Mesh"));
   bool isAnimated_ = isAnimated_ || mesh->animated();
   VertexIndexToShape* vits;
 
@@ -28,12 +30,14 @@ void SConvexHullCollider::onInit(){
   delete vits;
 }
 
-btTransform SConvexHullCollider::shapeTransform(){
+btTransform ConvexHullCollider::shapeTransform(){
   if(isBaked_){
     btTransform ret;
     ret.setIdentity();
     return ret;
   } else {
-    return SCollider::shapeTransform();
+    return Collider::shapeTransform();
   }
 }
+
+}; // namespace SF

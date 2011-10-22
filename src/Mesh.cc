@@ -2,33 +2,33 @@
 #include "Graphics.h"
 #include "Transform.h"
 
-using namespace Ogre;
+namespace SF {
 
-SMesh::SMesh(){
+Mesh::Mesh(){
   entity_ = NULL;
   meshname_ = "";
   materialname_ = "";
   setState(CREATED);
 }
 
-SMesh::SMesh(SString meshname){
+Mesh::Mesh(SString meshname){
   entity_ = NULL;
   meshname_ = meshname;
   materialname_ = "";
   setState(CREATED);
 }
 
-SMesh::~SMesh(){
+Mesh::~Mesh(){
   // TODO: cleanup
 }
 
-SMesh* SMesh::clone() const{
+Mesh* Mesh::clone() const{
   // TODO: animationstate & materialname not copied
-  SMesh* mesh = new SMesh(meshname_);
+  Mesh* mesh = new Mesh(meshname_);
   return mesh;
 }
 
-unsigned int SMesh::onAdd(SString goname, STransform* transform){
+unsigned int Mesh::onAdd(SString goname, Transform* transform){
   transform_ = transform;
   goname_ = goname;
   if(meshname_.empty()){
@@ -47,7 +47,7 @@ unsigned int SMesh::onAdd(SString goname, STransform* transform){
   return NONE;
 }
 
-void SMesh::setMeshName(SString meshname){
+void Mesh::setMeshName(SString meshname){
   if(valid_) {
     delete entity_;
   }
@@ -59,11 +59,11 @@ void SMesh::setMeshName(SString meshname){
   valid_ = true;
 }
 
-SString SMesh::meshName(){
+SString Mesh::meshName(){
   return meshname_;
 }
 
-SAxisAlignedBox SMesh::getBoundingBox() const{
+SAxisAlignedBox Mesh::getBoundingBox() const{
   if(entity_){
     SAxisAlignedBox aabb = entity_->getBoundingBox();
     if(transform_){ // if scale has a negative component, this will assert, so we must pass the abs components
@@ -78,33 +78,34 @@ SAxisAlignedBox SMesh::getBoundingBox() const{
   return SAxisAlignedBox();
 }
 
-SReal SMesh::getBoundingSphereRadius() const{
+SReal Mesh::getBoundingSphereRadius() const{
   if(entity_)
     return entity_->getMesh()->getBoundingSphereRadius();
   return 0;
 }
 
-void SMesh::setMaterialName(SString materialName){
+void Mesh::setMaterialName(SString materialName){
   if(state() == READY && entity_)
     entity_->setMaterialName(materialName);
   else {
     materialname_ = materialName;
-    LOG("STA");
   }
 }
 
-bool SMesh::animated() const{
+bool Mesh::animated() const{
   if(entity_)
     return entity_->hasSkeleton() || entity_->hasVertexAnimation();
 }
 
-void SMesh::setAnimationStateEnabled(SString animstate, bool enabled){
+void Mesh::setAnimationStateEnabled(SString animstate, bool enabled){
   entity_->getAnimationState(animstate)->setEnabled(enabled);
 }
-void SMesh::setAnimationStateLoop(SString animstate, bool loop){
+void Mesh::setAnimationStateLoop(SString animstate, bool loop){
   entity_->getAnimationState(animstate)->setLoop(loop);
 }
 
-void SMesh::addAnimationTime(SString animstate, SReal time){
+void Mesh::addAnimationTime(SString animstate, SReal time){
   entity_->getAnimationState(animstate)->addTime(time);
 }
+
+}; // namespace SF

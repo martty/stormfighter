@@ -3,13 +3,15 @@
 #include "GameObject.h"
 #include "RigidBody.h"
 
-STransform::~STransform(){
+namespace SF {
+
+Transform::~Transform(){
   // FIXME: find out how to safely dispose node_
  /* if(!isRoot_)
     delete node_;*/
 }
 
-void STransform::init (SVector3 position, SQuaternion orientation, SVector3 scale){
+void Transform::init (SVector3 position, SQuaternion orientation, SVector3 scale){
   isRoot_ = false;
   node_ = Graphics::getSingletonPtr()->sceneManager()->getRootSceneNode()->createChildSceneNode(); // by default in top hierarchy
   node_->setPosition(position);
@@ -20,19 +22,19 @@ void STransform::init (SVector3 position, SQuaternion orientation, SVector3 scal
   bindings.setUserAny(Ogre::Any(this));
 }
 
-STransform::STransform(SVector3 position, SQuaternion orientation, SVector3 scale) : node_(NULL){
+Transform::Transform(SVector3 position, SQuaternion orientation, SVector3 scale) : node_(NULL){
   init(position,orientation, scale);
 }
 
-STransform::STransform(SVector3 position): node_(NULL){
+Transform::Transform(SVector3 position): node_(NULL){
   init(position, SQuaternion::IDENTITY, SVector3::UNIT_SCALE);
 }
 
-STransform::STransform(): node_(NULL){
+Transform::Transform(): node_(NULL){
   init(SVector3::ZERO, SQuaternion::IDENTITY, SVector3::UNIT_SCALE);
 }
 
-STransform::STransform(bool isRoot) : node_(NULL){
+Transform::Transform(bool isRoot) : node_(NULL){
   isRoot_ = isRoot;
   if(!isRoot_){
     init(SVector3::ZERO, SQuaternion::IDENTITY, SVector3::UNIT_SCALE);
@@ -47,136 +49,136 @@ STransform::STransform(bool isRoot) : node_(NULL){
   bindings.setUserAny(Ogre::Any(this));
 }
 
-STransform* STransform::clone() const{
+Transform* Transform::clone() const{
   // TODO: fixed yaw axis not copied
   // TODO: bounding box show not copied
-  STransform* ntf = new STransform(position(), orientation(), scale());
+  Transform* ntf = new Transform(position(), orientation(), scale());
   return ntf;
 }
 // TODO: !important this is botched
-const SVector3& STransform::worldPosition() const{
+const SVector3& Transform::worldPosition() const{
   return node_->convertLocalToWorldPosition(SVector3::ZERO);
 }
 
-const SQuaternion& STransform::worldOrientation() const{
+const SQuaternion& Transform::worldOrientation() const{
   return node_->convertLocalToWorldOrientation(SQuaternion::IDENTITY);
 }
 
-const SVector3& STransform::worldScale() const{
+const SVector3& Transform::worldScale() const{
   return node_->_getDerivedScale();
 }
 
-void STransform::setPosition(SVector3 position){
+void Transform::setPosition(SVector3 position){
   node_->setPosition(position);
   // notify rigidbodies in hierarchy
   _notifyTransformChange();
 }
 
-void STransform::setOrientation(SQuaternion orientation){
+void Transform::setOrientation(SQuaternion orientation){
   node_->setOrientation(orientation);
   // notify rigidbodies in hierarchy
   _notifyTransformChange();
 }
 
-void STransform::_notifyTransformChange(){
+void Transform::_notifyTransformChange(){
   if(hasInterface()){
     if(object()->hasComponent("RigidBody")){
-      SRigidBody* rigidbody = static_cast<SRigidBody*>(object()->component("RigidBody"));
+      RigidBody* rigidbody = static_cast<RigidBody*>(object()->component("RigidBody"));
       rigidbody->setKinematicTransform(worldPosition(), worldOrientation());
 
     }
   }
   Ogre::SceneNode::ChildNodeIterator it = node_->getChildIterator();
   Ogre::SceneNode* child;
-  STransform* child_tf;
+  Transform* child_tf;
   while(it.hasMoreElements()){
     child = static_cast<Ogre::SceneNode*>(it.getNext());
-    child_tf = Ogre::any_cast<STransform*>(child->getUserObjectBindings().getUserAny());
+    child_tf = Ogre::any_cast<Transform*>(child->getUserObjectBindings().getUserAny());
     child_tf->_notifyTransformChange();
   }
 }
-void STransform::attachObject(Ogre::MovableObject* object){
+void Transform::attachObject(Ogre::MovableObject* object){
   node_->attachObject(object);
 }
 
-void STransform::detachObject(Ogre::MovableObject* object){
+void Transform::detachObject(Ogre::MovableObject* object){
   node_->detachObject(object);
 }
 
-void STransform::lookAt(SVector3 position){
+void Transform::lookAt(SVector3 position){
   node_->lookAt(position, Ogre::SceneNode::TS_WORLD);
 }
 
-STransform* const STransform::parent(){
+Transform* const Transform::parent(){
   Ogre::UserObjectBindings& bindings = node_->getParentSceneNode()->getUserObjectBindings();
-  return Ogre::any_cast<STransform*>(bindings.getUserAny());
+  return Ogre::any_cast<Transform*>(bindings.getUserAny());
 }
 
-void STransform::setParent(STransform* parent){
+void Transform::setParent(Transform* parent){
   // reparent, parent has the obligation to detach from current parent
   parent->addChild(this);
 }
 
-void STransform::addChild(STransform* child){
+void Transform::addChild(Transform* child){
   child->node_->getParentSceneNode()->removeChild(child->node_);
   node_->addChild(child->node_);
 }
 
-void STransform::showBoundingBox(bool show){
+void Transform::showBoundingBox(bool show){
   node_->showBoundingBox(show);
 }
 
-void STransform::move(SVector3 delta){
+void Transform::move(SVector3 delta){
   setPosition(position()+delta);
 }
 
-void STransform::moveRelative(SVector3 delta){
+void Transform::moveRelative(SVector3 delta){
   setPosition(position()+orientation()*delta);
 }
 
-void STransform::rotate(SQuaternion delta){
+void Transform::rotate(SQuaternion delta){
   node_->rotate(delta);
 }
 
-void STransform::yaw(SRadian angle){
+void Transform::yaw(SRadian angle){
   node_->yaw(angle);
   _notifyTransformChange();
 }
 
-void STransform::pitch(SRadian angle){
+void Transform::pitch(SRadian angle){
   node_->pitch(angle);
   _notifyTransformChange();
 }
 
-void STransform::roll(SRadian angle){
+void Transform::roll(SRadian angle){
   node_->roll(angle);
  _notifyTransformChange();
 }
 
-void STransform::setFixedYawAxis(bool useFixed, const SVector3 fixedAxis){
+void Transform::setFixedYawAxis(bool useFixed, const SVector3 fixedAxis){
   node_->setFixedYawAxis(useFixed, fixedAxis);
 }
 
-const Ogre::Matrix4& STransform::worldMatrix() const{
+const Ogre::Matrix4& Transform::worldMatrix() const{
   Ogre::Matrix4 mat(worldOrientation());
   mat.setTrans(position());
   return mat;
 }
 
 
-void STransform::setInheritScale(bool inherit){
+void Transform::setInheritScale(bool inherit){
   node_->setInheritScale(inherit);
 }
 
-void STransform::setInheritOrientation(bool inherit){
+void Transform::setInheritOrientation(bool inherit){
   node_->setInheritOrientation(inherit);
 }
 
-void STransform::setVisible(bool visible, bool cascade){
+void Transform::setVisible(bool visible, bool cascade){
   node_->setVisible(visible, cascade);
 }
 
-bool STransform::isVisible(){
+bool Transform::isVisible(){
   bool isVisible = false;
   Ogre::SceneNode::ObjectIterator it = node_->getAttachedObjectIterator();
   while(it.hasMoreElements()){
@@ -186,3 +188,5 @@ bool STransform::isVisible(){
   }
   return isVisible;
 }
+
+}; // namespace SF

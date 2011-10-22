@@ -4,6 +4,8 @@
 #include "common.h"
 #include "GameObject.h"
 
+namespace SF {
+
 /**
 * @brief Class responsible for maintaining GameObject hierarchy(including root GO)[has exclusive ownership of GO objects], handing out central events (init, update)
 *
@@ -45,5 +47,7 @@ class Hierarchy {
 
   StormfighterApp* application_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_HIERARCHY_H_

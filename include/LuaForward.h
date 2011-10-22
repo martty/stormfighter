@@ -17,8 +17,6 @@
 #include "CompoundCollider.h"
 #include "CylinderCollider.h"
 
-#include "HingeConstraint.h"
-
 #include "Script.h"
 #include "LuaScript.h"
 

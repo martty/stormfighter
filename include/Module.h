@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+namespace SF {
+
 /// Base class for modules (Graphics, Logger, Physics..)
 class Module {
  public:
@@ -16,5 +18,7 @@ class Module {
  private:
   StormfighterApp* application_;
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_MODULE_H_

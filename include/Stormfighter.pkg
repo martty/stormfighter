@@ -7,6 +7,8 @@ typedef float Ogre::Real;
 $pfile "include/core_ogre.pkg"
 $pfile "include/core_ois.pkg"
 
+namespace SF {
+
 /// String class
 typedef std::string SString;
 
@@ -39,12 +41,16 @@ typedef Ogre::Plane SPlane;
 /// An std::vector of SStrings
 typedef std::vector<std::string> StringVector;
 
-typedef std::vector<GameObject*> GameObjectList;
+typedef std::vector<SF::GameObject*> GameObjectList;
+
+}; // namespace SF
 
 // include everything
 $#include "LuaForward.h"
 
 TOLUA_PROPERTY_TYPE(qt);
+
+namespace SF {
 
 $pfile "include/core_components_graphics.pkg"
 $pfile "include/core_components_physics.pkg"
@@ -52,3 +58,5 @@ $pfile "include/core_components_scripting.pkg"
 $pfile "include/core_gameobject.pkg"
 $pfile "include/core_modules.pkg"
 $pfile "include/core_application.pkg"
+
+};

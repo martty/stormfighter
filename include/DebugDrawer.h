@@ -6,6 +6,8 @@
 #include "common.h"
 #include <map>
 
+namespace SF {
+
 typedef std::pair<Ogre::Vector3, Ogre::ColourValue> VertexPair;
 
 #define DEFAULT_ICOSPHERE_RECURSION_LEVEL 1
@@ -123,5 +125,7 @@ private:
 
         void addQuadIndices(int index1, int index2, int index3, int index4);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_DEBUGDRAWER_H_

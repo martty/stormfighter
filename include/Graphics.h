@@ -5,6 +5,8 @@
 #include <Terrain/OgreTerrain.h>
 #include <OgreRenderTargetListener.h>
 
+namespace SF {
+
 /**
 * @brief Class managing the graphics module (Ogre)
 *
@@ -96,5 +98,7 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
                                   const Ogre::Vector3 &scale);
   void tagHierarchyForVisibility(GameObject* start);
 };
+
+}; // namespace SF
 
 #endif // STORMFIGHTER_GRAPHICS_H_

@@ -5,16 +5,20 @@
 #include "BulletOgreMeshToShape.h"
 #include "StormfighterApp.h"
 
-SCapsuleCollider::SCapsuleCollider(SReal radius, SReal height){
+namespace SF {
+
+CapsuleCollider::CapsuleCollider(SReal radius, SReal height){
   autoConfig_ = false;
   //init(radius, height);
 }
 
-SCapsuleCollider::SCapsuleCollider(){
+CapsuleCollider::CapsuleCollider(){
   autoConfig_ = true;
 }
 
-SCapsuleCollider::~SCapsuleCollider()
+CapsuleCollider::~CapsuleCollider()
 {
   //dtor
 }
+
+}; // namespace SF

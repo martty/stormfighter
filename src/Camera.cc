@@ -2,21 +2,21 @@
 #include "Graphics.h"
 #include "GameObject.h"
 
-using namespace Ogre;
+namespace SF {
 
-SCamera::SCamera(){
+Camera::Camera(){
   setState(CREATED);
 }
 
-SCamera::~SCamera(){
+Camera::~Camera(){
 }
 
-SCamera* SCamera::clone() const{
+Camera* Camera::clone() const{
   // TODO: clone other attribs
-  return new SCamera();
+  return new Camera();
 }
 
-unsigned int SCamera::onAdd(SString goname, STransform* transform){
+unsigned int Camera::onAdd(SString goname, Transform* transform){
   camera_ = Graphics::getSingletonPtr()->sceneManager()->createCamera(goname+"_camera");
   transform->attachObject(camera_);
   camera_->setFarClipDistance(10000.0f);
@@ -24,22 +24,24 @@ unsigned int SCamera::onAdd(SString goname, STransform* transform){
   return NONE;
 }
 
-void SCamera::setAspectRatio(SReal ratio){
+void Camera::setAspectRatio(SReal ratio){
   camera_->setAspectRatio(ratio);
 }
 
-void SCamera::setNearClipDistance(SReal distance){
+void Camera::setNearClipDistance(SReal distance){
   camera_->setNearClipDistance(distance);
 }
 
-void SCamera::activate(){
+void Camera::activate(){
   Graphics::getSingletonPtr()->setActiveCamera(camera_);
 }
 
-void SCamera::setPolygonMode(Ogre::PolygonMode mode){
+void Camera::setPolygonMode(Ogre::PolygonMode mode){
   camera_->setPolygonMode(mode);
 }
 
-SAxisAlignedBox SCamera::getBoundingBox() const{
+SAxisAlignedBox Camera::getBoundingBox() const{
   return camera_->getBoundingBox();
 }
+
+}; // namespace SF

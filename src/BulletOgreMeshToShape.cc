@@ -3,6 +3,8 @@
 #include <OgreSubEntity.h>
 #include <OgreEntity.h>
 
+namespace SF {
+
 /*
  * =============================================================================================
  * BtOgre::VertexIndexToShape
@@ -749,3 +751,5 @@
 		//geom->setPosition(box_afCenter);
 		return geom;
 	}
+
+}; // namespace SF

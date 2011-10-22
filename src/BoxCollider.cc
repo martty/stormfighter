@@ -6,33 +6,35 @@
 #include "BulletOgreMeshToShape.h"
 #include "StormfighterApp.h"
 
-SBoxCollider::SBoxCollider(Ogre::Vector3 halfextents){
+namespace SF {
+
+BoxCollider::BoxCollider(Ogre::Vector3 halfextents){
   init(halfextents);
 }
 
-SBoxCollider::SBoxCollider(){
+BoxCollider::BoxCollider(){
   autoConfig_ = true;
   setState(PREPARED);
 }
 
 
-SBoxCollider::~SBoxCollider(){
+BoxCollider::~BoxCollider(){
 }
 
-SBoxCollider* SBoxCollider::clone() const {
-  SBoxCollider* box = new SBoxCollider();
+BoxCollider* BoxCollider::clone() const {
+  BoxCollider* box = new BoxCollider();
   return box;
 }
 
-void SBoxCollider::init(Ogre::Vector3 halfextents){
+void BoxCollider::init(Ogre::Vector3 halfextents){
   collisionShape_ = new btBoxShape(Convert::toBullet(halfextents));
   setState(READY);
 }
 
-void SBoxCollider::onInit(){
+void BoxCollider::onInit(){
   if(!autoConfig_) // if we are not using autocfg, then this component is already READY
     return;
-  SMesh* mesh = static_cast<SMesh*>(object()->component("Mesh"));
+  Mesh* mesh = static_cast<Mesh*>(object()->componentGroup("Mesh"));
   //const Ogre::AxisAlignedBox* aabb = mesh->getBounds();
   //collisionShape_ = new btBoxShape(Convert::toBullet(aabb->getHalfSize()));
   VertexIndexToShape* vits;
@@ -42,3 +44,5 @@ void SBoxCollider::onInit(){
   setState(READY);
   delete vits;
 }
+
+}; // namespace SF

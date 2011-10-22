@@ -6,7 +6,7 @@
 #include "Hierarchy.h"
 #include "Physics.h"
 
-using namespace Ogre;
+namespace SF {
 
 NameCountMap GameObject::namecount_ = NameCountMap();
 
@@ -52,7 +52,7 @@ void GameObject::init(bool isRoot){
   collisionmap_.clear();
 
   name_ = getUniqueName(name_);
-  transform_ = new STransform(isRoot_);
+  transform_ = new Transform(isRoot_);
   addComponent(transform_);
 
   next_ = children_ = parent_ = NULL ;
@@ -218,16 +218,12 @@ void GameObject::clearChildren(){
 }
 
 void GameObject::addComponent(Component* cmp){
-  if(TEST){
-    SString cmp_group; size_t pos;
 
-    /// Find group (cmp's type until '/')
-    cmp_group = ((pos = cmp->type().find("/")) == std::string::npos) ? cmp->type() : cmp->type().substr(0,pos);
-
-    /// Search component with same group name already in component map
+  /// Search component with same group name already in component map (if it is not a script)
+  if(cmp->group() != "Script") {
     for(ComponentMap::iterator it=components_.begin(); it!=components_.end(); it++ ){
-        if( (pos = (*it).first.find(cmp_group)) != std::string::npos && pos == 0 ) {
-            throw SException(debug() + " | duplicate component group: " + cmp_group + " for component: " + cmp->type());
+        if( (*it).second->group() == cmp->group() ) {
+            throw SException(debug() + " | duplicate component group: " + cmp->group() + " for component: " + cmp->type());
         }
     }
   }
@@ -254,8 +250,24 @@ Component* GameObject::component(const SString& name){
   return components_[name] ;
 }
 
+Component* GameObject::componentGroup(const SString& group){
+  for(ComponentMap::iterator it=components_.begin(); it!=components_.end(); it++ ){
+    if( (*it).second->group() == group )
+      return (*it).second;
+  }
+  return NULL;
+}
+
 bool GameObject::hasComponent(const SString& name) const{
   return ( components_.find(name) != components_.end() );
+}
+
+bool GameObject::hasComponentGroup(const SString& group) const{
+  for(ComponentMap::const_iterator it=components_.begin(); it!=components_.end(); it++ ){
+    if( (*it).second->group() == group )
+      return true;
+  }
+  return NULL;
 }
 
 ComponentVector GameObject::allComponents() {
@@ -266,7 +278,7 @@ ComponentVector GameObject::allComponents() {
   return all;
 }
 
-STransform* GameObject::transform(){
+Transform* GameObject::transform(){
   return transform_;
 }
 
@@ -331,7 +343,7 @@ SString GameObject::getUniqueName(SString name){
 }
 
 SString GameObject::debug() {
-  return "["+name()+"]:<"+StringConverter::toString(transform()->position())+">";
+  return "["+name()+"]:<"+Ogre::StringConverter::toString(transform()->position())+">";
 }
 
 void GameObject::collision(){
@@ -381,6 +393,26 @@ Component* GameObject::_firstComponentInChildren(const SString& type){
   return ret;
 }
 
+Component* GameObject::firstComponentGroupInChildren(const SString& group){
+  if(hasComponentGroup(group))
+    return componentGroup(group);
+  if(children_){
+    return children_->_firstComponentGroupInChildren(group);
+  }
+  return NULL;
+}
+
+Component* GameObject::_firstComponentGroupInChildren(const SString& group){
+  Component* ret = NULL;
+  if(hasComponentGroup(group))
+    return componentGroup(group);
+  if(next_)
+    ret = next_->_firstComponentGroupInChildren(group);
+  if(children_ && ret == NULL)
+    ret = children_->_firstComponentGroupInChildren(group);
+  return ret;
+}
+
 ComponentVector GameObject::allComponentInChildren(const SString& type){
   ComponentVector vec;
   if(hasComponent(type))
@@ -423,8 +455,10 @@ SAxisAlignedBox GameObject::getBoundingBox(){
   bounded.insert(bounded.end(), lights.begin(), lights.end());
   SAxisAlignedBox bbox;
   for(ComponentVector::iterator it = bounded.begin(); it != bounded.end(); it++){
-    SMovableObject* mo = static_cast<SMovableObject*>(*it);
+    MovableObject* mo = static_cast<MovableObject*>(*it);
     bbox.merge(mo->getBoundingBox());
   }
   return bbox;
 }
+
+}; // namespace SF

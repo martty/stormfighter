@@ -5,6 +5,10 @@
 #include "common.h"
 #include <OgreSceneNode.h>
 
+extern ContactProcessedCallback gContactProcessedCallback;
+
+namespace SF{
+
 class BulletDebugDrawer;
 
 struct CollisionData {
@@ -19,8 +23,6 @@ struct CollisionData {
 };
 
 typedef std::map<SString, short> MaskMap;
-
-extern ContactProcessedCallback gContactProcessedCallback;
 
 class Physics {
  public:
@@ -70,5 +72,7 @@ class Physics {
   MaskMap collisionGroups_;
   int collision_group_counter;
 };
+
+}; // namespace SF
 
 #endif // STORMIFIGHTER_PHYSICS_H_

@@ -5,7 +5,9 @@
 #include "Terrain.h"
 #include "Physics.h"
 
-SRigidBody::SRigidBody(SReal mass){
+namespace SF {
+
+RigidBody::RigidBody(SReal mass){
   mass_ = mass;
   rigidBody_ = NULL;
   internalTransform_ = btTransform::getIdentity();
@@ -20,12 +22,12 @@ SRigidBody::SRigidBody(SReal mass){
   setState(PREPARED);
 }
 
-SRigidBody::~SRigidBody(){
+RigidBody::~RigidBody(){
   remove();
 }
 
-SRigidBody* SRigidBody::clone() const {
-  SRigidBody* rb = new SRigidBody(mass_);
+RigidBody* RigidBody::clone() const {
+  RigidBody* rb = new RigidBody(mass_);
   rb->collidesWith_ = collidesWith_;
   rb->collisionFlags_ = collisionFlags_;
   rb->group_ = group_;
@@ -35,18 +37,18 @@ SRigidBody* SRigidBody::clone() const {
   return rb;
 }
 
-void SRigidBody::getWorldTransform(btTransform &retVal) const {
+void RigidBody::getWorldTransform(btTransform &retVal) const {
   retVal = internalTransform_;
 }
 
-void SRigidBody::setKinematicTransform(Ogre::Vector3 position, Ogre::Quaternion orientation){
+void RigidBody::setKinematicTransform(Ogre::Vector3 position, Ogre::Quaternion orientation){
   internalTransform_ = Convert::transform(position, orientation);
 }
 
-void SRigidBody::setWorldTransform(const btTransform &newTransform){
+void RigidBody::setWorldTransform(const btTransform &newTransform){
   if (object() == NULL) // if no interface, no transform -> no set :(
     return;
-  STransform* transform = object()->transform();
+  Transform* transform = object()->transform();
   btQuaternion rot = newTransform.getRotation();
   transform->_setOrientation(Convert::toOgre(rot));
   btVector3 pos = newTransform.getOrigin();
@@ -54,14 +56,13 @@ void SRigidBody::setWorldTransform(const btTransform &newTransform){
   internalTransform_ = newTransform;
 }
 
-void SRigidBody::onInit(){
+void RigidBody::onInit(){
   // search for a collider component in GO & children
   // TOOD: autoCompound & autoTrimesh
   SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
   internalTransform_ = Convert::transform(object()->transform()->worldPosition(), worldOri);
-  SCollider* collider = NULL;
-  if(object()->firstComponentInChildren("Collider")){
-    collider = static_cast<SCollider*>(object()->firstComponentInChildren("Collider"));
+  Collider* collider = static_cast<Collider*>(object()->firstComponentGroupInChildren("Collider"));
+  if(collider){
     // let's rush this collider, we need the shape now
     if(collider->state() == PREPARED){
       collider->onInit();
@@ -73,7 +74,7 @@ void SRigidBody::onInit(){
     // FIXME: component name should be used for this
     // if we have a terrain, assume we are doing a terrain collider we must modify origin
     if(object()->hasComponent("Terrain")){
-      STerrain* terrain = static_cast<STerrain*>(object()->component("Terrain"));
+      Terrain* terrain = static_cast<Terrain*>(object()->component("Terrain"));
       Ogre::Vector3 terrainPosition = terrain->terrainPosition(0,0);
       internalTransform_.setOrigin(
                  btVector3(
@@ -99,7 +100,7 @@ void SRigidBody::onInit(){
   }
 }
 
-void SRigidBody::setKinematic(bool isKinematic){
+void RigidBody::setKinematic(bool isKinematic){
   if(state() == READY){
     if(isKinematic){
       setFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
@@ -115,32 +116,32 @@ void SRigidBody::setKinematic(bool isKinematic){
   }
 }
 
-void SRigidBody::setLinearVelocity(SVector3 linvel){
+void RigidBody::setLinearVelocity(SVector3 linvel){
   if(state() == READY){
     rigidBody_->setLinearVelocity(Convert::toBullet(linvel));
   }
 }
-SVector3 SRigidBody::linearVelocity(){
+SVector3 RigidBody::linearVelocity(){
   if(state() == READY){
     return Convert::toOgre(rigidBody_->getLinearVelocity());
   }
   return SVector3::ZERO;
 }
 
-void SRigidBody::setAngularVelocity(SVector3 angvel){
+void RigidBody::setAngularVelocity(SVector3 angvel){
   if(state() == READY){
     rigidBody_->setAngularVelocity(Convert::toBullet(angvel));
   }
 }
 
-SVector3 SRigidBody::angularVelocity(){
+SVector3 RigidBody::angularVelocity(){
   if(state() == READY){
     return Convert::toOgre(rigidBody_->getAngularVelocity());
   }
   return SVector3::ZERO;
 }
 
-void SRigidBody::addPoint2PointConstraint(const SVector3& pivotInA){
+void RigidBody::addPoint2PointConstraint(const SVector3& pivotInA){
   if(state() == READY){
     btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, Convert::toBullet(pivotInA));
     constraints_.push_back(constraint);
@@ -148,7 +149,7 @@ void SRigidBody::addPoint2PointConstraint(const SVector3& pivotInA){
   }
 }
 
-void SRigidBody::addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB){
+void RigidBody::addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB){
   if(state() == READY){
     btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, *(rbB->rigidBody()), Convert::toBullet(pivotInA), Convert::toBullet(pivotInB));
     constraints_.push_back(constraint);
@@ -156,15 +157,15 @@ void SRigidBody::addPoint2PointConstraint(SRigidBody* rbB, const SVector3& pivot
   }
 }
 
-void SRigidBody::disableDebugDraw(){
+void RigidBody::disableDebugDraw(){
   setFlag(btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 }
 
-void SRigidBody::applyCentralImpulse(Ogre::Vector3 direction){
+void RigidBody::applyCentralImpulse(Ogre::Vector3 direction){
   rigidBody_->applyCentralImpulse(Convert::toBullet(direction));
 }
 
-void SRigidBody::setDamping(SReal linear, SReal angular){
+void RigidBody::setDamping(SReal linear, SReal angular){
   if(state() != READY){
     lin_damp_ = linear;
     ang_damp_ = angular;
@@ -173,62 +174,64 @@ void SRigidBody::setDamping(SReal linear, SReal angular){
   }
 }
 
-void SRigidBody::setCollisionResponse(bool hasResponse){
+void RigidBody::setCollisionResponse(bool hasResponse){
   setFlagTo(btCollisionObject::CF_NO_CONTACT_RESPONSE, hasResponse);
 }
 
-void SRigidBody::setFlag(unsigned int flag){
+void RigidBody::setFlag(unsigned int flag){
   if(state() == READY)
     rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() | flag);
   else
     collisionFlags_ |= flag;
 }
 
-void SRigidBody::unsetFlag(unsigned int flag){
+void RigidBody::unsetFlag(unsigned int flag){
   if(state() == READY)
     rigidBody_->setCollisionFlags(rigidBody_->getCollisionFlags() & ~flag);
   else
     collisionFlags_ &= ~flag;
 }
 
-void SRigidBody::setFlagTo(unsigned int flag, bool set){
+void RigidBody::setFlagTo(unsigned int flag, bool set){
   if(set)
     setFlag(flag);
   else
     unsetFlag(flag);
 }
 
-bool SRigidBody::flag(unsigned int flag) const{
+bool RigidBody::flag(unsigned int flag) const{
   if(state() == READY)
     return rigidBody_->getCollisionFlags() & flag;
   return collisionFlags_ & flag;
 }
 
-void SRigidBody::setCollisionGroup(SString group){
+void RigidBody::setCollisionGroup(SString group){
   group_ = group;
   if(state() == READY)
     flush();
 }
 
-void SRigidBody::setCollidesWith(StringVector collidesWith){
+void RigidBody::setCollidesWith(StringVector collidesWith){
   collidesWith_ = collidesWith;
   if(state() == READY)
     flush();
 }
 
-void SRigidBody::setCallbacks(bool hasCallbacks){
+void RigidBody::setCallbacks(bool hasCallbacks){
   setFlagTo(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK, hasCallbacks);
 }
 
-void SRigidBody::remove(){
+void RigidBody::remove(){
   application()->physics()->removeRigidBody(rigidBody_);
 }
 
-void SRigidBody::add(){
+void RigidBody::add(){
   application()->physics()->addRigidBody(rigidBody_, group_, collidesWith_);
 }
 
-void SRigidBody::flush(){
+void RigidBody::flush(){
   remove();
   add();
 }
+
+}; // namespace SF
