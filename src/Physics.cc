@@ -4,6 +4,7 @@
 #include "Graphics.h"
 #include "Hierarchy.h"
 #include "BulletOgreDebugDraw.h"
+#include "Constraint.h"
 #include <limits>
 
 namespace SF {
@@ -12,6 +13,7 @@ Physics::Physics(StormfighterApp* app){
   application_ = app;
   collisionGroups_.clear();
   collision_group_counter = 0;
+  enabled_ = true;
   init(btVector3(-1500, -1500, -1500), btVector3(1500, 1500, 1500), 2048); // sensible defaults? maybe
 }
 
@@ -36,7 +38,8 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
   dWorld_->setInternalTickCallback(&Physics::tickCallback, NULL, false);
   gContactProcessedCallback = &Physics::contactProcessedCallback;
   dWorld_->setWorldUserInfo(application_);
-
+  btContactSolverInfo& info = dWorld_->getSolverInfo();
+  //info.m_numIterations = 20;
   // create the 3 basic collisiongroups
   addCollisionGroup("default");
   // manually
@@ -46,10 +49,16 @@ void Physics::init(btVector3 wAABBmin, btVector3 wAABBmax, int maxprox){
 
 void Physics::tick(SReal deltaTime){
   //Graphics::getSingletonPtr()->m_pLog->logMessage("tick:"+Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
-  dWorld_->stepSimulation(deltaTime);//, 1, btScalar(1.)/btScalar(120.));//, 14, btScalar(1.)/btScalar(1200.));
+  if(enabled_){
+    dWorld_->stepSimulation(deltaTime, 14, btScalar(1.)/btScalar(1200.));//, 1, btScalar(1.)/btScalar(120.));//, 14, btScalar(1.)/btScalar(1200.));
   //Graphics::getSingletonPtr()->m_pLog->logMessage("stepped:"+Ogre::StringConverter::toString(Graphics::getSingletonPtr()->m_pTimer->getMilliseconds()));
   //dWorld_->debugDrawWorld();
-  debugdrawer_->step();
+  }
+    debugdrawer_->step();
+}
+
+void Physics::step(){
+  dWorld_->stepSimulation(application_->deltaTime(), 14, btScalar(1.)/btScalar(1200.));
 }
 
 void Physics::addRigidBody(btRigidBody* rigidbody){
@@ -64,8 +73,16 @@ void Physics::removeRigidBody(btRigidBody* rigidBody){
   dWorld_->removeRigidBody(rigidBody);
 }
 
-void Physics::addConstraint(btTypedConstraint* constraint){
-  dWorld_->addConstraint(constraint);
+void Physics::addConstraint(btTypedConstraint* constraint, bool disableCollisionBetweenBodies){
+  dWorld_->addConstraint(constraint, disableCollisionBetweenBodies);
+}
+
+void Physics::addConstraint(Constraint* constraint){
+  dWorld_->addConstraint(constraint->constraint(), constraint->disableCollision());
+}
+
+void Physics::removeConstraint(btTypedConstraint* constraint){
+  dWorld_->removeConstraint(constraint);
 }
 
 void Physics::tickCallback(btDynamicsWorld* world, btScalar timeStep){

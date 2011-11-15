@@ -14,7 +14,7 @@ sideA = Hierarchy:createGameObject("sideA");
 neutral = Hierarchy:createGameObject("neutral");
 sideB = Hierarchy:createGameObject("sideB");
 
-platform:transform().scale = (SVector3(1, 0.1, 1));
+platform:transform().scale = (SVector3(0.1, 1, 1));
 
 platform:addChild(sideA);platform:addChild(neutral);platform:addChild(sideB);
 
@@ -22,9 +22,9 @@ sideA:addComponent(Primitive:new(Primitive.CUBE));
 sideB:addComponent(Primitive:new(Primitive.CUBE));
 neutral:addComponent(Primitive:new(Primitive.CUBE));
 
-sideA:transform().position = SVector3(-55, 1, 0);
-sideB:transform().position = SVector3(55, 0, 0);
-neutral:transform().scale = SVector3(0.1, 1, 1);
+sideA:transform().position = SVector3(0, -55, 0);
+sideB:transform().position = SVector3(0, 55, 0);
+neutral:transform().scale = SVector3(1, 0.1, 1);
 
 sideA:component("Primitive"):setMaterialName("Torqube/SideA");
 neutral:component("Primitive"):setMaterialName("Torqube/Neutral");
@@ -34,48 +34,73 @@ smallcube = Hierarchy:createGameObject("smallcube");
 smallcube:transform().scale = SVector3(0.05, 0.05, 0.05);
 smallcube:addComponent(Primitive:new(Primitive.CUBE));
 smallcube:component("Primitive"):setMaterialName("Torqube/Railfixtures");
-local dx, dy, dz = 100, 7, 45;
+local dx, dy, dz = 7, 100, 45;
 smallcube:transform().position = SVector3(dx, dy, dz);
 smallcube:clone():transform().position = SVector3(dx, dy, -dz);
-smallcube:clone():transform().position = SVector3(-dx, dy, dz);
-smallcube:clone():transform().position = SVector3(-dx, dy, -dz);
+smallcube:clone():transform().position = SVector3(dx, -dy, dz);
+smallcube:clone():transform().position = SVector3(dx, -dy, -dz);
 
 rail = Hierarchy:createGameObject("rail");
 rail:transform().scale = SVector3(0.01, 0.05, 0.90);
 rail:addComponent(Primitive:new(Primitive.CUBE));
 rail:component("Primitive"):setMaterialName("Torqube/Rail");
 rail:transform().position = SVector3(dx, dy, 0);
-rail:clone():transform().position = SVector3(-dx, dy, 0);
+rail:clone():transform().position = SVector3(dx, -dy, 0);
+
+local padone = Hierarchy:createGameObject("padone");
+padone:transform().position = SVector3(10, dy, 0);
+
+local padtwo = Hierarchy:createGameObject("padtwo");
+padtwo:transform().position = SVector3(10, -dy, 0);
 
 --Physics:setDebugDraw(true);
 middlepad = System:loadComponent('scripts/middlepad.lua');
 
 local test = Hierarchy:createGameObject("middlepad");
-test:transform().position = SVector3(0, 10, 0);
+test:transform().position = SVector3(10, 0, 0);
 local mesh = Hierarchy:createGameObject("middlepadmesh");
 mesh:addComponent(Primitive:new(Primitive.CUBE));
 mesh:component("Primitive"):setMaterialName("Torqube/Railfixtures");
-mesh:transform().scale = SVector3(0.1, 0.1, 0.3);
+mesh:transform().scale = SVector3(0.1, 0.01, 0.9);
 test:addChild(mesh);
 mesh:addComponent(BoxCollider:new());
-test:addComponent(RigidBody:new(1));
-test:component("RigidBody"):addPoint2PointConstraint(SVector3(0,-1,0));
+test:addComponent(RigidBody:new(0.1, true));
+--test:component("RigidBody"):addPoint2PointConstraint(SVector3(0,10,0));
 test:addComponent(middlepad);
 
 
-platform:addComponent(BoxCollider:new(SVector3(105, 5, 50)));
-platform:addComponent(RigidBody:new(0));
+platform:addComponent(BoxCollider:new(SVector3(5, 105, 50)));
+platform:addComponent(RigidBody:new(0, true));
 
-htest = System:loadComponent('scripts/bombarder.lua');
+local playerOne = System:loadComponent('scripts/player.lua');
+local playerTwo = System:loadComponent('scripts/player.lua');
 
-test = smallcube:clone();
-test:transform().scale = SVector3(0.1, 0.1, 0.1);
-test:transform().position = SVector3(30, 10, 10);
-test:addComponent(BoxCollider:new());
-test:addComponent(RigidBody:new(1));
-test:addComponent(htest);
-test:clone():transform().position = SVector3(40, 10, -10);
-test:clone():transform().position = SVector3(40, 10, 30);
+playerOne.dir = SVector3(0,-1,0);
+playerTwo.dir = SVector3(0,1,0);
+playerOne.fireKey = OIS.KC_C;
+playerOne.leftKey = OIS.KC_LEFT;
+playerOne.rightKey = OIS.KC_RIGHT;
+playerOne.name = "goo";
+
+playerTwo.fireKey = OIS.KC_P;
+playerTwo.leftKey = OIS.KC_J;
+playerTwo.rightKey = OIS.KC_L;
+padone:addComponent(playerOne);
+padtwo:addComponent(playerTwo);
+--[[
+test:clone():transform().position = SVector3(10, 100, 5);
+test:clone():transform().position = SVector3(10, 60, 25);
+test:clone():transform().position = SVector3(10, 200, 25);
+for i=1, 50 do
+  test:clone():transform().position = SVector3(10, 200 + i*40, 25);
+end
+--]]
+--[[for i=1, 10 do
+  local t = test:clone()
+  t:transform().position = SVector3(10, 200 + 400 + i*50, 25);
+  t:transform().scale = SVector3(0.1, 0.2+i*0.01, 0.1+(i%2)*0.1*i);
+end--]]
+--test:clone():transform().position = SVector3(40, 10, 30);
 
 local cam = Hierarchy:createGameObject("cammy");
 c = Camera:new();

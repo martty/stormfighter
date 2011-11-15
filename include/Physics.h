@@ -10,6 +10,7 @@ extern ContactProcessedCallback gContactProcessedCallback;
 namespace SF{
 
 class BulletDebugDrawer;
+class Constraint;
 
 struct CollisionData {
   Ogre::Vector3 pointOnA;
@@ -40,7 +41,10 @@ class Physics {
 
   void removeRigidBody(btRigidBody* rigidBody);
 
-  void addConstraint(btTypedConstraint* constraint);
+  void addConstraint(btTypedConstraint* constraint, bool disableCollisionBetweenBodies);
+  void addConstraint(Constraint* constraint);
+
+  void removeConstraint(btTypedConstraint* constraint);
 
   void addCollisionGroup(SString name);
 
@@ -49,6 +53,8 @@ class Physics {
   /// Update physics world
   void tick(SReal deltaTime);
 
+  void setEnabled(bool enable){enabled_ = enable; }
+  void step();
   void setDebugDraw(bool draw);
 
   static void tickCallback(btDynamicsWorld* world, btScalar timestep);
@@ -69,6 +75,7 @@ class Physics {
   BulletDebugDrawer* debugdrawer_;
   StormfighterApp* application_;
 
+  bool enabled_;
   MaskMap collisionGroups_;
   int collision_group_counter;
 };

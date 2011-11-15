@@ -6,6 +6,7 @@ Hierarchy::Hierarchy(){
   // set up root GO
   root_ = new GameObject(true);
   fresh_.clear();
+  state_ = DOWN;
   application_ = NULL;
 }
 
@@ -15,12 +16,17 @@ Hierarchy::~Hierarchy(){
 
 void Hierarchy::initialize(StormfighterApp* app){
   application_ = app;
-  root_->initialize(application_, true);
+  state_ = UP;
+  root_->coreInitialize(application_, true);
+  root_->scriptInitialize(application_, true);
 }
 
 void Hierarchy::update(){
   for(GameObjectList::iterator it = fresh_.begin(); it != fresh_.end(); it++){
-    (*it)->initialize(application_, true);
+    (*it)->coreInitialize(application_, true);
+  }
+  for(GameObjectList::iterator it = fresh_.begin(); it != fresh_.end(); it++){
+    (*it)->scriptInitialize(application_, true);
   }
   fresh_.clear();
   root_->update(true);
@@ -33,18 +39,24 @@ void Hierarchy::physicsUpdate(){
 GameObject* Hierarchy::createGameObject(){
   GameObject* go = new GameObject();
   root_->addChild(go);
+  if(state_ == UP)
+    fresh_.push_back(go);
   return go;
 }
 
 GameObject* Hierarchy::createGameObject(SString name){
   GameObject* go = new GameObject(name);
   root_->addChild(go);
+  if(state_ == UP){
+    fresh_.push_back(go);
+  }
   return go;
 }
 
 GameObject* Hierarchy::_cloneGameObject(SString name){
   GameObject* go = new GameObject(name, true);
-  fresh_.push_back(go);
+  if(state_ == UP)
+    fresh_.push_back(go);
   return go;
 }
 

@@ -52,8 +52,10 @@ class GameObject {
   ComponentVector allComponentInChildren(const SString& type); /// Get all components of type, searched first in this GameObject, then children
 
   // Component management
-  /// sends onInit to components, will follow list if recursive is true
-  void initialize(StormfighterApp* app, bool recursive );
+  /// sends onInit to core components, will follow list if recursive is true
+  void coreInitialize(StormfighterApp* app, bool recursive );
+  /// sends onInit to script components, will follow list if recursive is true
+  void scriptInitialize(StormfighterApp* app, bool recursive );
   /// sends onUpdate to components, will follow list if recursive is true
   void update(bool recursive);
   /// sends onPhysicsUpdate to components, will follow list if recursive is true

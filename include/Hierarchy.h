@@ -41,9 +41,11 @@ class Hierarchy {
   SString debug();
 
  private:
+  enum ModuleState { DOWN, UP};
   GameObject* root_;
 
   GameObjectList fresh_;
+  ModuleState state_;
 
   StormfighterApp* application_;
 };

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 10/22/11 11:16:03.
+** Generated automatically by tolua++-1.0.92 on 11/03/11 19:03:30.
 */
 
 #ifndef __cplusplus
@@ -40,9 +40,23 @@ static int tolua_collect_std__set_std__string_ (lua_State* tolua_S)
 	return 0;
 }
 
+static int tolua_collect_SF__RigidBody (lua_State* tolua_S)
+{
+ SF::RigidBody* self = (SF::RigidBody*) tolua_tousertype(tolua_S,1,0);
+	Mtolua_delete(self);
+	return 0;
+}
+
 static int tolua_collect_std__vector_SF__Component__ (lua_State* tolua_S)
 {
  std::vector<SF::Component*>* self = (std::vector<SF::Component*>*) tolua_tousertype(tolua_S,1,0);
+	Mtolua_delete(self);
+	return 0;
+}
+
+static int tolua_collect_SF__Primitive (lua_State* tolua_S)
+{
+ SF::Primitive* self = (SF::Primitive*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -68,9 +82,9 @@ static int tolua_collect_SF__SingleRayCastResult (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__Camera (lua_State* tolua_S)
+static int tolua_collect_SF__Constraint (lua_State* tolua_S)
 {
- SF::Camera* self = (SF::Camera*) tolua_tousertype(tolua_S,1,0);
+ SF::Constraint* self = (SF::Constraint*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -82,9 +96,9 @@ static int tolua_collect_Ogre__Vector4 (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__RigidBody (lua_State* tolua_S)
+static int tolua_collect_SF__BoxCollider (lua_State* tolua_S)
 {
- SF::RigidBody* self = (SF::RigidBody*) tolua_tousertype(tolua_S,1,0);
+ SF::BoxCollider* self = (SF::BoxCollider*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -103,16 +117,16 @@ static int tolua_collect_Ogre__Sphere (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__BoxCollider (lua_State* tolua_S)
+static int tolua_collect_SF__Camera (lua_State* tolua_S)
 {
- SF::BoxCollider* self = (SF::BoxCollider*) tolua_tousertype(tolua_S,1,0);
+ SF::Camera* self = (SF::Camera*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
 
-static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
+static int tolua_collect_SF__ManualObject (lua_State* tolua_S)
 {
- Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
+ SF::ManualObject* self = (SF::ManualObject*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -124,9 +138,9 @@ static int tolua_collect_Ogre__Degree (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__ManualObject (lua_State* tolua_S)
+static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
 {
- SF::ManualObject* self = (SF::ManualObject*) tolua_tousertype(tolua_S,1,0);
+ Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -159,9 +173,9 @@ static int tolua_collect_SF__LuaScript (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__Primitive (lua_State* tolua_S)
+static int tolua_collect_SF__Mesh (lua_State* tolua_S)
 {
- SF::Primitive* self = (SF::Primitive*) tolua_tousertype(tolua_S,1,0);
+ SF::Mesh* self = (SF::Mesh*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -173,9 +187,9 @@ static int tolua_collect_Ogre__Vector3 (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__Mesh (lua_State* tolua_S)
+static int tolua_collect_SF__Frame (lua_State* tolua_S)
 {
- SF::Mesh* self = (SF::Mesh*) tolua_tousertype(tolua_S,1,0);
+ SF::Frame* self = (SF::Frame*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -225,45 +239,47 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"std::vector<SF::GameObject*>");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
+ tolua_usertype(tolua_S,"SF::StormfighterApp");
  tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"SF::CollisionData");
  tolua_usertype(tolua_S,"SF::Script");
+ tolua_usertype(tolua_S,"SF::Input");
  tolua_usertype(tolua_S,"std::vector<SF::Component*>");
  tolua_usertype(tolua_S,"SF::MovableObject");
- tolua_usertype(tolua_S,"SF::StormfighterApp");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"SF::Transform");
  tolua_usertype(tolua_S,"SF::Component");
  tolua_usertype(tolua_S,"Ogre::Light::LightTypes");
  tolua_usertype(tolua_S,"SF::Hierarchy");
- tolua_usertype(tolua_S,"SF::LuaScript");
- tolua_usertype(tolua_S,"SF::Input");
+ tolua_usertype(tolua_S,"SF::Constraint");
+ tolua_usertype(tolua_S,"Ogre::Viewport");
  tolua_usertype(tolua_S,"SF::Physics");
- tolua_usertype(tolua_S,"Ogre::Light");
+ tolua_usertype(tolua_S,"SF::Graphics");
  tolua_usertype(tolua_S,"btRigidBody");
  tolua_usertype(tolua_S,"SF::Camera");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
- tolua_usertype(tolua_S,"Ogre::Viewport");
  tolua_usertype(tolua_S,"Ogre::Camera");
+ tolua_usertype(tolua_S,"Ogre::Light");
  tolua_usertype(tolua_S,"Ogre::Math");
  tolua_usertype(tolua_S,"Ogre::Plane");
  tolua_usertype(tolua_S,"SF::DebugDrawer");
  tolua_usertype(tolua_S,"Ogre::list<Ogre::Plane>::type");
- tolua_usertype(tolua_S,"SF::Graphics");
  tolua_usertype(tolua_S,"SF::Logger");
+ tolua_usertype(tolua_S,"SF::RigidBody");
  tolua_usertype(tolua_S,"SF::GUI");
- tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"SF::LuaScript");
  tolua_usertype(tolua_S,"SF::SingleRayCastResult");
  tolua_usertype(tolua_S,"Ogre::vector<Ogre::Plane>::type");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
- tolua_usertype(tolua_S,"SF::RigidBody");
+ tolua_usertype(tolua_S,"SF::Frame");
  tolua_usertype(tolua_S,"SF::BoxCollider");
  tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"OIS::Keyboard");
  tolua_usertype(tolua_S,"SF::Collider");
- tolua_usertype(tolua_S,"SF::ManualObject");
  tolua_usertype(tolua_S,"btCollisionShape");
+ tolua_usertype(tolua_S,"SF::ManualObject");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"btTransform");
  tolua_usertype(tolua_S,"std::set<std::string>");
@@ -12521,6 +12537,250 @@ static int tolua_Stormfighter_SF_Component_application00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_new00
+static int tolua_Stormfighter_SF_Frame_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"SF::Frame",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* position = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Quaternion* orientation = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  {
+   SF::Frame* tolua_ret = (SF::Frame*)  Mtolua_new((SF::Frame)(*position,*orientation));
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Frame");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_new00_local
+static int tolua_Stormfighter_SF_Frame_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"SF::Frame",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"const Ogre::Quaternion",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ogre::Vector3* position = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+  const Ogre::Quaternion* orientation = ((const Ogre::Quaternion*)  tolua_tousertype(tolua_S,3,0));
+  {
+   SF::Frame* tolua_ret = (SF::Frame*)  Mtolua_new((SF::Frame)(*position,*orientation));
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Frame");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_delete00
+static int tolua_Stormfighter_SF_Frame_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Frame",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Frame* self = (SF::Frame*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'", NULL);
+#endif
+  Mtolua_delete(self);
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: position of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_position00
+static int tolua_Stormfighter_SF_Frame_position00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::Frame",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::Frame* self = (const SF::Frame*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'position'", NULL);
+#endif
+  {
+    const Ogre::Vector3& tolua_ret = (  const Ogre::Vector3&)  self->position();
+    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Vector3");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'position'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: orientation of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_orientation00
+static int tolua_Stormfighter_SF_Frame_orientation00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::Frame",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::Frame* self = (const SF::Frame*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'orientation'", NULL);
+#endif
+  {
+    const Ogre::Quaternion& tolua_ret = (  const Ogre::Quaternion&)  self->orientation();
+    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::Quaternion");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'orientation'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: operator* of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame__mul00
+static int tolua_Stormfighter_SF_Frame__mul00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::Frame",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"const Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::Frame* self = (const SF::Frame*)  tolua_tousertype(tolua_S,1,0);
+  const Ogre::Vector3* x = ((const Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'", NULL);
+#endif
+  {
+    Ogre::Vector3 tolua_ret = (  Ogre::Vector3)  self->operator*(*x);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((Ogre::Vector3)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Vector3");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Vector3");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function '.mul'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: inverse of class  SF::Frame */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Frame_inverse00
+static int tolua_Stormfighter_SF_Frame_inverse00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::Frame",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::Frame* self = (const SF::Frame*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'inverse'", NULL);
+#endif
+  {
+   SF::Frame tolua_ret = (SF::Frame)  self->inverse();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((SF::Frame)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"SF::Frame");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(SF::Frame));
+     tolua_pushusertype(tolua_S,tolua_obj,"SF::Frame");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'inverse'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: position of class  SF::Transform */
 #ifndef TOLUA_DISABLE_tolua_get_SF__Transform_position
 static int tolua_get_SF__Transform_position(lua_State* tolua_S)
@@ -14881,6 +15141,347 @@ static int tolua_Stormfighter_SF_BoxCollider_onInit00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_new00
+static int tolua_Stormfighter_SF_Constraint_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"const SF::Frame",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"const SF::Frame",0,&tolua_err)) ||
+     !tolua_isboolean(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* rbA = ((SF::RigidBody*)  tolua_tousertype(tolua_S,2,0));
+  SF::RigidBody* rbB = ((SF::RigidBody*)  tolua_tousertype(tolua_S,3,0));
+  const SF::Frame* frameA = ((const SF::Frame*)  tolua_tousertype(tolua_S,4,0));
+  const SF::Frame* frameB = ((const SF::Frame*)  tolua_tousertype(tolua_S,5,0));
+  bool disableCollision = ((bool)  tolua_toboolean(tolua_S,6,0));
+  {
+   SF::Constraint* tolua_ret = (SF::Constraint*)  Mtolua_new((SF::Constraint)(rbA,rbB,*frameA,*frameB,disableCollision));
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Constraint");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_new00_local
+static int tolua_Stormfighter_SF_Constraint_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"const SF::Frame",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"const SF::Frame",0,&tolua_err)) ||
+     !tolua_isboolean(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* rbA = ((SF::RigidBody*)  tolua_tousertype(tolua_S,2,0));
+  SF::RigidBody* rbB = ((SF::RigidBody*)  tolua_tousertype(tolua_S,3,0));
+  const SF::Frame* frameA = ((const SF::Frame*)  tolua_tousertype(tolua_S,4,0));
+  const SF::Frame* frameB = ((const SF::Frame*)  tolua_tousertype(tolua_S,5,0));
+  bool disableCollision = ((bool)  tolua_toboolean(tolua_S,6,0));
+  {
+   SF::Constraint* tolua_ret = (SF::Constraint*)  Mtolua_new((SF::Constraint)(rbA,rbB,*frameA,*frameB,disableCollision));
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Constraint");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_delete00
+static int tolua_Stormfighter_SF_Constraint_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'", NULL);
+#endif
+  Mtolua_delete(self);
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setDbgDrawSize of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setDbgDrawSize00
+static int tolua_Stormfighter_SF_Constraint_setDbgDrawSize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+    float size = ((   float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDbgDrawSize'", NULL);
+#endif
+  {
+   self->setDbgDrawSize(size);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDbgDrawSize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setCFMParam of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setCFMParam00
+static int tolua_Stormfighter_SF_Constraint_setCFMParam00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+    float value = ((   float)  tolua_tonumber(tolua_S,2,0));
+  int index = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCFMParam'", NULL);
+#endif
+  {
+   self->setCFMParam(value,index);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCFMParam'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setERPParam of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setERPParam00
+static int tolua_Stormfighter_SF_Constraint_setERPParam00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+    float value = ((   float)  tolua_tonumber(tolua_S,2,0));
+  int index = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setERPParam'", NULL);
+#endif
+  {
+   self->setERPParam(value,index);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setERPParam'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setLinearLowerLimit of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setLinearLowerLimit00
+static int tolua_Stormfighter_SF_Constraint_setLinearLowerLimit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 limit = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLinearLowerLimit'", NULL);
+#endif
+  {
+   self->setLinearLowerLimit(limit);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setLinearLowerLimit'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setLinearUpperLimit of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setLinearUpperLimit00
+static int tolua_Stormfighter_SF_Constraint_setLinearUpperLimit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 limit = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLinearUpperLimit'", NULL);
+#endif
+  {
+   self->setLinearUpperLimit(limit);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setLinearUpperLimit'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAngularLowerLimit of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setAngularLowerLimit00
+static int tolua_Stormfighter_SF_Constraint_setAngularLowerLimit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 limit = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAngularLowerLimit'", NULL);
+#endif
+  {
+   self->setAngularLowerLimit(limit);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAngularLowerLimit'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAngularUpperLimit of class  SF::Constraint */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Constraint_setAngularUpperLimit00
+static int tolua_Stormfighter_SF_Constraint_setAngularUpperLimit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Constraint",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Constraint* self = (SF::Constraint*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 limit = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAngularUpperLimit'", NULL);
+#endif
+  {
+   self->setAngularUpperLimit(limit);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAngularUpperLimit'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  SF::RigidBody */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_new00
 static int tolua_Stormfighter_SF_RigidBody_new00(lua_State* tolua_S)
@@ -14890,15 +15491,17 @@ static int tolua_Stormfighter_SF_RigidBody_new00(lua_State* tolua_S)
  if (
      !tolua_isusertable(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
     float mass = ((   float)  tolua_tonumber(tolua_S,2,0));
+  bool addOnInit = ((bool)  tolua_toboolean(tolua_S,3,0));
   {
-   SF::RigidBody* tolua_ret = (SF::RigidBody*)  Mtolua_new((SF::RigidBody)(mass));
+   SF::RigidBody* tolua_ret = (SF::RigidBody*)  Mtolua_new((SF::RigidBody)(mass,addOnInit));
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::RigidBody");
   }
  }
@@ -14920,15 +15523,17 @@ static int tolua_Stormfighter_SF_RigidBody_new00_local(lua_State* tolua_S)
  if (
      !tolua_isusertable(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
     float mass = ((   float)  tolua_tonumber(tolua_S,2,0));
+  bool addOnInit = ((bool)  tolua_toboolean(tolua_S,3,0));
   {
-   SF::RigidBody* tolua_ret = (SF::RigidBody*)  Mtolua_new((SF::RigidBody)(mass));
+   SF::RigidBody* tolua_ret = (SF::RigidBody*)  Mtolua_new((SF::RigidBody)(mass,addOnInit));
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::RigidBody");
     tolua_register_gc(tolua_S,lua_gettop(tolua_S));
   }
@@ -15392,6 +15997,116 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: addFixedConstraint of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_addFixedConstraint00
+static int tolua_Stormfighter_SF_RigidBody_addFixedConstraint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+  SF::RigidBody* rbB = ((SF::RigidBody*)  tolua_tousertype(tolua_S,2,0));
+  bool disableCollision = ((bool)  tolua_toboolean(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addFixedConstraint'", NULL);
+#endif
+  {
+   self->addFixedConstraint(rbB,disableCollision);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addFixedConstraint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeConstraint of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_removeConstraint00
+static int tolua_Stormfighter_SF_RigidBody_removeConstraint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+  int index = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeConstraint'", NULL);
+#endif
+  {
+   self->removeConstraint(index);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeConstraint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getFrame of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_getFrame00
+static int tolua_Stormfighter_SF_RigidBody_getFrame00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getFrame'", NULL);
+#endif
+  {
+   SF::Frame tolua_ret = (SF::Frame)  self->getFrame();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((SF::Frame)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"SF::Frame");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(SF::Frame));
+     tolua_pushusertype(tolua_S,tolua_obj,"SF::Frame");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getFrame'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setDamping of class  SF::RigidBody */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_setDamping00
 static int tolua_Stormfighter_SF_RigidBody_setDamping00(lua_State* tolua_S)
@@ -15427,6 +16142,39 @@ static int tolua_Stormfighter_SF_RigidBody_setDamping00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setDisableDeactivation of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_setDisableDeactivation00
+static int tolua_Stormfighter_SF_RigidBody_setDisableDeactivation00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+  bool disable = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDisableDeactivation'", NULL);
+#endif
+  {
+   self->setDisableDeactivation(disable);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDisableDeactivation'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: applyCentralImpulse of class  SF::RigidBody */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_applyCentralImpulse00
 static int tolua_Stormfighter_SF_RigidBody_applyCentralImpulse00(lua_State* tolua_S)
@@ -15443,7 +16191,7 @@ static int tolua_Stormfighter_SF_RigidBody_applyCentralImpulse00(lua_State* tolu
 #endif
  {
   SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::Vector3 direction = *((Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+   Ogre::Vector3 direction = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'applyCentralImpulse'", NULL);
 #endif
@@ -15455,6 +16203,105 @@ static int tolua_Stormfighter_SF_RigidBody_applyCentralImpulse00(lua_State* tolu
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'applyCentralImpulse'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: applyCentralForce of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_applyCentralForce00
+static int tolua_Stormfighter_SF_RigidBody_applyCentralForce00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 direction = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'applyCentralForce'", NULL);
+#endif
+  {
+   self->applyCentralForce(direction);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'applyCentralForce'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: applyTorque of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_applyTorque00
+static int tolua_Stormfighter_SF_RigidBody_applyTorque00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 direction = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'applyTorque'", NULL);
+#endif
+  {
+   self->applyTorque(direction);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'applyTorque'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: applyTorqueImpulse of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_applyTorqueImpulse00
+static int tolua_Stormfighter_SF_RigidBody_applyTorqueImpulse00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 direction = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'applyTorqueImpulse'", NULL);
+#endif
+  {
+   self->applyTorqueImpulse(direction);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'applyTorqueImpulse'.",&tolua_err);
  return 0;
 #endif
 }
@@ -15605,6 +16452,39 @@ static int tolua_Stormfighter_SF_RigidBody_angularVelocity00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'angularVelocity'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setGravity of class  SF::RigidBody */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_RigidBody_setGravity00
+static int tolua_Stormfighter_SF_RigidBody_setGravity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::RigidBody",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::RigidBody* self = (SF::RigidBody*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 gravity = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setGravity'", NULL);
+#endif
+  {
+   self->setGravity(gravity);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setGravity'.",&tolua_err);
  return 0;
 #endif
 }
@@ -18040,6 +18920,39 @@ static int tolua_Stormfighter_SF_Physics_removeRigidBody00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: addConstraint of class  SF::Physics */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Physics_addConstraint00
+static int tolua_Stormfighter_SF_Physics_addConstraint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Physics",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"SF::Constraint",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Physics* self = (SF::Physics*)  tolua_tousertype(tolua_S,1,0);
+  SF::Constraint* constraint = ((SF::Constraint*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addConstraint'", NULL);
+#endif
+  {
+   self->addConstraint(constraint);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addConstraint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: addCollisionGroup of class  SF::Physics */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Physics_addCollisionGroup00
 static int tolua_Stormfighter_SF_Physics_addCollisionGroup00(lua_State* tolua_S)
@@ -18114,6 +19027,70 @@ static int tolua_Stormfighter_SF_Physics_closestRayCast00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'closestRayCast'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setEnabled of class  SF::Physics */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Physics_setEnabled00
+static int tolua_Stormfighter_SF_Physics_setEnabled00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Physics",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Physics* self = (SF::Physics*)  tolua_tousertype(tolua_S,1,0);
+  bool enable = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEnabled'", NULL);
+#endif
+  {
+   self->setEnabled(enable);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setEnabled'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: step of class  SF::Physics */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Physics_step00
+static int tolua_Stormfighter_SF_Physics_step00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Physics",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Physics* self = (SF::Physics*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'step'", NULL);
+#endif
+  {
+   self->step();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'step'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19776,6 +20753,21 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"object",tolua_Stormfighter_SF_Component_object00);
     tolua_function(tolua_S,"application",tolua_Stormfighter_SF_Component_application00);
    tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"Frame","SF::Frame","",tolua_collect_SF__Frame);
+   #else
+   tolua_cclass(tolua_S,"Frame","SF::Frame","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"Frame");
+    tolua_function(tolua_S,"new",tolua_Stormfighter_SF_Frame_new00);
+    tolua_function(tolua_S,"new_local",tolua_Stormfighter_SF_Frame_new00_local);
+    tolua_function(tolua_S,".call",tolua_Stormfighter_SF_Frame_new00_local);
+    tolua_function(tolua_S,"delete",tolua_Stormfighter_SF_Frame_delete00);
+    tolua_function(tolua_S,"position",tolua_Stormfighter_SF_Frame_position00);
+    tolua_function(tolua_S,"orientation",tolua_Stormfighter_SF_Frame_orientation00);
+    tolua_function(tolua_S,".mul",tolua_Stormfighter_SF_Frame__mul00);
+    tolua_function(tolua_S,"inverse",tolua_Stormfighter_SF_Frame_inverse00);
+   tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Transform","SF::Transform","SF::Component",NULL);
    tolua_beginmodule(tolua_S,"Transform");
     tolua_variable(tolua_S,"position",tolua_get_SF__Transform_position,tolua_set_SF__Transform_position);
@@ -19920,6 +20912,24 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"onInit",tolua_Stormfighter_SF_BoxCollider_onInit00);
    tolua_endmodule(tolua_S);
    #ifdef __cplusplus
+   tolua_cclass(tolua_S,"Constraint","SF::Constraint","",tolua_collect_SF__Constraint);
+   #else
+   tolua_cclass(tolua_S,"Constraint","SF::Constraint","",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"Constraint");
+    tolua_function(tolua_S,"new",tolua_Stormfighter_SF_Constraint_new00);
+    tolua_function(tolua_S,"new_local",tolua_Stormfighter_SF_Constraint_new00_local);
+    tolua_function(tolua_S,".call",tolua_Stormfighter_SF_Constraint_new00_local);
+    tolua_function(tolua_S,"delete",tolua_Stormfighter_SF_Constraint_delete00);
+    tolua_function(tolua_S,"setDbgDrawSize",tolua_Stormfighter_SF_Constraint_setDbgDrawSize00);
+    tolua_function(tolua_S,"setCFMParam",tolua_Stormfighter_SF_Constraint_setCFMParam00);
+    tolua_function(tolua_S,"setERPParam",tolua_Stormfighter_SF_Constraint_setERPParam00);
+    tolua_function(tolua_S,"setLinearLowerLimit",tolua_Stormfighter_SF_Constraint_setLinearLowerLimit00);
+    tolua_function(tolua_S,"setLinearUpperLimit",tolua_Stormfighter_SF_Constraint_setLinearUpperLimit00);
+    tolua_function(tolua_S,"setAngularLowerLimit",tolua_Stormfighter_SF_Constraint_setAngularLowerLimit00);
+    tolua_function(tolua_S,"setAngularUpperLimit",tolua_Stormfighter_SF_Constraint_setAngularUpperLimit00);
+   tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
    tolua_cclass(tolua_S,"RigidBody","SF::RigidBody","SF::Component",tolua_collect_SF__RigidBody);
    #else
    tolua_cclass(tolua_S,"RigidBody","SF::RigidBody","SF::Component",NULL);
@@ -19942,12 +20952,20 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"setCollidesWith",tolua_Stormfighter_SF_RigidBody_setCollidesWith00);
     tolua_function(tolua_S,"addPoint2PointConstraint",tolua_Stormfighter_SF_RigidBody_addPoint2PointConstraint00);
     tolua_function(tolua_S,"addPoint2PointConstraint",tolua_Stormfighter_SF_RigidBody_addPoint2PointConstraint01);
+    tolua_function(tolua_S,"addFixedConstraint",tolua_Stormfighter_SF_RigidBody_addFixedConstraint00);
+    tolua_function(tolua_S,"removeConstraint",tolua_Stormfighter_SF_RigidBody_removeConstraint00);
+    tolua_function(tolua_S,"getFrame",tolua_Stormfighter_SF_RigidBody_getFrame00);
     tolua_function(tolua_S,"setDamping",tolua_Stormfighter_SF_RigidBody_setDamping00);
+    tolua_function(tolua_S,"setDisableDeactivation",tolua_Stormfighter_SF_RigidBody_setDisableDeactivation00);
     tolua_function(tolua_S,"applyCentralImpulse",tolua_Stormfighter_SF_RigidBody_applyCentralImpulse00);
+    tolua_function(tolua_S,"applyCentralForce",tolua_Stormfighter_SF_RigidBody_applyCentralForce00);
+    tolua_function(tolua_S,"applyTorque",tolua_Stormfighter_SF_RigidBody_applyTorque00);
+    tolua_function(tolua_S,"applyTorqueImpulse",tolua_Stormfighter_SF_RigidBody_applyTorqueImpulse00);
     tolua_function(tolua_S,"setLinearVelocity",tolua_Stormfighter_SF_RigidBody_setLinearVelocity00);
     tolua_function(tolua_S,"linearVelocity",tolua_Stormfighter_SF_RigidBody_linearVelocity00);
     tolua_function(tolua_S,"setAngularVelocity",tolua_Stormfighter_SF_RigidBody_setAngularVelocity00);
     tolua_function(tolua_S,"angularVelocity",tolua_Stormfighter_SF_RigidBody_angularVelocity00);
+    tolua_function(tolua_S,"setGravity",tolua_Stormfighter_SF_RigidBody_setGravity00);
     tolua_function(tolua_S,"disableDebugDraw",tolua_Stormfighter_SF_RigidBody_disableDebugDraw00);
     tolua_function(tolua_S,"add",tolua_Stormfighter_SF_RigidBody_add00);
     tolua_function(tolua_S,"remove",tolua_Stormfighter_SF_RigidBody_remove00);
@@ -20060,8 +21078,11 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"addRigidBody",tolua_Stormfighter_SF_Physics_addRigidBody00);
     tolua_function(tolua_S,"addRigidBody",tolua_Stormfighter_SF_Physics_addRigidBody01);
     tolua_function(tolua_S,"removeRigidBody",tolua_Stormfighter_SF_Physics_removeRigidBody00);
+    tolua_function(tolua_S,"addConstraint",tolua_Stormfighter_SF_Physics_addConstraint00);
     tolua_function(tolua_S,"addCollisionGroup",tolua_Stormfighter_SF_Physics_addCollisionGroup00);
     tolua_function(tolua_S,"closestRayCast",tolua_Stormfighter_SF_Physics_closestRayCast00);
+    tolua_function(tolua_S,"setEnabled",tolua_Stormfighter_SF_Physics_setEnabled00);
+    tolua_function(tolua_S,"step",tolua_Stormfighter_SF_Physics_step00);
     tolua_function(tolua_S,"setDebugDraw",tolua_Stormfighter_SF_Physics_setDebugDraw00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Input","SF::Input","",NULL);

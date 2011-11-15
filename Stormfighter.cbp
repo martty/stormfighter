@@ -78,9 +78,11 @@
 		<Unit filename="include\Collider.h" />
 		<Unit filename="include\Component.h" />
 		<Unit filename="include\CompoundCollider.h" />
+		<Unit filename="include\Constraint.h" />
 		<Unit filename="include\ConvexHullCollider.h" />
 		<Unit filename="include\CylinderCollider.h" />
 		<Unit filename="include\DebugDrawer.h" />
+		<Unit filename="include\Frame.h" />
 		<Unit filename="include\GUI.h" />
 		<Unit filename="include\GameObject.h" />
 		<Unit filename="include\Graphics.h" />
@@ -132,6 +134,7 @@
 		<Unit filename="scripts\init.lua" />
 		<Unit filename="scripts\manipulator.lua" />
 		<Unit filename="scripts\middlepad.lua" />
+		<Unit filename="scripts\player.lua" />
 		<Unit filename="scripts\system.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />
@@ -141,9 +144,11 @@
 		<Unit filename="src\Collider.cc" />
 		<Unit filename="src\Component.cc" />
 		<Unit filename="src\CompoundCollider.cc" />
+		<Unit filename="src\Constraint.cc" />
 		<Unit filename="src\ConvexHullCollider.cc" />
 		<Unit filename="src\CylinderCollider.cc" />
 		<Unit filename="src\DebugDrawer.cc" />
+		<Unit filename="src\Frame.cc" />
 		<Unit filename="src\GUI.cc" />
 		<Unit filename="src\GameObject.cc" />
 		<Unit filename="src\Graphics.cc" />

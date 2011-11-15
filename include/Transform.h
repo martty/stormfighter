@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include <OgreSceneNode.h>
+#include "Frame.h"
 #include "Component.h"
 
 namespace SF {
