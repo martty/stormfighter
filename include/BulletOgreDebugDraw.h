@@ -201,7 +201,7 @@ public:
 	void drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance,int lifeTime,const btVector3& color)
 	{
 	  Ogre::ColourValue cval(color.x(), color.y(), color.z());
-    Graphics::getSingleton().debugDrawer()->drawSphere(Convert::toOgre(PointOnB),distance*10, cval, true);
+    Graphics::getSingleton().debugDrawer()->drawSphere(Convert::toOgre(PointOnB+normalOnB*distance/2),distance*10, cval, true);
 		//mLineDrawer->addPoint(Convert::toOgre(PointOnB));
 		//mLineDrawer->addPoint(Convert::toOgre(PointOnB) + (Convert::toOgre(normalOnB) * distance * 20));
 	}

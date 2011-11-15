@@ -7,7 +7,7 @@
 
 namespace SF {
 
-RigidBody::RigidBody(SReal mass){
+RigidBody::RigidBody(SReal mass, bool addOnInit){
   mass_ = mass;
   rigidBody_ = NULL;
   internalTransform_ = btTransform::getIdentity();
@@ -19,6 +19,7 @@ RigidBody::RigidBody(SReal mass){
   collidesWith_.clear();
   collidesWith_.push_back("all");
   constraints_.clear();
+  addOnInit_ = addOnInit;
   setState(PREPARED);
 }
 
@@ -27,7 +28,7 @@ RigidBody::~RigidBody(){
 }
 
 RigidBody* RigidBody::clone() const {
-  RigidBody* rb = new RigidBody(mass_);
+  RigidBody* rb = new RigidBody(mass_, addOnInit_);
   rb->collidesWith_ = collidesWith_;
   rb->collisionFlags_ = collisionFlags_;
   rb->group_ = group_;
@@ -60,7 +61,7 @@ void RigidBody::onInit(){
   // search for a collider component in GO & children
   // TOOD: autoCompound & autoTrimesh
   SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
-  internalTransform_ = Convert::transform(object()->transform()->worldPosition(), worldOri);
+  setKinematicTransform(object()->transform()->worldPosition(), worldOri);
   Collider* collider = static_cast<Collider*>(object()->firstComponentGroupInChildren("Collider"));
   if(collider){
     // let's rush this collider, we need the shape now
@@ -84,15 +85,17 @@ void RigidBody::onInit(){
     }
     btRigidBody::btRigidBodyConstructionInfo rigidbodyCI(mass_, this, collisionShape, myinertia);
     rigidBody_ = new btRigidBody(rigidbodyCI);
-    rigidBody_->setUserPointer(object()); // this component is set for callbacks, which is TODO of course :)
-    add();
+    rigidBody_->setUserPointer(object());
+    if(addOnInit_)
+      add();
     setState(READY);
     setFlag(collisionFlags_);
     if(isKinematic_){
       setFlag(btCollisionObject::CF_KINEMATIC_OBJECT);
       rigidBody_->setActivationState(DISABLE_DEACTIVATION);
     }
-    rigidBody_->setFriction(1.0f);
+    //rigidBody_->setActivationState(DISABLE_DEACTIVATION);
+    rigidBody_->setFriction(0.0f);
     rigidBody_->setRestitution(0.0f);
     rigidBody_->setDamping(lin_damp_, ang_damp_);
   } else {
@@ -141,11 +144,17 @@ SVector3 RigidBody::angularVelocity(){
   return SVector3::ZERO;
 }
 
+void RigidBody::setGravity(SVector3 gravity){
+  if(state() == READY){
+    rigidBody_->setGravity(Convert::toBullet(gravity));
+  }
+}
+
 void RigidBody::addPoint2PointConstraint(const SVector3& pivotInA){
   if(state() == READY){
-    btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, Convert::toBullet(pivotInA));
+    btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, physicsTransform().inverse()*Convert::toBullet(pivotInA));
     constraints_.push_back(constraint);
-    application()->physics()->addConstraint(constraint);
+    application()->physics()->addConstraint(constraint, true);
   }
 }
 
@@ -153,7 +162,32 @@ void RigidBody::addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotIn
   if(state() == READY){
     btTypedConstraint* constraint = new btPoint2PointConstraint(*rigidBody_, *(rbB->rigidBody()), Convert::toBullet(pivotInA), Convert::toBullet(pivotInB));
     constraints_.push_back(constraint);
-    application()->physics()->addConstraint(constraint);
+    application()->physics()->addConstraint(constraint, true);
+  }
+}
+
+void RigidBody::addFixedConstraint(RigidBody* rbB, bool disableCollisions){
+  if(state() == READY){
+    btTransform frame21 = rbB->physicsTransform().inverse() * physicsTransform();
+    btTransform identity;
+    identity.setIdentity();
+    btGeneric6DofConstraint* constraint1 = new btGeneric6DofConstraint(*rigidBody_, *(rbB->rigidBody()), identity, frame21, true);
+    constraint1->setDbgDrawSize(btScalar(10.f));
+    constraints_.push_back(constraint1);
+    constraint1->setLinearLowerLimit(btVector3(0,0,0));
+    constraint1->setLinearUpperLimit(btVector3(0,0,0));
+    constraint1->setAngularLowerLimit(btVector3(0,0,0));
+    constraint1->setAngularUpperLimit(btVector3(0,0,0));
+    constraints_.push_back(constraint1);
+    application()->physics()->addConstraint(constraint1, disableCollisions);
+  }
+}
+
+void RigidBody::removeConstraint(int index){
+  if(constraints_.size() > index){
+    btTypedConstraint* cons = constraints_[index];
+    application()->physics()->removeConstraint(cons);
+    // benne marad a vectorban!
   }
 }
 
@@ -165,12 +199,33 @@ void RigidBody::applyCentralImpulse(Ogre::Vector3 direction){
   rigidBody_->applyCentralImpulse(Convert::toBullet(direction));
 }
 
+void RigidBody::applyCentralForce(Ogre::Vector3 direction){
+  rigidBody_->applyCentralForce(Convert::toBullet(direction));
+}
+
+void RigidBody::applyTorque(Ogre::Vector3 direction){
+  rigidBody_->applyTorque(Convert::toBullet(direction));
+}
+
+void RigidBody::applyTorqueImpulse(Ogre::Vector3 direction){
+  rigidBody_->applyTorqueImpulse(Convert::toBullet(direction));
+}
+
 void RigidBody::setDamping(SReal linear, SReal angular){
   if(state() != READY){
     lin_damp_ = linear;
     ang_damp_ = angular;
   } else {
     rigidBody_->setDamping(linear, angular);
+  }
+}
+
+void RigidBody::setDisableDeactivation(bool disable){
+  if(state() == READY){
+    if(disable)
+      rigidBody_->setActivationState(DISABLE_DEACTIVATION);
+    else
+      rigidBody_->setActivationState(ACTIVE_TAG);
   }
 }
 
@@ -226,6 +281,9 @@ void RigidBody::remove(){
 }
 
 void RigidBody::add(){
+  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
+  setKinematicTransform(object()->transform()->worldPosition(), worldOri);
+  rigidBody_->setMotionState(this);
   application()->physics()->addRigidBody(rigidBody_, group_, collidesWith_);
 }
 

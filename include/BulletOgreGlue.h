@@ -8,13 +8,11 @@
 #include <LinearMath/btTransform.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
+//#include "Frame.h"
 
 namespace SF {
 
-class Convert {
-public:
-	Convert() {};
-	~Convert() {};
+namespace Convert {
 
 	static inline btQuaternion toBullet(const Ogre::Quaternion &q){
 		return btQuaternion(q.x, q.y, q.z, q.w);

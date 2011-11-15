@@ -282,22 +282,39 @@ Transform* GameObject::transform(){
   return transform_;
 }
 
-void GameObject::initialize(StormfighterApp* app, bool recursive){
+void GameObject::coreInitialize(StormfighterApp* app, bool recursive){
   application_ = app;
   if(recursive){
     if(children_)
-      children_->initialize(app, true);
+      children_->coreInitialize(app, true);
     if(next_)
-      next_->initialize(app, true);
+      next_->coreInitialize(app, true);
   }
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
     (*it).second->setInterface(this,app);
   }
-
+  LOG("begin coreinit for " + name());
   transform_->onInit(); // guarantee first call, since map is not ordered (not required yet, but maybe later)
   // TODO: from callsdispatch
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    if((*it).second->type() != "Transform" && (*it).second->state() != Component::READY){
+    if((*it).second->type() != "Transform" && (*it).second->state() != Component::READY && (*it).second->group() != "LuaScript"){
+      LOG("initing:"+(*it).second->type());
+      (*it).second->onInit();
+    }
+  }
+}
+
+void GameObject::scriptInitialize(StormfighterApp* app, bool recursive){
+  if(recursive){
+    if(children_)
+      children_->scriptInitialize(app, true);
+    if(next_)
+      next_->scriptInitialize(app, true);
+  }
+  LOG("begin scriptinit for " + name());
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    if(((*it).second->state() != Component::READY) && ((*it).second->group() == "LuaScript")) {
+      LOG("initing:"+(*it).second->type());
       (*it).second->onInit();
     }
   }
@@ -305,6 +322,7 @@ void GameObject::initialize(StormfighterApp* app, bool recursive){
 
 void GameObject::update(bool recursive){
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    if((*it).second->state() == Component::READY)
       (*it).second->onUpdate();
   }
   if(recursive){
@@ -317,6 +335,7 @@ void GameObject::update(bool recursive){
 
 void GameObject::physicsUpdate(bool recursive){
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    if((*it).second->state() == Component::READY)
       (*it).second->onPhysicsUpdate();
   }
   if(recursive){

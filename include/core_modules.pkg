@@ -84,10 +84,14 @@ class Physics {
 
   void removeRigidBody(btRigidBody* rigidBody);
 
+  void addConstraint(Constraint* constraint);
+
   void addCollisionGroup(SString name);
 
   SingleRayCastResult closestRayCast(const Ogre::Vector3& from, const Ogre::Vector3& to);
 
+  void setEnabled(bool enable);
+  void step();
   void setDebugDraw(bool draw);
 };
 

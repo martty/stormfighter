@@ -23,6 +23,7 @@ void LuaScript::onInit(){
   application()->scripting()->pushNumber(id_);
   application()->scripting()->pushString("onInit");
   application()->scripting()->executeFunctionCall(2,0);
+  setState(READY);
 }
 
 void LuaScript::onUpdate(){

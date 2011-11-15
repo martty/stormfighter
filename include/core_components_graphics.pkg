@@ -31,6 +31,19 @@ class Component{
   StormfighterApp* application() const;
 };
 
+class Frame{
+ public:
+  Frame(const SVector3& position, const SQuaternion& orientation);
+  virtual ~Frame();
+
+  inline const SVector3& position() const;
+  inline const SQuaternion& orientation() const;
+
+  SVector3 operator*(const SVector3& x) const;
+
+  Frame inverse() const;
+};
+
 
 class Transform : public Component {
  public:

@@ -35,7 +35,7 @@ GUI::GUI(Input* input){
   // Destroy our URL string
   LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
   OverlayPosition pos(0, 0);
-  overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
+  //overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
   /*if(compensateNPOT_)
       overlay_->panel->setUV(0, 0, (Real)viewWidth/(Real)texWidth_, (Real)viewHeight/(Real)texHeight_);*/
   // init sdktraymanager

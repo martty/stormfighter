@@ -23,11 +23,26 @@ class BoxCollider : public Collider
   void onInit();
 };
 
+class Constraint {
+ public:
+  Constraint(RigidBody* rbA, RigidBody* rbB, const Frame& frameA, const Frame& frameB, bool disableCollision);
+  virtual ~Constraint();
+
+  void setDbgDrawSize(SReal size);
+  void setCFMParam(SReal value, int index);
+  void setERPParam(SReal value, int index);
+
+  void setLinearLowerLimit(SVector3 limit);
+  void setLinearUpperLimit(SVector3 limit);
+  void setAngularLowerLimit(SVector3 limit);
+  void setAngularUpperLimit(SVector3 limit);
+};
+
 
 class RigidBody : public Component{
  public:
   /** Default constructor */
-  RigidBody(SReal mass);
+  RigidBody(SReal mass, bool addOnInit);
   /** Default destructor */
   ~RigidBody();
 
@@ -51,16 +66,26 @@ class RigidBody : public Component{
 	// CONSTRAINTS
 	void addPoint2PointConstraint(const SVector3& pivotInA);
 	void addPoint2PointConstraint(RigidBody* rbB, const SVector3& pivotInA, const SVector3& pivotInB);
+	void addFixedConstraint(RigidBody* rbB, bool disableCollision);
+
+	void removeConstraint(int index);
+
+	Frame getFrame();
 
 	void setDamping(SReal linear, SReal angular);
+	void setDisableDeactivation(bool disable);
 
 	// FORCES & the like
-	void applyCentralImpulse(Ogre::Vector3 direction);
+	void applyCentralImpulse(SVector3 direction);
+	void applyCentralForce(SVector3 direction);
+	void applyTorque(SVector3 direction);
+	void applyTorqueImpulse(SVector3 direction);
 
 	void setLinearVelocity(SVector3 linvel);
 	SVector3 linearVelocity();
 	void setAngularVelocity(SVector3 angvel);
 	SVector3 angularVelocity();
+	void setGravity(SVector3 gravity);
 
 	/// does not draw this rigidbody in debug drawing
 	void disableDebugDraw();

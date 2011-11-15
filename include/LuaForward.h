@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "Frame.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "Mesh.h"
@@ -9,6 +10,7 @@
 #include "ManualObject.h"
 
 #include "RigidBody.h"
+#include "Constraint.h"
 #include "SphereCollider.h"
 #include "BoxCollider.h"
 #include "ConvexHullCollider.h"
