@@ -1,107 +1,47 @@
+-- INIT FILE
+-- LEFUT AMIKOR ELINDUL A PROGRAM
+-- ÉS MÁR MINDEN ALRENDSZER KÉSZ ÁLLAPOTBAN VAN
+
+--  a -- -al kezdõdõ sorok a kommentek
+
 print("hai");
 
 dofile('scripts/system.lua');
 --dofile('scripts/editor.lua');
---collectgarbage("stop");
 System:_initialise();
 
-for k,v in pairs(SF) do
-  print(k)
-end
+-- innentõl jön az igazi kód
 
+-- egy új GameObject létrehozása
 platform = Hierarchy:createGameObject("platform");
-sideA = Hierarchy:createGameObject("sideA");
-neutral = Hierarchy:createGameObject("neutral");
-sideB = Hierarchy:createGameObject("sideB");
 
-platform:transform().scale = (SVector3(0.1, 1, 1));
-
-platform:addChild(sideA);platform:addChild(neutral);platform:addChild(sideB);
-
-sideA:addComponent(Primitive:new(Primitive.CUBE));
-sideB:addComponent(Primitive:new(Primitive.CUBE));
-neutral:addComponent(Primitive:new(Primitive.CUBE));
-
-sideA:transform().position = SVector3(0, -55, 0);
-sideB:transform().position = SVector3(0, 55, 0);
-neutral:transform().scale = SVector3(1, 0.1, 1);
-
-sideA:component("Primitive"):setMaterialName("Torqube/SideA");
-neutral:component("Primitive"):setMaterialName("Torqube/Neutral");
-sideB:component("Primitive"):setMaterialName("Torqube/SideB");
-
-smallcube = Hierarchy:createGameObject("smallcube");
-smallcube:transform().scale = SVector3(0.05, 0.05, 0.05);
-smallcube:addComponent(Primitive:new(Primitive.CUBE));
-smallcube:component("Primitive"):setMaterialName("Torqube/Railfixtures");
-local dx, dy, dz = 7, 100, 45;
-smallcube:transform().position = SVector3(dx, dy, dz);
-smallcube:clone():transform().position = SVector3(dx, dy, -dz);
-smallcube:clone():transform().position = SVector3(dx, -dy, dz);
-smallcube:clone():transform().position = SVector3(dx, -dy, -dz);
-
-rail = Hierarchy:createGameObject("rail");
-rail:transform().scale = SVector3(0.01, 0.05, 0.90);
-rail:addComponent(Primitive:new(Primitive.CUBE));
-rail:component("Primitive"):setMaterialName("Torqube/Rail");
-rail:transform().position = SVector3(dx, dy, 0);
-rail:clone():transform().position = SVector3(dx, -dy, 0);
-
-local padone = Hierarchy:createGameObject("padone");
-padone:transform().position = SVector3(10, dy, 0);
-
-local padtwo = Hierarchy:createGameObject("padtwo");
-padtwo:transform().position = SVector3(10, -dy, 0);
-
---Physics:setDebugDraw(true);
-middlepad = System:loadComponent('scripts/middlepad.lua');
-
-local test = Hierarchy:createGameObject("middlepad");
-test:transform().position = SVector3(10, 0, 0);
-local mesh = Hierarchy:createGameObject("middlepadmesh");
-mesh:addComponent(Primitive:new(Primitive.CUBE));
-mesh:component("Primitive"):setMaterialName("Torqube/Railfixtures");
-mesh:transform().scale = SVector3(0.1, 0.01, 0.9);
-test:addChild(mesh);
-mesh:addComponent(BoxCollider:new());
-test:addComponent(RigidBody:new(0.1, true));
---test:component("RigidBody"):addPoint2PointConstraint(SVector3(0,10,0));
-test:addComponent(middlepad);
-
-
-platform:addComponent(BoxCollider:new(SVector3(5, 105, 50)));
+-- a GameObject Transform komponensével beállítjuk a nagyítást és pozíciót
+platform:transform().scale = (SVector3(2, 0.1, 8));
+platform:transform().position = SVector3(0, 0, 0);
+-- hozzáadunk egy Primitive komponenst, ami jelen esetben egy kocka (de ugye a scale miatt hasáb lesz)
+platform:addComponent(Primitive:new(Primitive.CUBE));
+-- beállítjuk az "anyagát", ez most egyszerûen egy textúra
+platform:component("Primitive"):setMaterialName("Test/Grass");
+-- hozzáadunk egy BoxCollider komponenst, ez a fizikai szimulációban használt testet adja meg
+platform:addComponent(BoxCollider:new());
+-- hozzáadunk egy RigidBody komponenst, ez a fizikai szimulációt engedélyezi erre a testre (merevtest)
+-- a 0-s paraméter a tömege a testnek, tehát ez nem fog mozogni
 platform:addComponent(RigidBody:new(0, true));
 
-local playerOne = System:loadComponent('scripts/player.lua');
-local playerTwo = System:loadComponent('scripts/player.lua');
+-- hasonlóan mint elõbb
+walker = Hierarchy:createGameObject("walker");
+walker:transform().position = SVector3(0,5,0);
+walker:transform().scale = SVector3(2,2,2);
+-- most egy külsõ mesh file-t töltünk be
+-- ehhez alapesetben már van rendelve egy material
+walker:addComponent(Mesh:new("jaiqua.mesh"));
 
-playerOne.dir = SVector3(0,-1,0);
-playerTwo.dir = SVector3(0,1,0);
-playerOne.fireKey = OIS.KC_C;
-playerOne.leftKey = OIS.KC_LEFT;
-playerOne.rightKey = OIS.KC_RIGHT;
-playerOne.name = "goo";
+-- betöltünk egy külön fájlból egy komponenst
+local plc = System:loadComponent('scripts/player.controller.lua');
+-- és hozzáadjuk a karakterhez
+walker:addComponent(plc);
 
-playerTwo.fireKey = OIS.KC_P;
-playerTwo.leftKey = OIS.KC_J;
-playerTwo.rightKey = OIS.KC_L;
-padone:addComponent(playerOne);
-padtwo:addComponent(playerTwo);
---[[
-test:clone():transform().position = SVector3(10, 100, 5);
-test:clone():transform().position = SVector3(10, 60, 25);
-test:clone():transform().position = SVector3(10, 200, 25);
-for i=1, 50 do
-  test:clone():transform().position = SVector3(10, 200 + i*40, 25);
-end
---]]
---[[for i=1, 10 do
-  local t = test:clone()
-  t:transform().position = SVector3(10, 200 + 400 + i*50, 25);
-  t:transform().scale = SVector3(0.1, 0.2+i*0.01, 0.1+(i%2)*0.1*i);
-end--]]
---test:clone():transform().position = SVector3(40, 10, 30);
-
+-- megcsináljuk a kamerát
 local cam = Hierarchy:createGameObject("cammy");
 c = Camera:new();
 cam:addComponent(c);
@@ -111,19 +51,13 @@ c:activate();
 cam:transform().position = (SVector3(0,0,150));
 cam:transform():lookAt(SVector3(0,0,0));
 
-Hierarchy:createGameObject("camm");
-local a = Hierarchy:createGameObject("whammy");
-cam:addChild(a);
-local b = Hierarchy:createGameObject("whamm")
-cam:addChild(b);
-b:addChild(Hierarchy:createGameObject("whamoo"));
-
-a:addChild(Hierarchy:createGameObject("damm"));
 local fcc = System:loadComponent('scripts/freecameracontroller.lua');
-cam:addComponent(fcc);
+--cam:addComponent(fcc);
+local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
+cam:addComponent(ccc);
 
-print(Hierarchy:debug());
-
+-- beállítjuk hogy a chasecameracontroller mit kövessen
+ccc.target = walker;
 --Editor:init();
 function lua_update()
   local deltaTime = Application:deltaTime();

@@ -68,6 +68,7 @@
 			<Add library="tolua++" />
 			<Add directory="deps\lib\$(TARGET_NAME)" />
 			<Add directory="deps\lib" />
+			<Add directory="deps\lib\Release" />
 		</Linker>
 		<Unit filename="include\BoxCollider.h" />
 		<Unit filename="include\BulletOgreDebugDraw.h" />
@@ -128,13 +129,12 @@
 		<Unit filename="include\core_ogre.pkg" />
 		<Unit filename="include\core_ois.pkg" />
 		<Unit filename="include\stdlib.pkg" />
-		<Unit filename="scripts\bombarder.lua" />
+		<Unit filename="scripts\chasecameracontroller.lua" />
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
 		<Unit filename="scripts\manipulator.lua" />
-		<Unit filename="scripts\middlepad.lua" />
-		<Unit filename="scripts\player.lua" />
+		<Unit filename="scripts\player.controller.lua" />
 		<Unit filename="scripts\system.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />

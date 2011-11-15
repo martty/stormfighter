@@ -31,7 +31,7 @@ bool Graphics::initialize(){
   resourcesCfg_ = "resources_d.cfg";
   pluginsCfg_ = "plugins_d.cfg";
   #else
-  resourcesCfg = "resources.cfg";
+  resourcesCfg_ = "resources.cfg";
   pluginsCfg_ = "plugins.cfg";
   #endif
   root_ = new Ogre::Root(pluginsCfg_);
