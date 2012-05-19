@@ -5,7 +5,7 @@
 
 namespace SF {
 
-Light::Light(Ogre::Light::LightTypes type){
+Light::Light(LightTypes type){
   light_ = NULL;
   type_ = type;
   setState(CREATED);
@@ -13,7 +13,7 @@ Light::Light(Ogre::Light::LightTypes type){
 
 unsigned int Light::onAdd(SString goname, Transform* tf){
   light_ = Graphics::getSingletonPtr()->sceneManager()->createLight(goname);
-  light_->setType(type_);
+  light_->setType(static_cast<Ogre::Light::LightTypes>(type_));
   tf->attachObject(light_);
   setState(READY);
   return NONE;

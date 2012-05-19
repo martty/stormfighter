@@ -27,11 +27,12 @@ class Camera : public MovableObject {
 
   SAxisAlignedBox getBoundingBox() const;
 
+  Ogre::Camera* _camera(){return camera_;}
+
  protected:
   SString name() const { return "Camera"; }
 
- private:
-
+ protected:
   Ogre::Camera* camera_;
 };
 

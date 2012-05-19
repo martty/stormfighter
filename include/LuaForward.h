@@ -1,10 +1,11 @@
+#include <OgreCommon.h>
+#include <OgreTexture.h>
+
 #include "Component.h"
 #include "Frame.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "Mesh.h"
-#include "Light.h"
-#include "Terrain.h"
 #include "Light.h"
 #include "Primitive.h"
 #include "ManualObject.h"
@@ -15,7 +16,6 @@
 #include "BoxCollider.h"
 #include "ConvexHullCollider.h"
 #include "TrimeshCollider.h"
-#include "TerrainCollider.h"
 #include "CompoundCollider.h"
 #include "CylinderCollider.h"
 
@@ -30,6 +30,7 @@
 #include "GUI.h"
 #include "Scripting.h"
 #include "DebugDrawer.h"
+#include "PagedTerrain.h"
 #include "Graphics.h"
 #include "Logger.h"
 

@@ -3,10 +3,6 @@
 
 namespace SF {
 
-Terrain::Terrain() {
-  init(Ogre::Terrain::ALIGN_X_Z, 513, 1200.0f);
-}
-
 Terrain::Terrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize){
   init(alignment, terrainSize, worldSize);
 }
@@ -33,13 +29,6 @@ void Terrain::init(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SRe
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_diffusespecular.dds");
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.dds");
   */
-  setState(CREATED);
-}
-
-Terrain* Terrain::clone() const {
-  // TODO: clone all
-  Terrain* terr = new Terrain();
-  return terr;
 }
 
 void Terrain::defineTerrain(long x, long y){
@@ -153,8 +142,8 @@ unsigned int Terrain::onAdd(SString goname, Transform* transform){
     }
   }
   terrainGroup_->freeTemporaryResources();
-  setState(READY);
-  return NONE;
+//  setState(READY);
+  return 0;//NONE;
 }
 
 SReal* Terrain::heightData(int x, int y){

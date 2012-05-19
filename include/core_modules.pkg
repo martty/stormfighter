@@ -14,6 +14,8 @@ class Graphics {
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
 
+  PagedTerrain* pagedTerrain();
+
   void renderGameObjectIntoFile(GameObject* go, SString filename, SReal width, SReal height);
 
   /// Returns the names of loaded Materials
@@ -59,6 +61,19 @@ public:
         bool getEnabled() { return isEnabled; }
         void setEnabled(bool _isEnabled) { isEnabled = _isEnabled; }
         void switchEnabled() { isEnabled = !isEnabled; }
+};
+
+class PagedTerrain {
+ public:
+  void createWorld(SString name);
+
+  Ogre::TerrainGroup* createTerrainGroup(Ogre::Terrain::Alignment alignment, int terrainSize, SReal worldSize);
+  Ogre::PagedWorldSection* createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius);
+
+  Ogre::PagedWorldSection* section(SString worldName, SString sectionName) const;
+
+  void addCamera(Camera* cam);
+  void initBlendMaps(Ogre::Terrain* terrain);
 };
 
 struct CollisionData {

@@ -1,6 +1,21 @@
 // from ember-0.6.1
 
 namespace Ogre {
+
+class StringVector {
+        void clear();
+        int size() const;
+
+        const String& operator[](int index) const;
+        String& operator[](int index);
+        void push_back(String val);
+
+        void resize(int size);
+
+        StringVector();
+        ~StringVector();
+}
+
 class Ray  {
     public:
         Ray();
@@ -32,3 +47,6 @@ $pfile "include/OgreVector3.pkg"
 $pfile "include/OgreQuaternion.pkg"
 $pfile "include/OgreColourValue.pkg"
 $pfile "include/OgreAxisAlignedBox.pkg"
+$pfile "include/OgreImage.pkg"
+
+$pfile "include/OgreTerrain.pkg"

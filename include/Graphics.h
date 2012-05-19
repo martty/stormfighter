@@ -2,8 +2,7 @@
 #define STORMFIGHTER_GRAPHICS_H_
 
 #include "Module.h"
-#include <Terrain/OgreTerrain.h>
-#include <OgreRenderTargetListener.h>
+#include <Ogre.h>
 
 namespace SF {
 
@@ -14,7 +13,7 @@ namespace SF {
 */
 
 class DebugDrawer;
-
+class PagedTerrain;
 class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTargetListener{
  public:
   Graphics(StormfighterApp* app, const SString& windowTitle);
@@ -28,6 +27,8 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
 
   /// Set light used for lighting terrain
   void setTerrainLight(Ogre::Light* light);
+
+  PagedTerrain* pagedTerrain() { return pagedTerrain_; }
 
   void addFrameListener(Ogre::FrameListener* listener);
 
@@ -89,7 +90,8 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
   Ogre::RenderWindow*	 renderWindow_;
   Ogre::Viewport*	 viewport_;
 
-  Ogre::TerrainGlobalOptions* terrainGlobals_;
+  PagedTerrain* pagedTerrain_;
+
 
   Ogre::RaySceneQuery* ray_scene_query_;
 

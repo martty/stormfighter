@@ -4,7 +4,7 @@ local plc = {};
 plc.meta = {};
 plc.meta.type = "LocalPlayerController";
 
-plc.moveSpeed = 0.2;
+plc.moveSpeed = 10;
 plc.rotSpeed = 0.001;
 
 function plc:onInit()

@@ -9,7 +9,12 @@ namespace SF {
 
 class Light : public MovableObject {
  public:
-  Light(Ogre::Light::LightTypes type);
+  enum LightTypes {
+    LT_POINT = Ogre::Light::LT_POINT,
+    LT_DIRECTIONAL = Ogre::Light::LT_DIRECTIONAL,
+    LT_SPOTLIGHT = Ogre::Light::LT_SPOTLIGHT
+  };
+  Light(LightTypes type);
 
   Light* clone() const;
 
@@ -30,7 +35,7 @@ class Light : public MovableObject {
 
  private:
   Ogre::Light* light_;
-  Ogre::Light::LightTypes type_;
+  LightTypes type_;
 };
 
 }; // namespace SF

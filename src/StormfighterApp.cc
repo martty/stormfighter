@@ -13,7 +13,6 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Camera.h"
-#include "Terrain.h"
 #include "Light.h"
 #include "Primitive.h"
 #include "RigidBody.h"
@@ -21,7 +20,6 @@
 #include "BoxCollider.h"
 #include "ConvexHullCollider.h"
 #include "TrimeshCollider.h"
-#include "TerrainCollider.h"
 #include "CompoundCollider.h"
 #include "CylinderCollider.h"
 

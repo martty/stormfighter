@@ -2,7 +2,6 @@
 #include "GameObject.h"
 #include "StormfighterApp.h"
 #include "Collider.h"
-#include "Terrain.h"
 #include "Physics.h"
 
 namespace SF {
@@ -74,7 +73,7 @@ void RigidBody::onInit(){
       collisionShape->calculateLocalInertia(mass_, myinertia);
     // FIXME: component name should be used for this
     // if we have a terrain, assume we are doing a terrain collider we must modify origin
-    if(object()->hasComponent("Terrain")){
+/*    if(object()->hasComponent("Terrain")){
       Terrain* terrain = static_cast<Terrain*>(object()->component("Terrain"));
       Ogre::Vector3 terrainPosition = terrain->terrainPosition(0,0);
       internalTransform_.setOrigin(
@@ -82,7 +81,7 @@ void RigidBody::onInit(){
                      terrainPosition.x,
                      terrainPosition.y + (terrain->maxHeight(0,0)-terrain->minHeight(0,0))/2,
                      terrainPosition.z));
-    }
+    }*/
     btRigidBody::btRigidBodyConstructionInfo rigidbodyCI(mass_, this, collisionShape, myinertia);
     rigidBody_ = new btRigidBody(rigidbodyCI);
     rigidBody_->setUserPointer(object());

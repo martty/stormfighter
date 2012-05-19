@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "StormfighterApp.h"
 #include "Hierarchy.h"
+#include "PagedTerrain.h"
 #include <OgreSubMesh.h>
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
@@ -66,23 +67,21 @@ void Graphics::initializeResources(){
     for (i = settings->begin(); i != settings->end(); ++i){
       typeName = i->first;
       archName = i->second;
+      //if(i->second == "Zip") // add only zip files, use recursive for everything else
       Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
     }
   }
+  Ogre::ResourceGroupManager::getSingleton().addResourceLocation ("media/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-  terrainGlobals_ = OGRE_NEW Ogre::TerrainGlobalOptions();
-  // global terrain settings cfg
-  terrainGlobals_->setMaxPixelError(5);
-  // testing composite map
-  terrainGlobals_->setCompositeMapDistance(3000);
 
   ray_scene_query_ = sceneManager_->createRayQuery(Ogre::Ray());
   if (ray_scene_query_ == NULL) {
     LOG("Failed to create Ogre::RaySceneQuery instance");
   }
   ray_scene_query_->setSortByDistance(true);
+
+  pagedTerrain_ = new PagedTerrain(sceneManager_);
 }
 
 void Graphics::setActiveCamera(Ogre::Camera* camera){
@@ -106,9 +105,7 @@ void Graphics::startRendering(){
 }
 
 void Graphics::setTerrainLight(Ogre::Light* light){
-  terrainGlobals_->setLightMapDirection(light->getDerivedDirection());
-  terrainGlobals_->setCompositeMapAmbient(sceneManager()->getAmbientLight());
-  terrainGlobals_->setCompositeMapDiffuse(light->getDiffuseColour());
+  pagedTerrain_->setTerrainLight(light);
 }
 
 SRay Graphics::activeCameraToViewportRay(SReal screenx, SReal screeny){

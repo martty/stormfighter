@@ -1,7 +1,7 @@
 namespace std {
 class vector {
 
-        TEMPLATE_BIND(T, std::string, SF::GameObject*, SF::Component*)
+        TEMPLATE_BIND(T, std::string, SF::GameObject*, SF::Component*, Ogre::Real, Ogre::Terrain::LayerInstance, Ogre::Terrain*)
 
         void clear();
         int size() const;
@@ -9,6 +9,8 @@ class vector {
         const T& operator[](int index) const;
         T& operator[](int index);
         void push_back(T val);
+
+        void resize(int size);
 
         vector();
         ~vector();

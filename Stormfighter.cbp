@@ -18,6 +18,7 @@
 				<Linker>
 					<Add library="OgreMain_d" />
 					<Add library="OIS_d" />
+					<Add library="OgrePaging_d" />
 					<Add library="OgreTerrain_d" />
 					<Add library="Awesomium_d" />
 				</Linker>
@@ -35,6 +36,7 @@
 					<Add option="-s" />
 					<Add library="OgreMain" />
 					<Add library="OIS" />
+					<Add library="OgrePaging" />
 					<Add library="OgreTerrain" />
 					<Add library="Awesomium" />
 				</Linker>
@@ -56,6 +58,7 @@
 			<Add directory="deps\boost_1_44" />
 			<Add directory="deps\include\bullet" />
 			<Add directory="deps\include\lua" />
+			<Add directory="deps\include\OGRE\Paging" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -101,11 +104,15 @@
 		<Unit filename="include\MovableObject.h" />
 		<Unit filename="include\OgreAxisAlignedBox.pkg" />
 		<Unit filename="include\OgreColourValue.pkg" />
+		<Unit filename="include\OgreImage.pkg" />
 		<Unit filename="include\OgreMath.pkg" />
 		<Unit filename="include\OgrePlane.pkg" />
 		<Unit filename="include\OgreQuaternion.pkg" />
 		<Unit filename="include\OgreSphere.pkg" />
+		<Unit filename="include\OgreTerrain.pkg" />
 		<Unit filename="include\OgreVector3.pkg" />
+		<Unit filename="include\PageProvider.h" />
+		<Unit filename="include\PagedTerrain.h" />
 		<Unit filename="include\Physics.h" />
 		<Unit filename="include\Primitive.h" />
 		<Unit filename="include\RigidBody.h" />
@@ -116,6 +123,8 @@
 		<Unit filename="include\StormfighterApp.h" />
 		<Unit filename="include\Terrain.h" />
 		<Unit filename="include\TerrainCollider.h" />
+		<Unit filename="include\TerrainPagedWorldSection.h" />
+		<Unit filename="include\TerrainPaging.h" />
 		<Unit filename="include\Transform.h" />
 		<Unit filename="include\TrimeshCollider.h" />
 		<Unit filename="include\ViewPortOverlay.h" />
@@ -161,6 +170,8 @@
 		<Unit filename="src\ManualObject.cc" />
 		<Unit filename="src\Mesh.cc" />
 		<Unit filename="src\Module.cc" />
+		<Unit filename="src\PageProvider.cc" />
+		<Unit filename="src\PagedTerrain.cc" />
 		<Unit filename="src\Physics.cc" />
 		<Unit filename="src\Primitive.cc">
 			<Option compilerVar="CC" />
@@ -171,6 +182,8 @@
 		<Unit filename="src\StormfighterApp.cc" />
 		<Unit filename="src\Terrain.cc" />
 		<Unit filename="src\TerrainCollider.cc" />
+		<Unit filename="src\TerrainPagedWorldSection.cc" />
+		<Unit filename="src\TerrainPaging.cc" />
 		<Unit filename="src\Transform.cc" />
 		<Unit filename="src\TrimeshCollider.cc" />
 		<Unit filename="src\ViewPortOverlay.cc" />

@@ -6,7 +6,6 @@
 #include <map>
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
-#include "Component.h"
 #include "GameObject.h"
 
 namespace SF {
@@ -17,7 +16,7 @@ typedef std::map<Coordinate, Ogre::Terrain::ImportData*> CoordinateImportData;
 /**
  * @brief Terrain class, holds a number individual terrain tiles, which can be independently specified/loaded/unloaded.
  */
-class Terrain : public Component {
+class Terrain{
  public:
   /**
   * @brief Create terrain with given values
@@ -26,8 +25,6 @@ class Terrain : public Component {
   * @param worldSize The size of one tile of terrain in world units
   */
   Terrain(Ogre::Terrain::Alignment alignment, uint16_t terrainSize, SReal worldSize);
-
-  Terrain* clone() const;
 
   // TODO: default settings
 
@@ -53,11 +50,7 @@ class Terrain : public Component {
 
   Ogre::Vector3 normalAt(Ogre::Vector3 point);
 
- protected:
-  SString name() const { return "Terrain"; }
-
  private:
-  Terrain();
   /// prepares an importdata for filling in user values
   Ogre::Terrain::ImportData* prepareImportData(int x, int y);
 

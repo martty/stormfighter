@@ -3,6 +3,7 @@ $#include "common.h"
 $pfile "include/stdlib.pkg"
 
 typedef float Ogre::Real;
+typedef std::string Ogre::String; // careful!
 
 $pfile "include/core_ogre.pkg"
 $pfile "include/core_ois.pkg"

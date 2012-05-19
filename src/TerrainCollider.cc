@@ -1,5 +1,4 @@
 #include "TerrainCollider.h"
-#include "Terrain.h"
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
 namespace SF {
@@ -21,7 +20,7 @@ TerrainCollider* TerrainCollider::clone() const {
 void TerrainCollider::onInit(){
 if(!autoConfig_) // if we are not using autocfg, then this component is already READY
     return;
-  Terrain* terrain = static_cast<Terrain*>(object()->component("Terrain"));
+  /*Terrain* terrain = static_cast<Terrain*>(object()->component("Terrain"));
   // FIXME: we should not use (0,0)
   SReal* heightDataPT = terrain->heightData(0,0);
   SReal minHeight = terrain->minHeight(0,0);
@@ -37,7 +36,7 @@ if(!autoConfig_) // if we are not using autocfg, then this component is already 
   collisionShape_ = heightfieldShape;
   float metersBetweenVertices = terrain->worldSize()/(terrainSize-1);
   btVector3 localScaling(metersBetweenVertices, 1, metersBetweenVertices);
-  collisionShape_->setLocalScaling(localScaling);
+  collisionShape_->setLocalScaling(localScaling);*/
   setState(READY);
 }
 
