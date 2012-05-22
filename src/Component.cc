@@ -14,6 +14,10 @@ Component::Component(){
   type_.clear();
 }
 
+Component::~Component() {
+  LOG("~Component");
+}
+
 bool Component::hasInterface() const{
   return (object_ != NULL) && (application_ != NULL) ;
 }

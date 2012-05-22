@@ -19,7 +19,7 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
   Graphics(StormfighterApp* app, const SString& windowTitle);
   ~Graphics();
 
-  bool initialize();
+  bool initialise();
   void initializeResources();
 
   virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
@@ -75,7 +75,6 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
 
   DebugDrawer* debugDrawer_;
 
-  Ogre::String resourcesCfg_;
   Ogre::String pluginsCfg_;
 
   SString windowTitle_;

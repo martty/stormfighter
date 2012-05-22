@@ -60,7 +60,11 @@ void GameObject::init(bool isRoot){
 }
 
 GameObject::~GameObject(){
-  components_.clear ();
+  LOG("~GameObject: "+name_);
+  for(ComponentMap::iterator it=components_.begin(); it!=components_.end(); it++ ){
+    delete (*it).second;
+  }
+  components_.clear();
   clearChildren();
   delete next_;
 }

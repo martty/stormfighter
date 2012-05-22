@@ -8,6 +8,7 @@
 #include "Physics.h"
 #include "Input.h"
 #include "GUI.h"
+#include "Resources.h"
 #include "Scripting.h"
 
 #include "GameObject.h"
@@ -32,19 +33,35 @@ StormfighterApp::StormfighterApp(){
   gui_ = NULL;
   graphics_ = NULL;
   logger_ = NULL;
+  resources_ = NULL;
   deltaTime_ = 0;
 }
 StormfighterApp::~StormfighterApp(){
-
+  log("~StormfighterApp start");
+  log("Destroying hierarchy");
+  delete hierarchy_;
+  log("Destroying physics");
+  delete physics_;
+  log("Destroying input");
+  delete input_;
+  //log("Destroying GUI");
+  //delete gui_;
+  log("Destroying resources");
+  delete resources_;
+  log("Destroying graphics");
+  delete graphics_;
+  log("~StormfighterApp end");
 }
 void StormfighterApp::startStormfighter(){
   std::srand ( std::time(NULL) );
   logger_ = new Logger();
   graphics_ = new Graphics(this, "StormfighterApp v0.8");
 
-  if(!graphics_->initialize())
+  if(!graphics_->initialise())
       return;
-  graphics_->initializeResources();
+  log("Initializing resources");
+  resources_ = new Resources(this);
+  resources_->initialise();
   log("Initializing input");
   input_ = new Input(graphics_->defaultRenderWindow());
   log("Input initialized!");
@@ -77,6 +94,7 @@ void StormfighterApp::setupStormfighterScene(){
   scripting_->setGlobal(gui_, "SF::GUI", "GUI");
   scripting_->setGlobal(physics_, "SF::Physics", "Physics");
   scripting_->setGlobal(logger_, "SF::Logger", "Logger");
+  scripting_->setGlobal(resources_, "SF::Resources", "Resources");
   scripting_->setGlobal(graphics_, "SF::Graphics", "Graphics");
   scripting_->setGlobal(this, "SF::StormfighterApp", "Application");
 
@@ -193,7 +211,7 @@ bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
 
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
-  hierarchy_->initialize(this);
+  hierarchy_->initialise(this);
   //log(hierarchy_->debug());
   log("Running deferred initializations");
   scripting()->executeString("System:_deferredInit();");

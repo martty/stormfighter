@@ -10,18 +10,21 @@
 namespace SF {
 
 class TerrainPagedWorldSection : public Ogre::TerrainPagedWorldSection{
-  public:
-    /** Default constructor */
-    TerrainPagedWorldSection(const Ogre::String &name, Ogre::PagedWorld *parent, Ogre::SceneManager *sm);
+ public:
+  TerrainPagedWorldSection(const Ogre::String &name, Ogre::PagedWorld *parent, Ogre::SceneManager *sm);
 
-    void init(Ogre::TerrainGroup* grp);
+  void init(Ogre::TerrainGroup* grp);
 
-    void loadPage(Ogre::PageID pageID, bool forceSynchronous=false);
-    void unloadPage(Ogre::PageID pageID, bool forceSynchronous=false);
-    /** Default destructor */
-    virtual ~TerrainPagedWorldSection();
-  protected:
-  private:
+  void loadPage(Ogre::PageID pageID, bool forceSynchronous=false);
+  void unloadPage(Ogre::PageID pageID, bool forceSynchronous=false);
+
+  Ogre::Terrain::ImportData& importData() { return *impdata_; }
+  void defineLayer(unsigned int layer, float worldSize, SString first, SString second);
+
+  /** Default destructor */
+  virtual ~TerrainPagedWorldSection();
+ private:
+  Ogre::Terrain::ImportData* impdata_;
 };
 
 };

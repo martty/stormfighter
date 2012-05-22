@@ -7,9 +7,10 @@
 print("hai");
 
 dofile('scripts/system.lua');
+dofile('scripts/world.lua');
 --dofile('scripts/editor.lua');
 System:_initialise();
-
+World:initialise("world1");
 -- innentõl jön az igazi kód
 
 -- egy új GameObject létrehozása
@@ -50,13 +51,13 @@ cam:addComponent(c);
 c:setNearClipDistance(1);
 c:setAspectRatio(Graphics:getDefaultAspectRatio());
 c:activate();
-cam:transform().position = (SVector3(0,0,150));
-cam:transform():lookAt(SVector3(0,0,0));
+cam:transform().position = (SVector3(100,2300,50));
+cam:transform():lookAt(SVector3(0,2300,100));
 
 local fcc = System:loadComponent('scripts/freecameracontroller.lua');
---cam:addComponent(fcc);
+cam:addComponent(fcc);
 local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
-cam:addComponent(ccc);
+--cam:addComponent(ccc);
 
 -- beállítjuk hogy a chasecameracontroller mit kövessen
 ccc.target = walker;
@@ -70,32 +71,56 @@ lightGO:transform().orientation = SQuaternion(to_rad(SDegree(90)), SVector3(1,0,
 light:setAsTerrainLight();
 
 -- Terrain test
-
 Terrain = Graphics:pagedTerrain();
-Terrain:addCamera(c);
 Terrain:createWorld("defaultWorld");
-local tg0 = Terrain:createTerrainGroup(Ogre.Terrain.ALIGN_X_Z, 65, 1000);
-tg0:setOrigin(SVector3(0, 0, 0));
-tg0:setFilenameConvention("testTerrain", "dat");
+Terrain:addCamera(c);
 
+--local tg0 = Terrain:createTerrainGroup(Ogre.Terrain.ALIGN_X_Z, 1025, 16000);
+--tg0:setOrigin(SVector3(0, 0, 0));
+--tg0:setFilenameConvention("testTerrain", "dat");
+
+--local imp = Ogre.Terrain.ImportData:new(tg0:getDefaultImportSettings());
 --local imp = tg0:getDefaultImportSettings();
---[[imp.terrainSize = 257;
-imp.worldSize = 200;
-imp.inputScale = 100;
-imp.minBatchSize = 33;
-imp.maxBatchSize = 65;
+
+--[[local compimg = Ogre.Image:new_local();
+compimg:loadTwoImagesAsRGBA("terrain/snowvalley/colormap.png", "terrain/snowvalley/specular.png", "Terrain" ,Ogre.PF_BYTE_RGBA);
+compimg:save("media/terrain/snowvalley/colorspec.png");
+compimg:loadTwoImagesAsRGBA("terrain/snowvalley/normal.png", "terrain/snowvalley/height.png", "Terrain" ,Ogre.PF_BYTE_RGBA);
+compimg:save("media/terrain/snowvalley/normalheight.png");--]]
+
+local sec = World:createSection("snowvalley", 2049, 8000, SVector3(0,0,0), 3000, 6000);
+--local a,b = sec:loadOrCreateTerrainMaps("terrain/colormap.png", "terrain/specular.png", "terrain/normal.png", "terrain/height.png");
+--print (a .. b);
+--Ogre.Terrain.LayerInstanceList();
+--Ogre.Terrain.LayerInstance();
+sec:defineTileDSNH(0,0,"terrain/colormap.png", "terrain/specular.png",
+    "terrain/normal.png", "terrain/height.png");
+--[[
+for x=0,19 do
+  for y=0,19 do
+    sec:defineTileDSNH(x,y,"terrain/colormap_x"..x.."_y"..y..".png", "terrain/specular_x"..x.."_y"..y..".png",
+    "terrain/normal_x"..x.."_y"..y..".png", "terrain/height_x"..x.."_y"..y..".png");
+  end
+end
+--]]
+--sec:save();
+--sec:setPageRangeMaxX(19);
+--sec:setPageRangeMaxY(19);
+--[[
+local img = Ogre.Image();
+img:load("terrain/snowvalley/height.png", "Terrain");
+imp.inputImage = img;
 imp.layerList:resize(1);
-imp.layerList[0].worldSize = 1000;
-imp.layerList[0].textureNames:push_back("dirt_grayrocky_diffusespecular.dds");
-imp.layerList[0].textureNames:push_back("dirt_grayrocky_normalheight.dds");--]]
---local img = Ogre.Image();
---img:load("terrain.png", "General");
---imp.inputImage = img;
+--imp.layerList[0].worldSize = 1000;
+imp.layerList[0].textureNames:clear();
+imp.layerList[0].textureNames:push_back("terrain/snowvalley/colorspec.png");
+imp.layerList[0].textureNames:push_back("terrain/snowvalley/normalheight.png");
 --tg0:defineTerrainHeightfield(1,0,img);
-tg0:defineTerrainConstantHeight(0,0,-10);
-tg0:defineTerrainConstantHeight(0,1,10);
-tg0:defineTerrainConstantHeight(1,0,30);
-tg0:defineTerrainConstantHeight(1,1,50);
+--tg0:defineTerrainAuto(0,0);
+--tg0:defineTerrainImportData(0,0,imp);
+--tg0:defineTerrainConstantHeight(0,1,10);
+--tg0:defineTerrainConstantHeight(1,0,30);
+--tg0:defineTerrainConstantHeight(1,1,50);
 --tg0:defineTerrainAuto(0,0);
 --tg0:defineTerrainAuto(0,1);
 --tg0:defineTerrainAuto(1,1);
@@ -107,6 +132,14 @@ tg0:defineTerrainConstantHeight(1,1,50);
 --tg0:defineTerrainConstantHeight(1,-1,-50);
 --tg0:loadAllTerrains(true);
 Terrain:createWorldSection("section0", "defaultWorld", tg0, 30, 90);
+
+local tg1 = Terrain:createTerrainGroup(Ogre.Terrain.ALIGN_X_Z, 65, 1000);
+tg1:setOrigin(SVector3(0, 0, -6000));
+tg1:setFilenameConvention("testTerrain", "dat");
+tg1:defineTerrainConstantHeight(0,0, 0);
+tg1:defineTerrainConstantHeight(0,1, 0);
+Terrain:createWorldSection("section1", "defaultWorld", tg1, 30, 90);
+--]]
 
 --Editor:init();
 function lua_update()

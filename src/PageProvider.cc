@@ -25,8 +25,8 @@ bool PageProvider::prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSecti
 
   Ogre::TerrainGroup::TerrainSlotDefinition* tsd = tg->getTerrainDefinition(x,y);
   if(!tsd){
-    tg->defineTerrain(x,y,float(0.0f));
-    LOG("preparing page(TO BE BLANK!):"+STRING(x)+","+STRING(y));
+    //tg->defineTerrain(x,y,0.0f);
+    LOG("Warning - terrain not prepared at:"+STRING(x)+","+STRING(y));
   } else {
     LOG("page already prepared:"+STRING(x)+","+STRING(y));
   }
@@ -40,9 +40,14 @@ bool PageProvider::loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection*
   tg->unpackIndex(page->getID(),&x,&y);
   //load, if not loaded yet
   if(!tg->getTerrain(x,y)){
-    tg->loadTerrain(x,y,false);
-    tg->update();
-    LOG("loading page:"+STRING(x)+","+STRING(y));
+    Ogre::TerrainGroup::TerrainSlotDefinition* tsd = tg->getTerrainDefinition(x,y);
+    if(tsd){
+      tg->loadTerrain(x,y,true);
+    //tg->update();
+      LOG("loading page:"+STRING(x)+","+STRING(y));
+    } else {
+      LOG("Warning - unprepared terrain not loaded at:"+STRING(x)+","+STRING(y));
+    }
   } else {
     LOG("page already loaded:"+STRING(x)+","+STRING(y));
   }

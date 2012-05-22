@@ -11,6 +11,7 @@ namespace SF {
 class Camera;
 class PageProvider;
 class TerrainPaging;
+class TerrainPagedWorldSection;
 
 class PagedTerrain {
  public:
@@ -20,9 +21,9 @@ class PagedTerrain {
   void createWorld(SString name);
 
   Ogre::TerrainGroup* createTerrainGroup(Ogre::Terrain::Alignment alignment, int terrainSize, SReal worldSize);
-  Ogre::PagedWorldSection* createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius);
+  TerrainPagedWorldSection* createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius);
 
-  Ogre::PagedWorldSection* section(SString worldName, SString sectionName) const;
+  TerrainPagedWorldSection* section(SString worldName, SString sectionName) const;
  // Ogre::Terrain::TerrainGroup terrainGroup(SString worldName, SString sectionName) const;
   void initBlendMaps(Ogre::Terrain* terrain);
   void setTerrainLight(Ogre::Light* light);

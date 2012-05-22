@@ -68,12 +68,48 @@ class PagedTerrain {
   void createWorld(SString name);
 
   Ogre::TerrainGroup* createTerrainGroup(Ogre::Terrain::Alignment alignment, int terrainSize, SReal worldSize);
-  Ogre::PagedWorldSection* createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius);
+  TerrainPagedWorldSection* createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius);
 
-  Ogre::PagedWorldSection* section(SString worldName, SString sectionName) const;
+  TerrainPagedWorldSection* section(SString worldName, SString sectionName) const;
 
   void addCamera(Camera* cam);
   void initBlendMaps(Ogre::Terrain* terrain);
+};
+
+class TerrainPagedWorldSection : public Ogre::TerrainPagedWorldSection{
+ public:
+  Ogre::TerrainGroup* getTerrainGroup();
+  Ogre::Terrain::ImportData& importData();
+  void defineLayer(unsigned int layer, float worldSize, SString first, SString second);
+
+
+  /// Set the loading radius
+		void setLoadRadius(SReal sz);
+		/// Get the loading radius
+		SReal getLoadRadius() const;
+		/// Set the Holding radius
+		void setHoldRadius(SReal sz);
+		/// Get the Holding radius
+		SReal getHoldRadius();
+		/// Set the index range of all Pages (values outside this will be ignored)
+		void setPageRange(long minX, long minY, long maxX, long maxY);
+		/// Set the index range of all Pages (values outside this will be ignored)
+		void setPageRangeMinX(long minX);
+		/// Set the index range of all Pages (values outside this will be ignored)
+		void setPageRangeMinY(long minY);
+		/// Set the index range of all Pages (values outside this will be ignored)
+		void setPageRangeMaxX(long maxX);
+		/// Set the index range of all Pages (values outside this will be ignored)
+		void setPageRangeMaxY(long maxY);
+		/// get the index range of all Pages (values outside this will be ignored)
+		long getPageRangeMinX() const;
+		/// get the index range of all Pages (values outside this will be ignored)
+		long getPageRangeMinY() const;
+		/// get the index range of all Pages (values outside this will be ignored)
+		long getPageRangeMaxX() const;
+		/// get the index range of all Pages (values outside this will be ignored)
+		long getPageRangeMaxY() const;
+ private:
 };
 
 struct CollisionData {
@@ -152,4 +188,21 @@ class Hierarchy {
 
   /// Returns the whole hierarchy (DFS)
   SString debug();
+};
+
+class Resources : public Module{
+ public:
+
+  // create new ResourceGroup
+  void createResourceGroup(SString groupName);
+  // add location to a resource group (initialisation is also performed)
+  void addResourceLocation(SString path, SString type, SString resourceGroup, bool recursive);
+  // check if this resource exists in the group
+  bool resourceExists(SString resourceName, SString resourceGroup);
+
+  SString getResourceDirectory(SString resourceName, SString resourceGroup);
+  // returns the time when the given resource was modified
+  long long getResourceModified(SString resourceName, SString resourceGroup);
+
+  const SString DEFAULT_RESOURCE_GROUP_NAME;
 };

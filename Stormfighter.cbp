@@ -21,6 +21,9 @@
 					<Add library="OgrePaging_d" />
 					<Add library="OgreTerrain_d" />
 					<Add library="Awesomium_d" />
+					<Add library="BulletDynamics_Debug" />
+					<Add library="BulletCollision_Debug" />
+					<Add library="LinearMath_Debug" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -39,6 +42,9 @@
 					<Add library="OgrePaging" />
 					<Add library="OgreTerrain" />
 					<Add library="Awesomium" />
+					<Add library="BulletDynamics" />
+					<Add library="BulletCollision" />
+					<Add library="LinearMath" />
 				</Linker>
 			</Target>
 		</Build>
@@ -65,9 +71,6 @@
 			<Add option="-Wl,--add-stdcall-alias" />
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="deps/lib/lua5.1.dll" />
-			<Add library="libBulletDynamics.a" />
-			<Add library="BulletCollision" />
-			<Add library="LinearMath" />
 			<Add library="tolua++" />
 			<Add directory="deps\lib\$(TARGET_NAME)" />
 			<Add directory="deps\lib" />
@@ -115,6 +118,7 @@
 		<Unit filename="include\PagedTerrain.h" />
 		<Unit filename="include\Physics.h" />
 		<Unit filename="include\Primitive.h" />
+		<Unit filename="include\Resources.h" />
 		<Unit filename="include\RigidBody.h" />
 		<Unit filename="include\Script.h" />
 		<Unit filename="include\Scripting.h" />
@@ -145,6 +149,7 @@
 		<Unit filename="scripts\manipulator.lua" />
 		<Unit filename="scripts\player.controller.lua" />
 		<Unit filename="scripts\system.lua" />
+		<Unit filename="scripts\world.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />
 		<Unit filename="src\BulletOgreMeshToShape.cc" />
@@ -176,6 +181,7 @@
 		<Unit filename="src\Primitive.cc">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src\Resources.cc" />
 		<Unit filename="src\RigidBody.cc" />
 		<Unit filename="src\Scripting.cc" />
 		<Unit filename="src\SphereCollider.cc" />

@@ -17,7 +17,7 @@ class Component{
   Component();
 
   /// destroys component
-  virtual ~Component(){return;}
+  virtual ~Component();
 
   /// returns group of component as string
   virtual const SString& group() const;

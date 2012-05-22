@@ -11,7 +11,7 @@ class Module {
   Module(StormfighterApp* app);
   virtual ~Module();
 
-  //bool initialize();
+  //bool initialise();
 
  protected:
   inline StormfighterApp* application() { return application_; };

@@ -21,14 +21,14 @@ PagedTerrain::PagedTerrain(Ogre::SceneManager* sm){
   // global terrain settings cfg
   terrainGlobals_->setMaxPixelError(8);
   // testing composite map
-  terrainGlobals_->setCompositeMapDistance(3000);
+  terrainGlobals_->setCompositeMapDistance(6000);
 
-  /*terrainGlobals_->getDefaultMaterialGenerator()->setDebugLevel(1);
+  //terrainGlobals_->getDefaultMaterialGenerator()->setDebugLevel(1);
   Ogre::TerrainMaterialGeneratorA::SM2Profile* matProfile =
          static_cast<Ogre::TerrainMaterialGeneratorA::SM2Profile*>(terrainGlobals_->getDefaultMaterialGenerator()->getActiveProfile());
   matProfile->setLayerParallaxMappingEnabled(false);
-  matProfile->setLayerSpecularMappingEnabled(false);
-  matProfile->setLightmapEnabled(false);
+  //matProfile->setLayerSpecularMappingEnabled(false);
+  /*matProfile->setLightmapEnabled(false);
   matProfile->setCompositeMapEnabled(false);
   matProfile->setGlobalColourMapEnabled(false);
   matProfile->setReceiveDynamicShadowsEnabled(false);*/
@@ -52,6 +52,13 @@ PagedTerrain::PagedTerrain(Ogre::SceneManager* sm){
 }
 
 PagedTerrain::~PagedTerrain(){
+  LOG("deleting pagedTerrain");
+  Ogre::PageManager::CameraList cameras = pageManager_->getCameraList();
+  for(Ogre::PageManager::CameraList::iterator it = cameras.begin(); it != cameras.end(); it++){
+    LOG("removed camera");
+    pageManager_->removeCamera(*it);
+  }
+  delete pageManager_;
 }
 
 void PagedTerrain::createWorld(SString name){
@@ -60,18 +67,20 @@ void PagedTerrain::createWorld(SString name){
 
 Ogre::TerrainGroup* PagedTerrain::createTerrainGroup(Ogre::Terrain::Alignment alignment, int terrainSize, SReal worldSize){
   Ogre::TerrainGroup* tg = OGRE_NEW Ogre::TerrainGroup(sceneManager_, alignment, terrainSize, worldSize);
-  tg->setResourceGroup("Terrain");
+  //tg->setResourceGroup("Terrain");
   Ogre::Terrain::ImportData& defaultimp = tg->getDefaultImportSettings();
   defaultimp.terrainSize = terrainSize;
   defaultimp.worldSize = worldSize;
-  defaultimp.inputScale = 600;
-  defaultimp.minBatchSize = 33;
+  defaultimp.inputScale = 2625;
+  defaultimp.minBatchSize = 3;
   defaultimp.maxBatchSize = 65;
   // textures
   defaultimp.layerList.resize(3);
-  defaultimp.layerList[0].worldSize = 100;
+  defaultimp.layerList[0].worldSize = worldSize;
   defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.dds");
   defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.dds");
+  //defaultimp.layerList[0].textureNames.push_back("terrain/colormap_x0_y0_pngterrain_specular_x0_y0_png.png");
+  //defaultimp.layerList[0].textureNames.push_back("terrain/normal_x0_y0_pngterrain_height_x0_y0_png.png");
   defaultimp.layerList[1].worldSize = 30;
   defaultimp.layerList[1].textureNames.push_back("grass_green-01_diffusespecular.dds");
   defaultimp.layerList[1].textureNames.push_back("grass_green-01_normalheight.dds");
@@ -80,21 +89,21 @@ Ogre::TerrainGroup* PagedTerrain::createTerrainGroup(Ogre::Terrain::Alignment al
   defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.dds");
   defaultimp.layerList.resize(1);
 //  tg->defineTerrain(0,0,1.0f);
-  tg->defineTerrain(0,1,10.0f);
+//  tg->defineTerrain(0,1,10.0f);
 //  tg->loadAllTerrains(true);
 //  tg->saveAllTerrains(false, true);
 //  tg->saveGroupDefinition("tg0.groupdef");
   return tg;
 }
 
-Ogre::PagedWorldSection* PagedTerrain::createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius){
+TerrainPagedWorldSection* PagedTerrain::createWorldSection(SString name, SString worldName, Ogre::TerrainGroup* tg, SReal loadRadius, SReal holdRadius){
   Ogre::PagedWorld* world = pageManager_->getWorld(worldName);
-  return terrainPaging_->createWorldSection(world, tg, loadRadius, holdRadius, 0, 0, 1, 1, name);
+  return terrainPaging_->createWorldSection(world, tg, loadRadius, holdRadius, 0, 0, 0, 0, name);
 }
 
-Ogre::PagedWorldSection* PagedTerrain::section(SString worldName, SString sectionName) const{
+TerrainPagedWorldSection* PagedTerrain::section(SString worldName, SString sectionName) const{
   Ogre::PagedWorld* world = pageManager_->getWorld(worldName);
-  return world->getSection(sectionName);
+  return static_cast<TerrainPagedWorldSection*>(world->getSection(sectionName));
 }
 
 void PagedTerrain::addCamera(Camera* cam){

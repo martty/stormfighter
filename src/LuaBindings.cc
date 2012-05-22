@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 02/06/12 11:11:08.
+** Generated automatically by tolua++-1.0.92 on 05/21/12 22:24:08.
 */
 
 #ifndef __cplusplus
@@ -124,13 +124,6 @@ static int tolua_collect_SF__Camera (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__PixelBox (lua_State* tolua_S)
-{
- Ogre::PixelBox* self = (Ogre::PixelBox*) tolua_tousertype(tolua_S,1,0);
-	Mtolua_delete(self);
-	return 0;
-}
-
 static int tolua_collect_Ogre__TerrainGroup__RayResult (lua_State* tolua_S)
 {
  Ogre::TerrainGroup::RayResult* self = (Ogre::TerrainGroup::RayResult*) tolua_tousertype(tolua_S,1,0);
@@ -138,9 +131,9 @@ static int tolua_collect_Ogre__TerrainGroup__RayResult (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_std__vector_SF__Component__ (lua_State* tolua_S)
+static int tolua_collect_SF__ManualObject (lua_State* tolua_S)
 {
- std::vector<SF::Component*>* self = (std::vector<SF::Component*>*) tolua_tousertype(tolua_S,1,0);
+ SF::ManualObject* self = (SF::ManualObject*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -155,6 +148,13 @@ static int tolua_collect_Ogre__Math (lua_State* tolua_S)
 static int tolua_collect_Ogre__Plane (lua_State* tolua_S)
 {
  Ogre::Plane* self = (Ogre::Plane*) tolua_tousertype(tolua_S,1,0);
+	Mtolua_delete(self);
+	return 0;
+}
+
+static int tolua_collect_std__vector_SF__Component__ (lua_State* tolua_S)
+{
+ std::vector<SF::Component*>* self = (std::vector<SF::Component*>*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -180,13 +180,6 @@ static int tolua_collect_SF__BoxCollider (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_btTransform (lua_State* tolua_S)
-{
- btTransform* self = (btTransform*) tolua_tousertype(tolua_S,1,0);
-	Mtolua_delete(self);
-	return 0;
-}
-
 static int tolua_collect_std__vector_Ogre__Real_ (lua_State* tolua_S)
 {
  std::vector<Ogre::Real>* self = (std::vector<Ogre::Real>*) tolua_tousertype(tolua_S,1,0);
@@ -194,9 +187,9 @@ static int tolua_collect_std__vector_Ogre__Real_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__ManualObject (lua_State* tolua_S)
+static int tolua_collect_Ogre__TerrainGroup__TerrainSlot (lua_State* tolua_S)
 {
- SF::ManualObject* self = (SF::ManualObject*) tolua_tousertype(tolua_S,1,0);
+ Ogre::TerrainGroup::TerrainSlot* self = (Ogre::TerrainGroup::TerrainSlot*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -222,9 +215,9 @@ static int tolua_collect_Ogre__Quaternion (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__Primitive (lua_State* tolua_S)
+static int tolua_collect_Ogre__PixelBox (lua_State* tolua_S)
 {
- SF::Primitive* self = (SF::Primitive*) tolua_tousertype(tolua_S,1,0);
+ Ogre::PixelBox* self = (Ogre::PixelBox*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -243,16 +236,16 @@ static int tolua_collect_Ogre__Sphere (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_SF__Mesh (lua_State* tolua_S)
+static int tolua_collect_SF__Primitive (lua_State* tolua_S)
 {
- SF::Mesh* self = (SF::Mesh*) tolua_tousertype(tolua_S,1,0);
+ SF::Primitive* self = (SF::Primitive*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
 
-static int tolua_collect_SF__Frame (lua_State* tolua_S)
+static int tolua_collect_SF__Mesh (lua_State* tolua_S)
 {
- SF::Frame* self = (SF::Frame*) tolua_tousertype(tolua_S,1,0);
+ SF::Mesh* self = (SF::Mesh*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -264,23 +257,23 @@ static int tolua_collect_std__vector_Ogre__Terrain__ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__TerrainGroup__TerrainSlot (lua_State* tolua_S)
+static int tolua_collect_SF__Frame (lua_State* tolua_S)
 {
- Ogre::TerrainGroup::TerrainSlot* self = (Ogre::TerrainGroup::TerrainSlot*) tolua_tousertype(tolua_S,1,0);
+ SF::Frame* self = (SF::Frame*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
 
-static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
+static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
 {
- std::pair<bool,float>* self = (std::pair<bool,float>*) tolua_tousertype(tolua_S,1,0);
+ Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
 
-static int tolua_collect_Ogre__PixelFormat (lua_State* tolua_S)
+static int tolua_collect_btTransform (lua_State* tolua_S)
 {
- Ogre::PixelFormat* self = (Ogre::PixelFormat*) tolua_tousertype(tolua_S,1,0);
+ btTransform* self = (btTransform*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -334,9 +327,9 @@ static int tolua_collect_Ogre__Matrix4 (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Ogre__ColourValue (lua_State* tolua_S)
+static int tolua_collect_std__pair_bool_float_ (lua_State* tolua_S)
 {
- Ogre::ColourValue* self = (Ogre::ColourValue*) tolua_tousertype(tolua_S,1,0);
+ std::pair<bool,float>* self = (std::pair<bool,float>*) tolua_tousertype(tolua_S,1,0);
 	Mtolua_delete(self);
 	return 0;
 }
@@ -364,11 +357,11 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"btCollisionShape");
  tolua_usertype(tolua_S,"Ogre::Radian");
  tolua_usertype(tolua_S,"Ogre::RenderWindow");
- tolua_usertype(tolua_S,"std::pair<unsigned int,unsigned int>");
+ tolua_usertype(tolua_S,"Ogre::Vector4");
  tolua_usertype(tolua_S,"Ogre::SceneManager");
  tolua_usertype(tolua_S,"SF::CollisionData");
  tolua_usertype(tolua_S,"Ogre::Degree");
- tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ogre::Viewport");
  tolua_usertype(tolua_S,"Ogre::Terrain");
  tolua_usertype(tolua_S,"Ogre::StringVector");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
@@ -381,7 +374,6 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"OIS::Keyboard");
  tolua_usertype(tolua_S,"std::vector<Ogre::Terrain*>");
  tolua_usertype(tolua_S,"std::pair<bool,float>");
- tolua_usertype(tolua_S,"Ogre::PixelFormat");
  tolua_usertype(tolua_S,"std::pair<bool,Ogre::Vector3>");
  tolua_usertype(tolua_S,"SF::Graphics");
  tolua_usertype(tolua_S,"Ogre::Matrix4");
@@ -390,15 +382,18 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Vector2");
  tolua_usertype(tolua_S,"Ogre::Terrain::ImportData");
  tolua_usertype(tolua_S,"Ogre::TerrainLayerDeclaration");
- tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlotDefinition");
  tolua_usertype(tolua_S,"SF::StormfighterApp");
+ tolua_usertype(tolua_S,"Module");
+ tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlotDefinition");
+ tolua_usertype(tolua_S,"SF::Resources");
  tolua_usertype(tolua_S,"SF::Hierarchy");
- tolua_usertype(tolua_S,"Ogre::Vector4");
+ tolua_usertype(tolua_S,"Ogre::TerrainPagedWorldSection");
+ tolua_usertype(tolua_S,"SF::TerrainPagedWorldSection");
  tolua_usertype(tolua_S,"Ogre::TerrainGroup");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::Image");
  tolua_usertype(tolua_S,"SF::Script");
- tolua_usertype(tolua_S,"Ogre::PagedWorldSection");
+ tolua_usertype(tolua_S,"SF::BoxCollider");
  tolua_usertype(tolua_S,"std::vector<SF::Component*>");
  tolua_usertype(tolua_S,"SF::MovableObject");
  tolua_usertype(tolua_S,"SF::Input");
@@ -419,31 +414,31 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Plane");
  tolua_usertype(tolua_S,"SF::LuaScript");
  tolua_usertype(tolua_S,"Ogre::list<Ogre::Plane>::type");
- tolua_usertype(tolua_S,"SF::BoxCollider");
+ tolua_usertype(tolua_S,"SF::Primitive");
  tolua_usertype(tolua_S,"std::set<std::string>");
  tolua_usertype(tolua_S,"SF::GUI");
- tolua_usertype(tolua_S,"Ogre::Viewport");
+ tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"SF::SingleRayCastResult");
  tolua_usertype(tolua_S,"Ogre::Terrain::LayerInstance");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Terrain::LayerInstanceList");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
- tolua_usertype(tolua_S,"Ogre::MaterialPtr");
+ tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"Ogre::PolygonMode");
  tolua_usertype(tolua_S,"SF::Collider");
+ tolua_usertype(tolua_S,"std::pair<unsigned int,unsigned int>");
  tolua_usertype(tolua_S,"SF::ManualObject");
- tolua_usertype(tolua_S,"Ogre::PixelBox");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
  tolua_usertype(tolua_S,"btTransform");
- tolua_usertype(tolua_S,"SF::Primitive");
+ tolua_usertype(tolua_S,"Ogre::PixelBox");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"size_t");
- tolua_usertype(tolua_S,"SF::Frame");
  tolua_usertype(tolua_S,"Ogre::Vector3");
- tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlot");
+ tolua_usertype(tolua_S,"SF::Frame");
  tolua_usertype(tolua_S,"SF::Light");
  tolua_usertype(tolua_S,"Ogre::TerrainGlobalOptions");
+ tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlot");
  tolua_usertype(tolua_S,"Ogre::vector<Ogre::Plane>::type");
- tolua_usertype(tolua_S,"Ogre::Sphere");
  tolua_usertype(tolua_S,"Ogre::Rect");
 }
 
@@ -11229,15 +11224,6 @@ static int tolua_Stormfighter_Ogre_Quaternion_nlerp00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: ms_fEpsilon of class  Ogre::Quaternion */
-#ifndef TOLUA_DISABLE_tolua_get_Ogre__Quaternion_ms_fEpsilon
-static int tolua_get_Ogre__Quaternion_ms_fEpsilon(lua_State* tolua_S)
-{
-  tolua_pushnumber(tolua_S,(lua_Number)Ogre::Quaternion::ms_fEpsilon);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* get function: ZERO of class  Ogre::Quaternion */
 #ifndef TOLUA_DISABLE_tolua_get_Ogre__Quaternion_ZERO
 static int tolua_get_Ogre__Quaternion_ZERO(lua_State* tolua_S)
@@ -13974,7 +13960,7 @@ static int tolua_Stormfighter_Ogre_Image_loadTwoImagesAsRGBA00(lua_State* tolua_
      !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"Ogre::PixelFormat",0,&tolua_err)) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -13985,7 +13971,7 @@ static int tolua_Stormfighter_Ogre_Image_loadTwoImagesAsRGBA00(lua_State* tolua_
   const std::string rgbFilename = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
   const std::string alphaFilename = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
   const std::string groupName = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
-  Ogre::PixelFormat format = *((Ogre::PixelFormat*)  tolua_tousertype(tolua_S,5,0));
+  Ogre::PixelFormat format = ((Ogre::PixelFormat) (int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'loadTwoImagesAsRGBA'", NULL);
 #endif
@@ -14013,7 +13999,7 @@ static int tolua_Stormfighter_Ogre_Image_combineTwoImagesAsRGBA00(lua_State* tol
      !tolua_isusertype(tolua_S,1,"Ogre::Image",0,&tolua_err) ||
      (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"const Ogre::Image",0,&tolua_err)) ||
      (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"const Ogre::Image",0,&tolua_err)) ||
-     (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"Ogre::PixelFormat",0,&tolua_err)) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -14023,7 +14009,7 @@ static int tolua_Stormfighter_Ogre_Image_combineTwoImagesAsRGBA00(lua_State* tol
   Ogre::Image* self = (Ogre::Image*)  tolua_tousertype(tolua_S,1,0);
   const Ogre::Image* rgb = ((const Ogre::Image*)  tolua_tousertype(tolua_S,2,0));
   const Ogre::Image* alpha = ((const Ogre::Image*)  tolua_tousertype(tolua_S,3,0));
-  Ogre::PixelFormat format = *((Ogre::PixelFormat*)  tolua_tousertype(tolua_S,4,0));
+  Ogre::PixelFormat format = ((Ogre::PixelFormat) (int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'combineTwoImagesAsRGBA'", NULL);
 #endif
@@ -14481,17 +14467,7 @@ static int tolua_Stormfighter_Ogre_Image_getFormat00(lua_State* tolua_S)
 #endif
   {
    Ogre::PixelFormat tolua_ret = (Ogre::PixelFormat)  self->getFormat();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((Ogre::PixelFormat)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::PixelFormat");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::PixelFormat));
-     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::PixelFormat");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -14810,7 +14786,7 @@ static int tolua_Stormfighter_Ogre_Image_calculateSize00(lua_State* tolua_S)
      (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"size_t",0,&tolua_err)) ||
      (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"size_t",0,&tolua_err)) ||
      (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"size_t",0,&tolua_err)) ||
-     (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"Ogre::PixelFormat",0,&tolua_err)) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
@@ -14822,7 +14798,7 @@ static int tolua_Stormfighter_Ogre_Image_calculateSize00(lua_State* tolua_S)
   size_t width = *((size_t*)  tolua_tousertype(tolua_S,4,0));
   size_t height = *((size_t*)  tolua_tousertype(tolua_S,5,0));
   size_t depth = *((size_t*)  tolua_tousertype(tolua_S,6,0));
-  Ogre::PixelFormat format = *((Ogre::PixelFormat*)  tolua_tousertype(tolua_S,7,0));
+  Ogre::PixelFormat format = ((Ogre::PixelFormat) (int)  tolua_tonumber(tolua_S,7,0));
   {
    size_t tolua_ret = (size_t)  Ogre::Image::calculateSize(mipmaps,faces,width,height,depth,format);
    {
@@ -14959,251 +14935,6 @@ static int tolua_Stormfighter_Ogre_Terrain_LayerInstance_new00_local(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: clear of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_clear00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_clear00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::Terrain::LayerInstanceList* self = (Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'clear'", NULL);
-#endif
-  {
-   self->clear();
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'clear'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: size of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_size00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_size00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::Terrain::LayerInstanceList* self = (const Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'", NULL);
-#endif
-  {
-   int tolua_ret = (int)  self->size();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'size'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: operator[] of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::Terrain::LayerInstanceList* self = (const Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-  int index = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator[]'", NULL);
-#endif
-  {
-   const Ogre::Terrain::LayerInstance tolua_ret = (const Ogre::Terrain::LayerInstance)  self->operator[](index);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((Ogre::Terrain::LayerInstance)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"const Ogre::Terrain::LayerInstance");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(const Ogre::Terrain::LayerInstance));
-     tolua_pushusertype(tolua_S,tolua_obj,"const Ogre::Terrain::LayerInstance");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function '.geti'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: operator&[] of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__seti00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__seti00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"Ogre::Terrain::LayerInstance",0,&tolua_err)) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::Terrain::LayerInstanceList* self = (Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-  int index = ((int)  tolua_tonumber(tolua_S,2,0));
-  Ogre::Terrain::LayerInstance tolua_value = *((Ogre::Terrain::LayerInstance*)  tolua_tousertype(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator&[]'", NULL);
-#endif
-  self->operator[](index) =  tolua_value;
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function '.seti'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: operator[] of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti01
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti01(lua_State* tolua_S)
-{
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
- {
-  Ogre::Terrain::LayerInstanceList* self = (Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-  int index = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator[]'", NULL);
-#endif
-  {
-   Ogre::Terrain::LayerInstance tolua_ret = (Ogre::Terrain::LayerInstance)  self->operator[](index);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((Ogre::Terrain::LayerInstance)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Terrain::LayerInstance");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Terrain::LayerInstance));
-     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Terrain::LayerInstance");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
-  }
- }
- return 1;
-tolua_lerror:
- return tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti00(tolua_S);
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: push_back of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_push_back00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_push_back00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Terrain::LayerInstance",0,&tolua_err)) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::Terrain::LayerInstanceList* self = (Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::Terrain::LayerInstance val = *((Ogre::Terrain::LayerInstance*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'push_back'", NULL);
-#endif
-  {
-   self->push_back(val);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'push_back'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: resize of class  LayerInstanceList */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_resize00
-static int tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_resize00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::Terrain::LayerInstanceList",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::Terrain::LayerInstanceList* self = (Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,1,0);
-  int size = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'resize'", NULL);
-#endif
-  {
-   self->resize(size);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'resize'.",&tolua_err);
  return 0;
 #endif
 }
@@ -15577,25 +15308,8 @@ static int tolua_get_Ogre__Terrain__ImportData_layerList(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'layerList'",NULL);
 #endif
-   tolua_pushusertype(tolua_S,(void*)&self->layerList,"Ogre::Terrain::LayerInstanceList");
+   tolua_pushusertype(tolua_S,(void*)&self->layerList,"const std::vector<Ogre::Terrain::LayerInstance>");
  return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: layerList of class  ImportData */
-#ifndef TOLUA_DISABLE_tolua_set_Ogre__Terrain__ImportData_layerList
-static int tolua_set_Ogre__Terrain__ImportData_layerList(lua_State* tolua_S)
-{
-  Ogre::Terrain::ImportData* self = (Ogre::Terrain::ImportData*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'layerList'",NULL);
-  if ((tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Terrain::LayerInstanceList",0,&tolua_err)))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->layerList = *((Ogre::Terrain::LayerInstanceList*)  tolua_tousertype(tolua_S,2,0))
-;
- return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -30135,8 +29849,8 @@ static int tolua_Stormfighter_SF_PagedTerrain_createWorldSection00(lua_State* to
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createWorldSection'", NULL);
 #endif
   {
-   Ogre::PagedWorldSection* tolua_ret = (Ogre::PagedWorldSection*)  self->createWorldSection(name,worldName,tg,loadRadius,holdRadius);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::PagedWorldSection");
+   SF::TerrainPagedWorldSection* tolua_ret = (SF::TerrainPagedWorldSection*)  self->createWorldSection(name,worldName,tg,loadRadius,holdRadius);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::TerrainPagedWorldSection");
   }
  }
  return 1;
@@ -30171,8 +29885,8 @@ static int tolua_Stormfighter_SF_PagedTerrain_section00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'section'", NULL);
 #endif
   {
-   Ogre::PagedWorldSection* tolua_ret = (Ogre::PagedWorldSection*)  self->section(worldName,sectionName);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::PagedWorldSection");
+   SF::TerrainPagedWorldSection* tolua_ret = (SF::TerrainPagedWorldSection*)  self->section(worldName,sectionName);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::TerrainPagedWorldSection");
   }
  }
  return 1;
@@ -30245,6 +29959,538 @@ static int tolua_Stormfighter_SF_PagedTerrain_initBlendMaps00(lua_State* tolua_S
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'initBlendMaps'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTerrainGroup of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTerrainGroup'", NULL);
+#endif
+  {
+   Ogre::TerrainGroup* tolua_ret = (Ogre::TerrainGroup*)  self->getTerrainGroup();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Ogre::TerrainGroup");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTerrainGroup'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: importData of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_importData00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_importData00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'importData'", NULL);
+#endif
+  {
+   Ogre::Terrain::ImportData& tolua_ret = (Ogre::Terrain::ImportData&)  self->importData();
+    tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::Terrain::ImportData");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'importData'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: defineLayer of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_defineLayer00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_defineLayer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int layer = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+  float worldSize = ((float)  tolua_tonumber(tolua_S,3,0));
+   std::string first = ((  std::string)  tolua_tocppstring(tolua_S,4,0));
+   std::string second = ((  std::string)  tolua_tocppstring(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'defineLayer'", NULL);
+#endif
+  {
+   self->defineLayer(layer,worldSize,first,second);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'defineLayer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setLoadRadius of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setLoadRadius00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setLoadRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+    float sz = ((   float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLoadRadius'", NULL);
+#endif
+  {
+   self->setLoadRadius(sz);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setLoadRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getLoadRadius of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getLoadRadius00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getLoadRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::TerrainPagedWorldSection* self = (const SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLoadRadius'", NULL);
+#endif
+  {
+     float tolua_ret = (   float)  self->getLoadRadius();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getLoadRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setHoldRadius of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setHoldRadius00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setHoldRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+    float sz = ((   float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHoldRadius'", NULL);
+#endif
+  {
+   self->setHoldRadius(sz);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setHoldRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getHoldRadius of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getHoldRadius00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getHoldRadius00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getHoldRadius'", NULL);
+#endif
+  {
+     float tolua_ret = (   float)  self->getHoldRadius();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getHoldRadius'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPageRange of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRange00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRange00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long minX = ((long)  tolua_tonumber(tolua_S,2,0));
+  long minY = ((long)  tolua_tonumber(tolua_S,3,0));
+  long maxX = ((long)  tolua_tonumber(tolua_S,4,0));
+  long maxY = ((long)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPageRange'", NULL);
+#endif
+  {
+   self->setPageRange(minX,minY,maxX,maxY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPageRange'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPageRangeMinX of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinX00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long minX = ((long)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPageRangeMinX'", NULL);
+#endif
+  {
+   self->setPageRangeMinX(minX);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPageRangeMinX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPageRangeMinY of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinY00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long minY = ((long)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPageRangeMinY'", NULL);
+#endif
+  {
+   self->setPageRangeMinY(minY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPageRangeMinY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPageRangeMaxX of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxX00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long maxX = ((long)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPageRangeMaxX'", NULL);
+#endif
+  {
+   self->setPageRangeMaxX(maxX);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPageRangeMaxX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPageRangeMaxY of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxY00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long maxY = ((long)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPageRangeMaxY'", NULL);
+#endif
+  {
+   self->setPageRangeMaxY(maxY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPageRangeMaxY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPageRangeMinX of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinX00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::TerrainPagedWorldSection* self = (const SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPageRangeMinX'", NULL);
+#endif
+  {
+   long tolua_ret = (long)  self->getPageRangeMinX();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPageRangeMinX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPageRangeMinY of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinY00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::TerrainPagedWorldSection* self = (const SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPageRangeMinY'", NULL);
+#endif
+  {
+   long tolua_ret = (long)  self->getPageRangeMinY();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPageRangeMinY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPageRangeMaxX of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxX00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::TerrainPagedWorldSection* self = (const SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPageRangeMaxX'", NULL);
+#endif
+  {
+   long tolua_ret = (long)  self->getPageRangeMaxX();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPageRangeMaxX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPageRangeMaxY of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxY00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxY00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::TerrainPagedWorldSection* self = (const SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPageRangeMaxY'", NULL);
+#endif
+  {
+   long tolua_ret = (long)  self->getPageRangeMaxY();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPageRangeMaxY'.",&tolua_err);
  return 0;
 #endif
 }
@@ -31387,6 +31633,199 @@ static int tolua_Stormfighter_SF_Hierarchy_debug00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: createResourceGroup of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_createResourceGroup00
+static int tolua_Stormfighter_SF_Resources_createResourceGroup00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string groupName = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createResourceGroup'", NULL);
+#endif
+  {
+   self->createResourceGroup(groupName);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createResourceGroup'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addResourceLocation of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_addResourceLocation00
+static int tolua_Stormfighter_SF_Resources_addResourceLocation00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string path = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+   std::string type = ((  std::string)  tolua_tocppstring(tolua_S,3,0));
+   std::string resourceGroup = ((  std::string)  tolua_tocppstring(tolua_S,4,0));
+  bool recursive = ((bool)  tolua_toboolean(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addResourceLocation'", NULL);
+#endif
+  {
+   self->addResourceLocation(path,type,resourceGroup,recursive);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addResourceLocation'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: resourceExists of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_resourceExists00
+static int tolua_Stormfighter_SF_Resources_resourceExists00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string resourceName = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+   std::string resourceGroup = ((  std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'resourceExists'", NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->resourceExists(resourceName,resourceGroup);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'resourceExists'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getResourceDirectory of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_getResourceDirectory00
+static int tolua_Stormfighter_SF_Resources_getResourceDirectory00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string resourceName = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+   std::string resourceGroup = ((  std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getResourceDirectory'", NULL);
+#endif
+  {
+    std::string tolua_ret = (  std::string)  self->getResourceDirectory(resourceName,resourceGroup);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getResourceDirectory'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getResourceModified of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_getResourceModified00
+static int tolua_Stormfighter_SF_Resources_getResourceModified00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string resourceName = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+   std::string resourceGroup = ((  std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getResourceModified'", NULL);
+#endif
+  {
+   long long tolua_ret = (long long)  self->getResourceModified(resourceName,resourceGroup);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getResourceModified'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: DEFAULT_RESOURCE_GROUP_NAME of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME
+static int tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME(lua_State* tolua_S)
+{
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'DEFAULT_RESOURCE_GROUP_NAME'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->DEFAULT_RESOURCE_GROUP_NAME);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: log of class  SF::StormfighterApp */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_StormfighterApp_log00
 static int tolua_Stormfighter_SF_StormfighterApp_log00(lua_State* tolua_S)
@@ -32162,7 +32601,6 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"Intermediate",tolua_Stormfighter_Ogre_Quaternion_Intermediate00);
     tolua_function(tolua_S,"Squad",tolua_Stormfighter_Ogre_Quaternion_Squad00);
     tolua_function(tolua_S,"nlerp",tolua_Stormfighter_Ogre_Quaternion_nlerp00);
-    tolua_variable(tolua_S,"ms_fEpsilon",tolua_get_Ogre__Quaternion_ms_fEpsilon,NULL);
     tolua_variable(tolua_S,"ZERO",tolua_get_Ogre__Quaternion_ZERO,NULL);
     tolua_variable(tolua_S,"IDENTITY",tolua_get_Ogre__Quaternion_IDENTITY,NULL);
     tolua_variable(tolua_S,"w",tolua_get_Ogre__Quaternion_w,tolua_set_Ogre__Quaternion_w);
@@ -32330,6 +32768,60 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"resize",tolua_Stormfighter_Ogre_Image_resize00);
     tolua_function(tolua_S,"calculateSize",tolua_Stormfighter_Ogre_Image_calculateSize00);
    tolua_endmodule(tolua_S);
+   tolua_constant(tolua_S,"PF_UNKNOWN",Ogre::PF_UNKNOWN);
+   tolua_constant(tolua_S,"PF_L8",Ogre::PF_L8);
+   tolua_constant(tolua_S,"PF_BYTE_L",Ogre::PF_BYTE_L);
+   tolua_constant(tolua_S,"PF_L16",Ogre::PF_L16);
+   tolua_constant(tolua_S,"PF_SHORT_L",Ogre::PF_SHORT_L);
+   tolua_constant(tolua_S,"PF_A8",Ogre::PF_A8);
+   tolua_constant(tolua_S,"PF_BYTE_A",Ogre::PF_BYTE_A);
+   tolua_constant(tolua_S,"PF_A4L4",Ogre::PF_A4L4);
+   tolua_constant(tolua_S,"PF_BYTE_LA",Ogre::PF_BYTE_LA);
+   tolua_constant(tolua_S,"PF_R5G6B5",Ogre::PF_R5G6B5);
+   tolua_constant(tolua_S,"PF_B5G6R5",Ogre::PF_B5G6R5);
+   tolua_constant(tolua_S,"PF_R3G3B2",Ogre::PF_R3G3B2);
+   tolua_constant(tolua_S,"PF_A4R4G4B4",Ogre::PF_A4R4G4B4);
+   tolua_constant(tolua_S,"PF_A1R5G5B5",Ogre::PF_A1R5G5B5);
+   tolua_constant(tolua_S,"PF_R8G8B8",Ogre::PF_R8G8B8);
+   tolua_constant(tolua_S,"PF_B8G8R8",Ogre::PF_B8G8R8);
+   tolua_constant(tolua_S,"PF_A8R8G8B8",Ogre::PF_A8R8G8B8);
+   tolua_constant(tolua_S,"PF_A8B8G8R8",Ogre::PF_A8B8G8R8);
+   tolua_constant(tolua_S,"PF_B8G8R8A8",Ogre::PF_B8G8R8A8);
+   tolua_constant(tolua_S,"PF_R8G8B8A8",Ogre::PF_R8G8B8A8);
+   tolua_constant(tolua_S,"PF_X8R8G8B8",Ogre::PF_X8R8G8B8);
+   tolua_constant(tolua_S,"PF_X8B8G8R8",Ogre::PF_X8B8G8R8);
+   tolua_constant(tolua_S,"PF_BYTE_RGB",Ogre::PF_BYTE_RGB);
+   tolua_constant(tolua_S,"PF_BYTE_BGR",Ogre::PF_BYTE_BGR);
+   tolua_constant(tolua_S,"PF_BYTE_BGRA",Ogre::PF_BYTE_BGRA);
+   tolua_constant(tolua_S,"PF_BYTE_RGBA",Ogre::PF_BYTE_RGBA);
+   tolua_constant(tolua_S,"PF_BYTE_RGB",Ogre::PF_BYTE_RGB);
+   tolua_constant(tolua_S,"PF_BYTE_BGR",Ogre::PF_BYTE_BGR);
+   tolua_constant(tolua_S,"PF_BYTE_BGRA",Ogre::PF_BYTE_BGRA);
+   tolua_constant(tolua_S,"PF_BYTE_RGBA",Ogre::PF_BYTE_RGBA);
+   tolua_constant(tolua_S,"PF_A2R10G10B10",Ogre::PF_A2R10G10B10);
+   tolua_constant(tolua_S,"PF_A2B10G10R10",Ogre::PF_A2B10G10R10);
+   tolua_constant(tolua_S,"PF_DXT1",Ogre::PF_DXT1);
+   tolua_constant(tolua_S,"PF_DXT2",Ogre::PF_DXT2);
+   tolua_constant(tolua_S,"PF_DXT3",Ogre::PF_DXT3);
+   tolua_constant(tolua_S,"PF_DXT4",Ogre::PF_DXT4);
+   tolua_constant(tolua_S,"PF_DXT5",Ogre::PF_DXT5);
+   tolua_constant(tolua_S,"PF_FLOAT16_R",Ogre::PF_FLOAT16_R);
+   tolua_constant(tolua_S,"PF_FLOAT16_RGB",Ogre::PF_FLOAT16_RGB);
+   tolua_constant(tolua_S,"PF_FLOAT16_RGBA",Ogre::PF_FLOAT16_RGBA);
+   tolua_constant(tolua_S,"PF_FLOAT32_R",Ogre::PF_FLOAT32_R);
+   tolua_constant(tolua_S,"PF_FLOAT32_RGB",Ogre::PF_FLOAT32_RGB);
+   tolua_constant(tolua_S,"PF_FLOAT32_RGBA",Ogre::PF_FLOAT32_RGBA);
+   tolua_constant(tolua_S,"PF_FLOAT16_GR",Ogre::PF_FLOAT16_GR);
+   tolua_constant(tolua_S,"PF_FLOAT32_GR",Ogre::PF_FLOAT32_GR);
+   tolua_constant(tolua_S,"PF_DEPTH",Ogre::PF_DEPTH);
+   tolua_constant(tolua_S,"PF_SHORT_RGBA",Ogre::PF_SHORT_RGBA);
+   tolua_constant(tolua_S,"PF_SHORT_GR",Ogre::PF_SHORT_GR);
+   tolua_constant(tolua_S,"PF_SHORT_RGB",Ogre::PF_SHORT_RGB);
+   tolua_constant(tolua_S,"PF_PVRTC_RGB2",Ogre::PF_PVRTC_RGB2);
+   tolua_constant(tolua_S,"PF_PVRTC_RGBA2",Ogre::PF_PVRTC_RGBA2);
+   tolua_constant(tolua_S,"PF_PVRTC_RGB4",Ogre::PF_PVRTC_RGB4);
+   tolua_constant(tolua_S,"PF_PVRTC_RGBA4",Ogre::PF_PVRTC_RGBA4);
+   tolua_constant(tolua_S,"PF_COUNT",Ogre::PF_COUNT);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);
   tolua_beginmodule(tolua_S,"Ogre");
@@ -32346,16 +32838,6 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
      tolua_function(tolua_S,"new",tolua_Stormfighter_Ogre_Terrain_LayerInstance_new00);
      tolua_function(tolua_S,"new_local",tolua_Stormfighter_Ogre_Terrain_LayerInstance_new00_local);
      tolua_function(tolua_S,".call",tolua_Stormfighter_Ogre_Terrain_LayerInstance_new00_local);
-    tolua_endmodule(tolua_S);
-    tolua_cclass(tolua_S,"LayerInstanceList","Ogre::Terrain::LayerInstanceList","",NULL);
-    tolua_beginmodule(tolua_S,"LayerInstanceList");
-     tolua_function(tolua_S,"clear",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_clear00);
-     tolua_function(tolua_S,"size",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_size00);
-     tolua_function(tolua_S,".geti",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti00);
-     tolua_function(tolua_S,".seti",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__seti00);
-     tolua_function(tolua_S,".geti",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList__geti01);
-     tolua_function(tolua_S,"push_back",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_push_back00);
-     tolua_function(tolua_S,"resize",tolua_Stormfighter_Ogre_Terrain_LayerInstanceList_resize00);
     tolua_endmodule(tolua_S);
     tolua_constant(tolua_S,"ALIGN_X_Z",Ogre::Terrain::ALIGN_X_Z);
     tolua_constant(tolua_S,"ALIGN_X_Y",Ogre::Terrain::ALIGN_X_Y);
@@ -32378,7 +32860,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
      tolua_variable(tolua_S,"inputScale",tolua_get_Ogre__Terrain__ImportData_inputScale,tolua_set_Ogre__Terrain__ImportData_inputScale);
      tolua_variable(tolua_S,"inputBias",tolua_get_Ogre__Terrain__ImportData_inputBias,tolua_set_Ogre__Terrain__ImportData_inputBias);
      tolua_variable(tolua_S,"layerDeclaration",tolua_get_Ogre__Terrain__ImportData_layerDeclaration,tolua_set_Ogre__Terrain__ImportData_layerDeclaration);
-     tolua_variable(tolua_S,"layerList",tolua_get_Ogre__Terrain__ImportData_layerList,tolua_set_Ogre__Terrain__ImportData_layerList);
+     tolua_variable(tolua_S,"layerList",tolua_get_Ogre__Terrain__ImportData_layerList,NULL);
      tolua_function(tolua_S,"new",tolua_Stormfighter_Ogre_Terrain_ImportData_new00);
      tolua_function(tolua_S,"new_local",tolua_Stormfighter_Ogre_Terrain_ImportData_new00_local);
      tolua_function(tolua_S,".call",tolua_Stormfighter_Ogre_Terrain_ImportData_new00_local);
@@ -33186,6 +33668,25 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"addCamera",tolua_Stormfighter_SF_PagedTerrain_addCamera00);
     tolua_function(tolua_S,"initBlendMaps",tolua_Stormfighter_SF_PagedTerrain_initBlendMaps00);
    tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"TerrainPagedWorldSection","SF::TerrainPagedWorldSection","Ogre::TerrainPagedWorldSection",NULL);
+   tolua_beginmodule(tolua_S,"TerrainPagedWorldSection");
+    tolua_function(tolua_S,"getTerrainGroup",tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00);
+    tolua_function(tolua_S,"importData",tolua_Stormfighter_SF_TerrainPagedWorldSection_importData00);
+    tolua_function(tolua_S,"defineLayer",tolua_Stormfighter_SF_TerrainPagedWorldSection_defineLayer00);
+    tolua_function(tolua_S,"setLoadRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_setLoadRadius00);
+    tolua_function(tolua_S,"getLoadRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_getLoadRadius00);
+    tolua_function(tolua_S,"setHoldRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_setHoldRadius00);
+    tolua_function(tolua_S,"getHoldRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_getHoldRadius00);
+    tolua_function(tolua_S,"setPageRange",tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRange00);
+    tolua_function(tolua_S,"setPageRangeMinX",tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinX00);
+    tolua_function(tolua_S,"setPageRangeMinY",tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMinY00);
+    tolua_function(tolua_S,"setPageRangeMaxX",tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxX00);
+    tolua_function(tolua_S,"setPageRangeMaxY",tolua_Stormfighter_SF_TerrainPagedWorldSection_setPageRangeMaxY00);
+    tolua_function(tolua_S,"getPageRangeMinX",tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinX00);
+    tolua_function(tolua_S,"getPageRangeMinY",tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMinY00);
+    tolua_function(tolua_S,"getPageRangeMaxX",tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxX00);
+    tolua_function(tolua_S,"getPageRangeMaxY",tolua_Stormfighter_SF_TerrainPagedWorldSection_getPageRangeMaxY00);
+   tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"CollisionData","SF::CollisionData","",NULL);
    tolua_beginmodule(tolua_S,"CollisionData");
     tolua_variable(tolua_S,"pointOnA",tolua_get_SF__CollisionData_pointOnA,tolua_set_SF__CollisionData_pointOnA);
@@ -33238,6 +33739,15 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"destroyGameObject",tolua_Stormfighter_SF_Hierarchy_destroyGameObject01);
     tolua_function(tolua_S,"getRoot",tolua_Stormfighter_SF_Hierarchy_getRoot00);
     tolua_function(tolua_S,"debug",tolua_Stormfighter_SF_Hierarchy_debug00);
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"Resources","SF::Resources","Module",NULL);
+   tolua_beginmodule(tolua_S,"Resources");
+    tolua_function(tolua_S,"createResourceGroup",tolua_Stormfighter_SF_Resources_createResourceGroup00);
+    tolua_function(tolua_S,"addResourceLocation",tolua_Stormfighter_SF_Resources_addResourceLocation00);
+    tolua_function(tolua_S,"resourceExists",tolua_Stormfighter_SF_Resources_resourceExists00);
+    tolua_function(tolua_S,"getResourceDirectory",tolua_Stormfighter_SF_Resources_getResourceDirectory00);
+    tolua_function(tolua_S,"getResourceModified",tolua_Stormfighter_SF_Resources_getResourceModified00);
+    tolua_variable(tolua_S,"DEFAULT_RESOURCE_GROUP_NAME",tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME,NULL);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"StormfighterApp","SF::StormfighterApp","",NULL);
    tolua_beginmodule(tolua_S,"StormfighterApp");

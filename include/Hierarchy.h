@@ -33,7 +33,7 @@ class Hierarchy {
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
 
-  void initialize(StormfighterApp* app);
+  void initialise(StormfighterApp* app);
   void update();
   void physicsUpdate();
 

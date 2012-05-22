@@ -59,7 +59,8 @@ void RigidBody::setWorldTransform(const btTransform &newTransform){
 void RigidBody::onInit(){
   // search for a collider component in GO & children
   // TOOD: autoCompound & autoTrimesh
-  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
+  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation());
+  worldOri.normalise(); // have to normalise, otherwise strange stuff happen
   setKinematicTransform(object()->transform()->worldPosition(), worldOri);
   Collider* collider = static_cast<Collider*>(object()->firstComponentGroupInChildren("Collider"));
   if(collider){
@@ -280,7 +281,8 @@ void RigidBody::remove(){
 }
 
 void RigidBody::add(){
-  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation()).normalise(); // have to normalise, otherwise strange stuff happen
+  SQuaternion worldOri = SQuaternion(object()->transform()->worldOrientation());
+  worldOri.normalise(); // have to normalise, otherwise strange stuff happen
   setKinematicTransform(object()->transform()->worldPosition(), worldOri);
   rigidBody_->setMotionState(this);
   application()->physics()->addRigidBody(rigidBody_, group_, collidesWith_);

@@ -13,6 +13,7 @@ class Physics;
 class Input;
 class Hierarchy;
 class Scripting;
+class Resources;
 class GUI;
 
 class StormfighterApp : public Ogre::FrameListener{
@@ -32,6 +33,8 @@ class StormfighterApp : public Ogre::FrameListener{
   Input* input() const {return input_; }
 
   Hierarchy* hierarchy() const { return hierarchy_; }
+
+  Resources* resources() const { return resources_; }
 
   Scripting* scripting() const { return scripting_; }
 
@@ -55,6 +58,7 @@ class StormfighterApp : public Ogre::FrameListener{
   Physics* physics_;
   Input* input_;
   GUI* gui_;
+  Resources* resources_;
   Scripting* scripting_;
   double deltaTime_;
   SReal physicsDeltaTime_;

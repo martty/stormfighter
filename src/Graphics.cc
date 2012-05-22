@@ -23,16 +23,17 @@ Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app
 
 Graphics::~Graphics(){
   delete debugDrawer_;
-  if(root_)
-    delete root_;
+  delete pagedTerrain_;
+  LOG("~Graphics: Clearing scene");
+  sceneManager_->clearScene();
+  LOG("~Graphics: Destroying root");
+  delete root_;
 }
 
-bool Graphics::initialize(){
+bool Graphics::initialise(){
   #ifdef _DEBUG
-  resourcesCfg_ = "resources_d.cfg";
   pluginsCfg_ = "plugins_d.cfg";
   #else
-  resourcesCfg_ = "resources.cfg";
   pluginsCfg_ = "plugins.cfg";
   #endif
   root_ = new Ogre::Root(pluginsCfg_);
@@ -53,28 +54,6 @@ bool Graphics::initialize(){
 
   debugDrawer_ = new DebugDrawer(sceneManager_, 0.5f);
 
-  return true;
-}
-void Graphics::initializeResources(){
-  Ogre::String secName, typeName, archName;
-  Ogre::ConfigFile cf;
-  cf.load(resourcesCfg_);
-  Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-  while (seci.hasMoreElements()){
-    secName = seci.peekNextKey();
-    Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-    Ogre::ConfigFile::SettingsMultiMap::iterator i;
-    for (i = settings->begin(); i != settings->end(); ++i){
-      typeName = i->first;
-      archName = i->second;
-      //if(i->second == "Zip") // add only zip files, use recursive for everything else
-      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
-    }
-  }
-  Ogre::ResourceGroupManager::getSingleton().addResourceLocation ("media/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
   ray_scene_query_ = sceneManager_->createRayQuery(Ogre::Ray());
   if (ray_scene_query_ == NULL) {
     LOG("Failed to create Ogre::RaySceneQuery instance");
@@ -82,6 +61,11 @@ void Graphics::initializeResources(){
   ray_scene_query_->setSortByDistance(true);
 
   pagedTerrain_ = new PagedTerrain(sceneManager_);
+
+  return true;
+}
+void Graphics::initializeResources(){
+
 }
 
 void Graphics::setActiveCamera(Ogre::Camera* camera){
@@ -136,7 +120,7 @@ SingleRayCastResult Graphics::closestExactRayQuery(SRay ray){
   // we need to test every triangle of every object.
   Ogre::Real closest_distance = -1.0f;
   Ogre::Entity* closest_ent = NULL;
-  Ogre::Vector3 closest_result;
+  Ogre::Vector3 closest_result(0,0,0);
   Ogre::RaySceneQueryResult &query_result = ray_scene_query_->getLastResults();
   for (size_t qr_idx = 0; qr_idx < query_result.size(); qr_idx++) {
     // stop checking if we have found a raycast hit that is closer

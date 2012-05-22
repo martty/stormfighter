@@ -7,6 +7,7 @@ template<> Logger* Ogre::Singleton<Logger>::ms_Singleton = 0;
 
 Logger::Logger(){
   Ogre::LogManager* logMgr = new Ogre::LogManager();
+  Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_BOREME);
   defaultLog_ = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
   defaultLog_->setDebugOutputEnabled(true);
 }

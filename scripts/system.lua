@@ -32,6 +32,12 @@ function print(something)
   Logger:logMessage(tostring(something));
 end
 
+function print_as_table(tbl)
+  for i,k in pairs(tbl) do
+    print("["..tostring(i) .. "]".. System:serializeNative(k));
+  end
+end
+
 System = {};
 System.active_components = {};
 System.n_active_components = 0;

@@ -3,6 +3,7 @@ namespace Ogre
 	class Terrain {
 	public:
 		typedef std::vector<Ogre::Real> Ogre::RealVector;
+		//typedef std::vector<Ogre::Terrain::LayerInstance> Ogre::Terrain::LayerInstanceList;
 
 		/** An instance of a layer, with specific texture names
 		*/
@@ -16,11 +17,11 @@ namespace Ogre
 			LayerInstance();
 		};
 
-		//typedef std::vector<Ogre::Terrain::LayerInstance> Ogre::Terrain::LayerInstanceList;
+
     //$renaming std::vector<Ogre::Terrain::LayerInstance> @ LayerInstanceList
 
     // HACK!
-    class LayerInstanceList {
+  /*  class LayerInstanceList {
         void clear();
         int size() const;
 
@@ -29,7 +30,7 @@ namespace Ogre
         void push_back(LayerInstance val);
 
         void resize(int size);
-    }
+    }*/
 
 		/// The alignment of the terrain
 		enum Alignment
@@ -119,13 +120,13 @@ namespace Ogre
 				Can be empty or underfilled if required, list will be padded with
 				blank textures.
 			*/
-			Ogre::Terrain::LayerInstanceList layerList;
+			const std::vector<Ogre::Terrain::LayerInstance> layerList;
 
 			ImportData();
 
 			ImportData(const ImportData& rhs);
 
-			ImportData& operator=(const ImportData& rhs);
+			//ImportData& operator=(const ImportData& rhs);
 
 			/// Delete any input data if this struct is set to do so
 			void destroy();

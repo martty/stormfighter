@@ -31,7 +31,9 @@
 #include "Scripting.h"
 #include "DebugDrawer.h"
 #include "PagedTerrain.h"
+#include "TerrainPagedWorldSection.h"
 #include "Graphics.h"
 #include "Logger.h"
+#include "Resources.h"
 
 #include "StormfighterApp.h"

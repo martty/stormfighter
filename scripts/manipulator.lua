@@ -17,7 +17,7 @@
 --]]
 function Manipulator:initialise(editor)
   self.editor = editor;
-  -- initialize manipulator state
+  -- initialise manipulator state
   self.isSelected = false;
   self.scale = SVector3(1.2,1.2,1.2);
   self.isSideSelected = false;

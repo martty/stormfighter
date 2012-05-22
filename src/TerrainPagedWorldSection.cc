@@ -5,7 +5,6 @@ namespace SF {
 
 TerrainPagedWorldSection::TerrainPagedWorldSection(const Ogre::String &name, Ogre::PagedWorld *parent, Ogre::SceneManager *sm):
   Ogre::TerrainPagedWorldSection(name, parent, sm){
-  LOG("impostor in place!");
 }
 
 TerrainPagedWorldSection::~TerrainPagedWorldSection()
@@ -22,6 +21,7 @@ void TerrainPagedWorldSection::init(Ogre::TerrainGroup* grp){
 
   mTerrainGroup = grp;
   syncSettings();
+  impdata_ = new Ogre::Terrain::ImportData(grp->getDefaultImportSettings());
 
   // Unload all existing terrain pages, because we want the paging system
   // to be in charge of this
@@ -70,22 +70,30 @@ void TerrainPagedWorldSection::unloadPage(Ogre::PageID pageID, bool forceSynchro
 		if (!mTerrainGroup->isDerivedDataUpdateInProgress()){
 		  // save slotdef
 		  Ogre::TerrainGroup::TerrainSlotDefinition* tsd = mTerrainGroup->getTerrainDefinition(x,y);
-		  LOG("extracting");
-		  if(!tsd)
+		  //LOG("extracting");
+		  /*if(!tsd)
         LOG("tsd is null");
       if(!tsd->importData)
-        LOG("impd is null");
+        LOG("impd is null");*/
 		  //Ogre::Terrain::ImportData imp = Ogre::Terrain::ImportData(*(tsd->importData));
 		  // remove
       mTerrainGroup->unloadTerrain(x, y);
       PagedWorldSection::unloadPage(pageID, forceSynchronous);
       // redefine
       // TODO: do this for file based loads too
-      LOG("redefining!");
+      //LOG("redefining!");
       //mTerrainGroup->defineTerrain(x, y, &imp);
+      LOG("unloading page:"+STRING(x)+","+STRING(y));
 		}
     //mTerrainGroup->defineTerrain(x,y)
-    LOG("unloading page:"+STRING(x)+","+STRING(y));
 	}
+
+  void TerrainPagedWorldSection::defineLayer(unsigned int layer, float worldSize, SString first, SString second) {
+    impdata_->layerList.resize(layer+1);
+    impdata_->layerList[layer].worldSize = worldSize;
+    impdata_->layerList[layer].textureNames.clear();
+    impdata_->layerList[layer].textureNames.push_back(first);
+    impdata_->layerList[layer].textureNames.push_back(second);
+  }
 
 };

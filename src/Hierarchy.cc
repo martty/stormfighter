@@ -14,7 +14,7 @@ Hierarchy::~Hierarchy(){
   delete root_;
 }
 
-void Hierarchy::initialize(StormfighterApp* app){
+void Hierarchy::initialise(StormfighterApp* app){
   application_ = app;
   state_ = UP;
   root_->coreInitialize(application_, true);

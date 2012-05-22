@@ -22,7 +22,7 @@ using namespace Ogre;
 	  delete mRenderOp.indexData;
 	}
 	//------------------------------------------------------------------------------------------------
-	void DynamicRenderable::initialize(Ogre::RenderOperation::OperationType operationType, bool useIndices)
+	void DynamicRenderable::initialise(Ogre::RenderOperation::OperationType operationType, bool useIndices)
 	{
 	  // Initialize render operation
 	  mRenderOp.operationType = operationType;
@@ -152,7 +152,7 @@ using namespace Ogre;
 	//------------------------------------------------------------------------------------------------
 	DynamicLines::DynamicLines(OperationType opType)
 	{
-	  initialize(opType,false);
+	  initialise(opType,false);
 	  setMaterial("BaseWhiteNoLighting");
 	  mDirty = true;
 	}

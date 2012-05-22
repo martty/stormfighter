@@ -5,10 +5,13 @@
 namespace SF {
 
 Camera::Camera(){
+  camera_ = NULL;
   setState(CREATED);
 }
 
 Camera::~Camera(){
+  //Graphics::getSingletonPtr()->sceneManager()->destroyCamera(camera_);
+  camera_ = NULL;
 }
 
 Camera* Camera::clone() const{

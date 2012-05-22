@@ -71,12 +71,21 @@ void GUI::initialise() {
 GUI::~GUI(){
   awe_string_destroy(url_str_);
   delete trayManager_;
+  LOG("~GUI: trayManager destroyed");
   trayManager_ = NULL;
  // Destroy our WebView instance
   awe_webview_destroy(webView_);
+  LOG("~GUI: webview destroyed");
   delete[] temp_;
+  LOG("~GUI: temp destroyed");
+  for (int i = 0; i < 100; i++){
+    Sleep(100);
+    awe_webcore_update();
+  }
+  //boost::this_thread::sleep(boost::posix_time::milliseconds(100));
   // Destroy our WebCore instance
   awe_webcore_shutdown();
+  LOG("~GUI: webcore shut down");
 }
 
 void GUI::update(double deltaTime){
