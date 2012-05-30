@@ -94,6 +94,7 @@ int Input::axisRelative(Axis axis){
     case X : return mouse_->getMouseState().X.rel;
     case Y : return mouse_->getMouseState().Y.rel;
     case Z : return mouse_->getMouseState().Z.rel;
+    default: return 0;
   }
 }
 
@@ -102,6 +103,7 @@ int Input::axisAbsolute(Axis axis){
     case X : return mouse_->getMouseState().X.abs;
     case Y : return mouse_->getMouseState().Y.abs;
     case Z : return mouse_->getMouseState().Z.abs;
+    default: return 0;
   }
 }
 

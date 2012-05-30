@@ -14,6 +14,7 @@ World:initialise("world1");
 -- innentõl jön az igazi kód
 
 -- egy új GameObject létrehozása
+--[[
 platform = Hierarchy:createGameObject("platform");
 
 -- a GameObject Transform komponensével beállítjuk a nagyítást és pozíciót
@@ -30,11 +31,14 @@ platform:addComponent(BoxCollider:new());
 platform:addComponent(RigidBody:new(0, true));
 
 platform:transform():setVisible(false, true);
+--]]
 
 -- hasonlóan mint elõbb
+walkertop = Hierarchy:createGameObject("walkertop");
 walker = Hierarchy:createGameObject("walker");
-walker:transform().position = SVector3(0,120,0);
-walker:transform().scale = SVector3(2,2,2);
+walkertop:addChild(walker);
+walkertop:transform().position = SVector3(2312,2278,2597);
+walker:transform().scale = SVector3(0.12, 0.12, 0.12);
 -- most egy külsõ mesh file-t töltünk be
 -- ehhez alapesetben már van rendelve egy material
 walker:addComponent(Mesh:new("jaiqua/jaiqua.mesh"));
@@ -42,8 +46,8 @@ walker:addComponent(Mesh:new("jaiqua/jaiqua.mesh"));
 -- betöltünk egy külön fájlból egy komponenst
 local plc = System:loadComponent('scripts/player.controller.lua');
 -- és hozzáadjuk a karakterhez
-walker:addComponent(plc);
-
+walkertop:addComponent(plc);
+plc.low = walker;
 -- megcsináljuk a kamerát
 local cam = Hierarchy:createGameObject("cammy");
 c = Camera:new();
@@ -51,8 +55,8 @@ cam:addComponent(c);
 c:setNearClipDistance(1);
 c:setAspectRatio(Graphics:getDefaultAspectRatio());
 c:activate();
-cam:transform().position = (SVector3(100,2300,50));
-cam:transform():lookAt(SVector3(0,2300,100));
+cam:transform().position = SVector3(2312,2300,2600);
+cam:transform():lookAt(SVector3(2312,2278,2597));
 
 local fcc = System:loadComponent('scripts/freecameracontroller.lua');
 cam:addComponent(fcc);
@@ -60,7 +64,8 @@ local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
 --cam:addComponent(ccc);
 
 -- beállítjuk hogy a chasecameracontroller mit kövessen
-ccc.target = walker;
+ccc.target = walkertop;
+ccc.yawtarget = walker;
 
 local lightGO = Hierarchy:createGameObject("lightGO");
 local light = Light:new(Light.LT_DIRECTIONAL);
@@ -70,6 +75,11 @@ lightGO:transform().position = SVector3(0,100,0);
 lightGO:transform().orientation = SQuaternion(to_rad(SDegree(90)), SVector3(1,0,1));
 light:setAsTerrainLight();
 
+local reference = Hierarchy:createGameObject("reference_cube");
+reference:transform().scale = SVector3(0.01, 0.01, 0.01);
+reference:transform().position = SVector3(2312,2278,2587)
+reference:addComponent(Primitive:new(Primitive.CUBE));
+reference:clone():transform().position = SVector3(2312,2295,2587);
 -- Terrain test
 Terrain = Graphics:pagedTerrain();
 Terrain:createWorld("defaultWorld");
@@ -88,13 +98,34 @@ compimg:save("media/terrain/snowvalley/colorspec.png");
 compimg:loadTwoImagesAsRGBA("terrain/snowvalley/normal.png", "terrain/snowvalley/height.png", "Terrain" ,Ogre.PF_BYTE_RGBA);
 compimg:save("media/terrain/snowvalley/normalheight.png");--]]
 
-local sec = World:createSection("snowvalley", 2049, 8000, SVector3(0,0,0), 3000, 6000);
---local a,b = sec:loadOrCreateTerrainMaps("terrain/colormap.png", "terrain/specular.png", "terrain/normal.png", "terrain/height.png");
+local sec = World:createSection("snowvalley_splat", 1025, 8000, SVector3(0,0,0), 3000, 6000);
+local snow,snown = sec:loadOrCreateTerrainMaps("terrain/snow_1.png", "black_512.png", "terrain/snow_1_normal.png", "black_512.png");
+local rock,rockn = sec:loadOrCreateTerrainMaps("terrain/rock_1.png", "black_512.png", "terrain/rock_1_normal.png", "black_512.png");
+local path,pathn = sec:loadOrCreateTerrainMaps("terrain/path_1.png", "black_512.png", "terrain/path_1_normal.png", "black_512.png");
+local tg = sec.terrainGroup;
+local imp = sec:importData(0,0);
+local img = Ogre.Image();
+img:load("terrain/height.png", sec.sectionName);
+imp.inputImage = img;
+imp.worldSize = 2625;
+imp.inputScale = imp.inputScale;
+sec:defineLayer(0,0, 0, 50, snow, snown, "");
+sec:defineLayer(0,0, 1, 50, rock, rockn, "terrain/slopemask_hi.png");
+sec:defineLayer(0,0, 2, 100, path, pathn, "terrain/pathmask_hi_3.png");
+tg:defineTerrainImportData(0,0,imp);
+--[[tg:loadAllTerrains(true);
+terr = tg:getTerrain(0,0);
+print(terr:getLayerTextureName(0,0));
+print(terr:getLayerTextureName(0,1));
+print(terr:getLayerTextureName(0,2));
+print(terr:getLayerTextureName(1,0));
+print(terr:getLayerTextureName(1,1));
+print(terr:getLayerTextureName(1,2));
+--]]
 --print (a .. b);
 --Ogre.Terrain.LayerInstanceList();
 --Ogre.Terrain.LayerInstance();
-sec:defineTileDSNH(0,0,"terrain/colormap.png", "terrain/specular.png",
-    "terrain/normal.png", "terrain/height.png");
+--sec:defineTileDSNH(0,0,"terrain/colormap.png", "terrain/specular.png", "terrain/normal.png", "terrain/height.png");
 --[[
 for x=0,19 do
   for y=0,19 do

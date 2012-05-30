@@ -19,14 +19,15 @@ PagedTerrain::PagedTerrain(Ogre::SceneManager* sm){
   terrainPaging_ = new TerrainPaging(pageManager_);
 
   // global terrain settings cfg
-  terrainGlobals_->setMaxPixelError(8);
+  terrainGlobals_->setMaxPixelError(1);
   // testing composite map
   terrainGlobals_->setCompositeMapDistance(6000);
+  terrainGlobals_->setLayerBlendMapSize(2048);
 
   //terrainGlobals_->getDefaultMaterialGenerator()->setDebugLevel(1);
   Ogre::TerrainMaterialGeneratorA::SM2Profile* matProfile =
          static_cast<Ogre::TerrainMaterialGeneratorA::SM2Profile*>(terrainGlobals_->getDefaultMaterialGenerator()->getActiveProfile());
-  matProfile->setLayerParallaxMappingEnabled(false);
+  //matProfile->setLayerParallaxMappingEnabled(false);
   //matProfile->setLayerSpecularMappingEnabled(false);
   /*matProfile->setLightmapEnabled(false);
   matProfile->setCompositeMapEnabled(false);
@@ -72,7 +73,7 @@ Ogre::TerrainGroup* PagedTerrain::createTerrainGroup(Ogre::Terrain::Alignment al
   defaultimp.terrainSize = terrainSize;
   defaultimp.worldSize = worldSize;
   defaultimp.inputScale = 2625;
-  defaultimp.minBatchSize = 3;
+  defaultimp.minBatchSize = 17;
   defaultimp.maxBatchSize = 65;
   // textures
   defaultimp.layerList.resize(3);
@@ -116,33 +117,4 @@ void PagedTerrain::setTerrainLight(Ogre::Light* light){
   terrainGlobals_->setCompositeMapDiffuse(light->getDiffuseColour());
 }
 
-void PagedTerrain::initBlendMaps(Ogre::Terrain* terrain){
-    Ogre::TerrainLayerBlendMap* blendMap0 = terrain->getLayerBlendMap(1);
-    //Ogre::TerrainLayerBlendMap* blendMap1 = terrain->getLayerBlendMap(2);
-  /*  Ogre::Real minHeight0 = 70;
-    Ogre::Real fadeDist0 = 40;
-    Ogre::Real minHeight1 = 70;
-    Ogre::Real fadeDist1 = 15;
-    float* pBlend1 = blendMap1->getBlendPointer();
-    for (Ogre::uint16 y = 0; y < terrain->getLayerBlendMapSize(); ++y)
-    {
-        for (Ogre::uint16 x = 0; x < terrain->getLayerBlendMapSize(); ++x)
-        {
-            Ogre::Real tx, ty;
-
-            blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
-            Ogre::Real height = terrain->getHeightAtTerrainPosition(tx, ty);
-            Ogre::Real val = (height - minHeight0) / fadeDist0;
-            val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
-
-            val = (height - minHeight1) / fadeDist1;
-            val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
-            *pBlend1++ = val;
-        }
-    }*/
-    blendMap0->dirty();
-    //blendMap1->dirty();
-    blendMap0->update();
-    //blendMap1->update();
-}
 };

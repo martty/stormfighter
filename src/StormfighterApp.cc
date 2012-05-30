@@ -85,7 +85,7 @@ void StormfighterApp::startStormfighter(){
 }
 
 void StormfighterApp::setupStormfighterScene(){
-  graphics_->setSkyBoxMaterial("Examples/SpaceSkyBox");
+  graphics_->setSkyBoxMaterial("Examples/EarlyMorningSkyBox");
   graphics_->setSkyBoxEnabled(true);
 
   // export globals to lua

@@ -73,14 +73,15 @@ class PagedTerrain {
   TerrainPagedWorldSection* section(SString worldName, SString sectionName) const;
 
   void addCamera(Camera* cam);
-  void initBlendMaps(Ogre::Terrain* terrain);
 };
 
 class TerrainPagedWorldSection : public Ogre::TerrainPagedWorldSection{
  public:
   Ogre::TerrainGroup* getTerrainGroup();
-  Ogre::Terrain::ImportData& importData();
-  void defineLayer(unsigned int layer, float worldSize, SString first, SString second);
+  Ogre::Terrain::ImportData& importData(long x, long y);
+  void defineLayer(long x, long y, unsigned int layer, float worldSize, SString first, SString second, SString blend);
+
+  SVector3 getNormalAt(SVector3 position);
 
 
   /// Set the loading radius

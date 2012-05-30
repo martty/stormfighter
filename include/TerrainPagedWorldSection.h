@@ -8,6 +8,8 @@
 #include "common.h"
 
 namespace SF {
+  typedef std::pair<long, long> TerrainIndex;
+  typedef std::map< TerrainIndex, Ogre::Terrain::ImportData > ImportDataMap;
 
 class TerrainPagedWorldSection : public Ogre::TerrainPagedWorldSection{
  public:
@@ -18,13 +20,16 @@ class TerrainPagedWorldSection : public Ogre::TerrainPagedWorldSection{
   void loadPage(Ogre::PageID pageID, bool forceSynchronous=false);
   void unloadPage(Ogre::PageID pageID, bool forceSynchronous=false);
 
-  Ogre::Terrain::ImportData& importData() { return *impdata_; }
-  void defineLayer(unsigned int layer, float worldSize, SString first, SString second);
+  Ogre::Terrain::ImportData& importData(long x, long y);
+  void defineLayer(long x, long y, unsigned int layer, float worldSize, SString first, SString second, SString blend);
+  void initBlendMaps(long x, long y);
+
+  SVector3 getNormalAt(SVector3 position);
 
   /** Default destructor */
   virtual ~TerrainPagedWorldSection();
  private:
-  Ogre::Terrain::ImportData* impdata_;
+  ImportDataMap impdatamap_;
 };
 
 };

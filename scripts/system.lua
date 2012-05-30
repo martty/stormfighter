@@ -26,6 +26,16 @@ function to_rad(degree)
   return SRadian:new_local(degree:valueRadians());
 end
 
+function clamp(value, min, max)
+  if(value > max) then
+    return max;
+  elseif (value < min) then
+    return min;
+  else
+    return value;
+  end
+end
+
 -- hijack print, so that it does not print to stdout, but rather to log
 stdout_print = print;
 function print(something)
@@ -36,6 +46,24 @@ function print_as_table(tbl)
   for i,k in pairs(tbl) do
     print("["..tostring(i) .. "]".. System:serializeNative(k));
   end
+end
+
+
+function debugdrawplane(plane, size, colour, fill)
+  local normal = plane.normal;
+  local deviant = normal:perpendicular():normalisedCopy() * size;
+  local deviant_2 = normal:crossProduct(deviant):normalisedCopy() * size;
+  local middlepoint = normal*plane.d*-1;
+  local a,b,c,d = middlepoint + deviant + deviant_2, middlepoint - deviant + deviant_2 , middlepoint - deviant - deviant_2, middlepoint + deviant - deviant_2;
+  Graphics:debugDrawer():drawQuad({d,a,b,c}, colour, fill);
+end
+
+function debugdrawline(line_begin, line_end, colour)
+  Graphics:debugDrawer():drawLine(line_begin, line_end, colour);
+end
+
+function debugdrawvector(vector, origin, colour)
+  Graphics:debugDrawer():drawLine(origin, origin+vector, colour);
 end
 
 System = {};

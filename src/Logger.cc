@@ -3,7 +3,7 @@
 
 namespace SF {
 
-template<> Logger* Ogre::Singleton<Logger>::ms_Singleton = 0;
+template<> Logger* Ogre::Singleton<Logger>::msSingleton = 0;
 
 Logger::Logger(){
   Ogre::LogManager* logMgr = new Ogre::LogManager();

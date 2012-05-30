@@ -2,6 +2,7 @@
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainPagedWorldSection.h>
+#include "TerrainPagedWorldSection.h"
 
 namespace SF {
 
@@ -33,7 +34,7 @@ bool PageProvider::prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSecti
   return true;
 }
 bool PageProvider::loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section){
-  Ogre::TerrainPagedWorldSection* tpws = static_cast<Ogre::TerrainPagedWorldSection*>(section);
+  TerrainPagedWorldSection* tpws = static_cast<TerrainPagedWorldSection*>(section);
   Ogre::TerrainGroup* tg = tpws->getTerrainGroup();
   long x;
   long y;
@@ -42,9 +43,12 @@ bool PageProvider::loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection*
   if(!tg->getTerrain(x,y)){
     Ogre::TerrainGroup::TerrainSlotDefinition* tsd = tg->getTerrainDefinition(x,y);
     if(tsd){
+      LOG("loading page:"+STRING(x)+","+STRING(y));
       tg->loadTerrain(x,y,true);
     //tg->update();
-      LOG("loading page:"+STRING(x)+","+STRING(y));
+      LOG("initialising blendmaps:"+STRING(x)+","+STRING(y));
+      tpws->initBlendMaps(x,y);
+      LOG("done.");
     } else {
       LOG("Warning - unprepared terrain not loaded at:"+STRING(x)+","+STRING(y));
     }

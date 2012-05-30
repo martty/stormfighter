@@ -43,9 +43,17 @@ function fcc:onUpdate()
   else
     self:object():transform():moveRelative(self.translateVector_ / 10);
   end
+  if(self:application():input():isKeyDown(OIS.KC_P)) then self.camera_:setPolygonMode(Ogre.PM_WIREFRAME); end
+  if(self:application():input():isKeyDown(OIS.KC_O)) then self.camera_:setPolygonMode(Ogre.PM_SOLID); end
   if(Input:isButtonDown(OIS.MB_Right)) then
     self:object():transform():yaw(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.X) * -0.1)));
     self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
+  end
+  if(Input:isKeyDown(OIS.KC_P)) then
+    print("position:"..tostring(self:object():transform().position));
+    print("height:"..World:getHeightAt(self:object():transform().position));
+    print("normal:");
+    print(World:getNormalAt(self:object():transform().position));
   end
 end
 

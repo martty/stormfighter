@@ -252,23 +252,6 @@ function Manipulator:scale1D()
   end
 end
 
-function debugdrawplane(plane, size, colour, fill)
-  local normal = plane.normal;
-  local deviant = normal:perpendicular():normalisedCopy() * size;
-  local deviant_2 = normal:crossProduct(deviant):normalisedCopy() * size;
-  local middlepoint = normal*plane.d*-1;
-  local a,b,c,d = middlepoint + deviant + deviant_2, middlepoint - deviant + deviant_2 , middlepoint - deviant - deviant_2, middlepoint + deviant - deviant_2;
-  Graphics:debugDrawer():drawQuad({d,a,b,c}, colour, fill);
-end
-
-function debugdrawline(line_begin, line_end, colour)
-  Graphics:debugDrawer():drawLine(line_begin, line_end, colour);
-end
-
-function debugdrawvector(vector, origin, colour)
-  Graphics:debugDrawer():drawLine(origin, origin+vector, colour);
-end
-
 function Manipulator:findOrCreate()
   local bbox = SAxisAlignedBox(SVector3(-0.5, -0.5, -0.5), SVector3(0.5, 0.5, 0.5)); -- unit sized
   -- initalize manipulator meshes

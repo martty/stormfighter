@@ -13,7 +13,7 @@
 
 namespace SF {
 
-template<> Graphics* Ogre::Singleton<Graphics>::ms_Singleton = 0;
+template<> Graphics* Ogre::Singleton<Graphics>::msSingleton = 0;
 
 Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app), root_(NULL), sceneManager_(NULL), renderWindow_(NULL), viewport_(NULL), defaultCamera_(NULL){
   windowTitle_ = windowTitle;
@@ -22,8 +22,10 @@ Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app
 }
 
 Graphics::~Graphics(){
-  delete debugDrawer_;
-  delete pagedTerrain_;
+  if(debugDrawer_)
+    delete debugDrawer_;
+  if(pagedTerrain_)
+    delete pagedTerrain_;
   LOG("~Graphics: Clearing scene");
   sceneManager_->clearScene();
   LOG("~Graphics: Destroying root");

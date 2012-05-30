@@ -38,6 +38,13 @@ class Ray  {
 		Vector3 operator*(Real t) const;
 
     };
+enum PolygonMode
+{
+         PM_POINTS = 1,
+         PM_WIREFRAME = 2,
+         PM_SOLID = 3
+};
+
 };
 
 $pfile "include/OgreMath.pkg"

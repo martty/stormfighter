@@ -25,7 +25,7 @@ class PagedTerrain {
 
   TerrainPagedWorldSection* section(SString worldName, SString sectionName) const;
  // Ogre::Terrain::TerrainGroup terrainGroup(SString worldName, SString sectionName) const;
-  void initBlendMaps(Ogre::Terrain* terrain);
+
   void setTerrainLight(Ogre::Light* light);
   void addCamera(Camera* cam);
 

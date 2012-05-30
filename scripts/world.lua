@@ -14,6 +14,7 @@ function World:initialise(worldname, worldpathprefix, sectionpathprefix)
   if not worldpathprefix then self.worldpathprefix = "/worlds/"; end
   if not sectionpathprefix then self.sectionpathprefix = "/sections/"; end
   if not terrainpathprefix then self.terrainpathprefix = "/terrain/"; end
+  self.currentSection = nil;
 end
 
 function World:createSection(sectionName, resolution, size, origin, loadRadius, holdRadius)
@@ -39,9 +40,33 @@ function World:createSection(sectionName, resolution, size, origin, loadRadius, 
   Resources:addResourceLocation("media"..self.worldpathprefix..self.worldName.."/common", "FileSystem", sectionName, true);
   Resources:addResourceLocation("media"..self.worldpathprefix..self.worldName..self.sectionpathprefix..sectionName, "FileSystem", sectionName, true);
   --Resources:addResourceLocation("media"..self.worldpathprefix..self.worldName..self.sectionpathprefix..sectionName..self.terrainpathprefix, "FileSystem", sectionName, true);
+  self.currentSection = self.sections[sectionName];
   return self.sections[sectionName];
 end
 
+
+-- retrieve height at give world position
+-- always operates on _current_ section
+-- outputs float
+function World:getHeightAt(position)
+  local tg = self.currentSection.terrainGroup;
+  local height = tg:getHeightAtWorldPosition(position);
+  return height;
+end
+
+-- retrieve normal at give world position
+-- always operates on _current_ section
+-- TODO: caching
+-- outputs the normal SVector3
+function World:getNormalAt(position)
+  return self.currentSection:getNormalAt(position);
+end
+
+function World:rayQuery(ray, limit)
+  local tg = self.currentSection.terrainGroup;
+  local result = tg:rayIntersects(ray, limit);
+  return result.hit, result.position;
+end
 -- utility function for creating composite images
 -- takes in 4 filenames
 -- output 2 filenames
@@ -59,6 +84,8 @@ function SF.TerrainPagedWorldSection:loadOrCreateTerrainMaps(diffuse, specular, 
   --check if the composited images already exist
   local diffspec = diffuse:gsub("[.]", "_")..specular:gsub("[./]","_")..".png";
   local normalheight = normal:gsub("[.]", "_")..height:gsub("[./]","_")..".png";
+  local diffspecdds = diffuse:gsub("[.]", "_")..specular:gsub("[./]","_")..".dds";
+  local normalheightdds = normal:gsub("[.]", "_")..height:gsub("[./]","_")..".dds";
   -- exists
   local dsex = false;
   local nhex = false;
@@ -146,7 +173,9 @@ function SF.TerrainPagedWorldSection:defineTileDSNH(x, y, diffuse, specular, nor
   self:defineLayer(0, 8000, diffspec, normalheight);
   self.terrainGroup:defineTerrainImportData(x,y,imp);
   self.terrainGroup:loadTerrain(x,y, true);
+  print("loaded terrain");
   self.terrainGroup:getTerrain(x,y):save(fullfile);
+  print("saved terrain");
   self.terrainGroup:removeTerrain(x,y);
   self.terrainGroup:defineTerrainAuto(x,y);
 end

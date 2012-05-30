@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 05/21/12 22:24:08.
+** Generated automatically by tolua++-1.0.92 on 05/28/12 15:05:00.
 */
 
 #ifndef __cplusplus
@@ -383,48 +383,47 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Terrain::ImportData");
  tolua_usertype(tolua_S,"Ogre::TerrainLayerDeclaration");
  tolua_usertype(tolua_S,"SF::StormfighterApp");
- tolua_usertype(tolua_S,"Module");
  tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlotDefinition");
+ tolua_usertype(tolua_S,"Module");
  tolua_usertype(tolua_S,"SF::Resources");
- tolua_usertype(tolua_S,"SF::Hierarchy");
  tolua_usertype(tolua_S,"Ogre::TerrainPagedWorldSection");
  tolua_usertype(tolua_S,"SF::TerrainPagedWorldSection");
  tolua_usertype(tolua_S,"Ogre::TerrainGroup");
  tolua_usertype(tolua_S,"Ogre::AxisAlignedBox");
  tolua_usertype(tolua_S,"Ogre::Image");
  tolua_usertype(tolua_S,"SF::Script");
- tolua_usertype(tolua_S,"SF::BoxCollider");
+ tolua_usertype(tolua_S,"SF::Hierarchy");
  tolua_usertype(tolua_S,"std::vector<SF::Component*>");
  tolua_usertype(tolua_S,"SF::MovableObject");
- tolua_usertype(tolua_S,"SF::Input");
+ tolua_usertype(tolua_S,"SF::Primitive");
  tolua_usertype(tolua_S,"SF::Transform");
  tolua_usertype(tolua_S,"SF::Component");
+ tolua_usertype(tolua_S,"SF::Input");
  tolua_usertype(tolua_S,"btRigidBody");
- tolua_usertype(tolua_S,"SF::PagedTerrain");
  tolua_usertype(tolua_S,"SF::Constraint");
  tolua_usertype(tolua_S,"std::vector<Ogre::Terrain::LayerInstance>");
  tolua_usertype(tolua_S,"SF::Physics");
- tolua_usertype(tolua_S,"Ogre::Camera");
+ tolua_usertype(tolua_S,"SF::PagedTerrain");
  tolua_usertype(tolua_S,"Ogre::TerrainLayerBlendMap");
  tolua_usertype(tolua_S,"SF::Camera");
- tolua_usertype(tolua_S,"Ogre::Light");
+ tolua_usertype(tolua_S,"Ogre::Camera");
  tolua_usertype(tolua_S,"Ogre::TerrainGroup::RayResult");
+ tolua_usertype(tolua_S,"Ogre::Light");
  tolua_usertype(tolua_S,"SF::Logger");
- tolua_usertype(tolua_S,"std::vector<SF::GameObject*>");
  tolua_usertype(tolua_S,"Ogre::Plane");
- tolua_usertype(tolua_S,"SF::LuaScript");
+ tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"Ogre::list<Ogre::Plane>::type");
- tolua_usertype(tolua_S,"SF::Primitive");
+ tolua_usertype(tolua_S,"SF::LuaScript");
  tolua_usertype(tolua_S,"std::set<std::string>");
  tolua_usertype(tolua_S,"SF::GUI");
- tolua_usertype(tolua_S,"Ogre::MaterialPtr");
+ tolua_usertype(tolua_S,"SF::BoxCollider");
  tolua_usertype(tolua_S,"SF::SingleRayCastResult");
  tolua_usertype(tolua_S,"Ogre::Terrain::LayerInstance");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::Terrain::LayerInstanceList");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
  tolua_usertype(tolua_S,"Ogre::Sphere");
- tolua_usertype(tolua_S,"Ogre::PolygonMode");
+ tolua_usertype(tolua_S,"std::vector<SF::GameObject*>");
  tolua_usertype(tolua_S,"SF::Collider");
  tolua_usertype(tolua_S,"std::pair<unsigned int,unsigned int>");
  tolua_usertype(tolua_S,"SF::ManualObject");
@@ -25137,7 +25136,7 @@ static int tolua_Stormfighter_SF_Camera_setPolygonMode00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"SF::Camera",0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::PolygonMode",0,&tolua_err)) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -25145,7 +25144,7 @@ static int tolua_Stormfighter_SF_Camera_setPolygonMode00(lua_State* tolua_S)
 #endif
  {
   SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::PolygonMode polymode = *((Ogre::PolygonMode*)  tolua_tousertype(tolua_S,2,0));
+  Ogre::PolygonMode polymode = ((Ogre::PolygonMode) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPolygonMode'", NULL);
 #endif
@@ -29931,39 +29930,6 @@ static int tolua_Stormfighter_SF_PagedTerrain_addCamera00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: initBlendMaps of class  SF::PagedTerrain */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_PagedTerrain_initBlendMaps00
-static int tolua_Stormfighter_SF_PagedTerrain_initBlendMaps00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"SF::PagedTerrain",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"Ogre::Terrain",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  SF::PagedTerrain* self = (SF::PagedTerrain*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::Terrain* terrain = ((Ogre::Terrain*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'initBlendMaps'", NULL);
-#endif
-  {
-   self->initBlendMaps(terrain);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'initBlendMaps'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getTerrainGroup of class  SF::TerrainPagedWorldSection */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00
 static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00(lua_State* tolua_S)
@@ -30004,18 +29970,22 @@ static int tolua_Stormfighter_SF_TerrainPagedWorldSection_importData00(lua_State
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+  long x = ((long)  tolua_tonumber(tolua_S,2,0));
+  long y = ((long)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'importData'", NULL);
 #endif
   {
-   Ogre::Terrain::ImportData& tolua_ret = (Ogre::Terrain::ImportData&)  self->importData();
+   Ogre::Terrain::ImportData& tolua_ret = (Ogre::Terrain::ImportData&)  self->importData(x,y);
     tolua_pushusertype(tolua_S,(void*)&tolua_ret,"Ogre::Terrain::ImportData");
   }
  }
@@ -30038,30 +30008,80 @@ static int tolua_Stormfighter_SF_TerrainPagedWorldSection_defineLayer00(lua_Stat
      !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,6,&tolua_err)
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,6,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,7,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,8,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,9,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
-  unsigned int layer = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
-  float worldSize = ((float)  tolua_tonumber(tolua_S,3,0));
-   std::string first = ((  std::string)  tolua_tocppstring(tolua_S,4,0));
-   std::string second = ((  std::string)  tolua_tocppstring(tolua_S,5,0));
+  long x = ((long)  tolua_tonumber(tolua_S,2,0));
+  long y = ((long)  tolua_tonumber(tolua_S,3,0));
+  unsigned int layer = ((unsigned int)  tolua_tonumber(tolua_S,4,0));
+  float worldSize = ((float)  tolua_tonumber(tolua_S,5,0));
+   std::string first = ((  std::string)  tolua_tocppstring(tolua_S,6,0));
+   std::string second = ((  std::string)  tolua_tocppstring(tolua_S,7,0));
+   std::string blend = ((  std::string)  tolua_tocppstring(tolua_S,8,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'defineLayer'", NULL);
 #endif
   {
-   self->defineLayer(layer,worldSize,first,second);
+   self->defineLayer(x,y,layer,worldSize,first,second,blend);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'defineLayer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getNormalAt of class  SF::TerrainPagedWorldSection */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_TerrainPagedWorldSection_getNormalAt00
+static int tolua_Stormfighter_SF_TerrainPagedWorldSection_getNormalAt00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::TerrainPagedWorldSection",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::Vector3",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::TerrainPagedWorldSection* self = (SF::TerrainPagedWorldSection*)  tolua_tousertype(tolua_S,1,0);
+   Ogre::Vector3 position = *((  Ogre::Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNormalAt'", NULL);
+#endif
+  {
+    Ogre::Vector3 tolua_ret = (  Ogre::Vector3)  self->getNormalAt(position);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((Ogre::Vector3)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Vector3");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::Vector3));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::Vector3");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getNormalAt'.",&tolua_err);
  return 0;
 #endif
 }
@@ -32269,6 +32289,9 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getPoint",tolua_Stormfighter_Ogre_Ray_getPoint00);
     tolua_function(tolua_S,".mul",tolua_Stormfighter_Ogre_Ray__mul00);
    tolua_endmodule(tolua_S);
+   tolua_constant(tolua_S,"PM_POINTS",Ogre::PM_POINTS);
+   tolua_constant(tolua_S,"PM_WIREFRAME",Ogre::PM_WIREFRAME);
+   tolua_constant(tolua_S,"PM_SOLID",Ogre::PM_SOLID);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ogre",0);
   tolua_beginmodule(tolua_S,"Ogre");
@@ -33666,13 +33689,13 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"createWorldSection",tolua_Stormfighter_SF_PagedTerrain_createWorldSection00);
     tolua_function(tolua_S,"section",tolua_Stormfighter_SF_PagedTerrain_section00);
     tolua_function(tolua_S,"addCamera",tolua_Stormfighter_SF_PagedTerrain_addCamera00);
-    tolua_function(tolua_S,"initBlendMaps",tolua_Stormfighter_SF_PagedTerrain_initBlendMaps00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"TerrainPagedWorldSection","SF::TerrainPagedWorldSection","Ogre::TerrainPagedWorldSection",NULL);
    tolua_beginmodule(tolua_S,"TerrainPagedWorldSection");
     tolua_function(tolua_S,"getTerrainGroup",tolua_Stormfighter_SF_TerrainPagedWorldSection_getTerrainGroup00);
     tolua_function(tolua_S,"importData",tolua_Stormfighter_SF_TerrainPagedWorldSection_importData00);
     tolua_function(tolua_S,"defineLayer",tolua_Stormfighter_SF_TerrainPagedWorldSection_defineLayer00);
+    tolua_function(tolua_S,"getNormalAt",tolua_Stormfighter_SF_TerrainPagedWorldSection_getNormalAt00);
     tolua_function(tolua_S,"setLoadRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_setLoadRadius00);
     tolua_function(tolua_S,"getLoadRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_getLoadRadius00);
     tolua_function(tolua_S,"setHoldRadius",tolua_Stormfighter_SF_TerrainPagedWorldSection_setHoldRadius00);
