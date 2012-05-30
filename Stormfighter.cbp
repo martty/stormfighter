@@ -60,8 +60,7 @@
 			<Add directory="deps\include" />
 			<Add directory="deps\include\OGRE" />
 			<Add directory="deps\include\OIS" />
-			<Add directory="deps\boost_1_42" />
-			<Add directory="deps\boost_1_44" />
+			<Add directory="deps\boost" />
 			<Add directory="deps\include\bullet" />
 			<Add directory="deps\include\lua" />
 			<Add directory="deps\include\OGRE\Paging" />
