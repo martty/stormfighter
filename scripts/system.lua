@@ -36,6 +36,10 @@ function clamp(value, min, max)
   end
 end
 
+function defaultparameter(param, default)
+  if not param then return default; else return param; end
+end
+
 -- hijack print, so that it does not print to stdout, but rather to log
 stdout_print = print;
 function print(something)
@@ -259,12 +263,12 @@ end
 
 function System:_annotateCoreComponents()
   --Transform
-  self:annotate('Transform', 'position', 'SVector3');
-  self:annotate('Transform', 'orientation', 'SQuaternion');
-  self:annotate('Transform', 'scale', 'SVector3');
+  self:annotate('SF::Transform', 'position', 'SVector3');
+  self:annotate('SF::Transform', 'orientation', 'SQuaternion');
+  self:annotate('SF::Transform', 'scale', 'SVector3');
 
-  self:annotate('Mesh', 'meshName', 'string');
-  self:annotate('Primitive', 'meshName', 'string');
+  self:annotate('SF::Mesh', 'meshName', 'string');
+  self:annotate('SF::Primitive', 'meshName', 'string');
 end
 
 function System:annotate(object, field, otype, method, get, set, options)

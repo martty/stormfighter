@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 05/28/12 15:05:00.
+** Generated automatically by tolua++-1.0.92 on 06/14/12 14:29:57.
 */
 
 #ifndef __cplusplus
@@ -31833,6 +31833,37 @@ static int tolua_Stormfighter_SF_Resources_getResourceModified00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: reloadMaterials of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_reloadMaterials00
+static int tolua_Stormfighter_SF_Resources_reloadMaterials00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reloadMaterials'", NULL);
+#endif
+  {
+   self->reloadMaterials();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'reloadMaterials'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: DEFAULT_RESOURCE_GROUP_NAME of class  SF::Resources */
 #ifndef TOLUA_DISABLE_tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME
 static int tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME(lua_State* tolua_S)
@@ -33770,6 +33801,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"resourceExists",tolua_Stormfighter_SF_Resources_resourceExists00);
     tolua_function(tolua_S,"getResourceDirectory",tolua_Stormfighter_SF_Resources_getResourceDirectory00);
     tolua_function(tolua_S,"getResourceModified",tolua_Stormfighter_SF_Resources_getResourceModified00);
+    tolua_function(tolua_S,"reloadMaterials",tolua_Stormfighter_SF_Resources_reloadMaterials00);
     tolua_variable(tolua_S,"DEFAULT_RESOURCE_GROUP_NAME",tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME,NULL);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"StormfighterApp","SF::StormfighterApp","",NULL);

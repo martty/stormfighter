@@ -200,7 +200,6 @@ function Editor:update()
   if(self:onFixedFPS('gui', self.settings.advanced.gui_poll_fps)) then
     local cmd = GUI:pollCommands();
     local ocmd = cmd;
-    --print(ocmd);
     if(cmd:find(';')) then
       cmd = cmd:sub(1, cmd:rfind(';')); -- chop off scrambled shit if appears
       if(not (cmd == ";")) then
@@ -289,7 +288,7 @@ function Editor:openInspector(goname)
   local go = Hierarchy:find(goname);
   local cmps = go:allComponents();
   for i=0,cmps:size()-1 do
-    local otype = 'S'..cmps[i].type;
+    local otype = "SF::"..cmps[i].type;
     cmps[i] = tolua.cast(cmps[i], otype);
     print("inspector.addComponent('"..cmps[i].type.."');");
     GUI:executeJS("inspector.addComponent('"..cmps[i].type.."');");

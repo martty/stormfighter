@@ -63,6 +63,7 @@ bool Graphics::initialise(){
   ray_scene_query_->setSortByDistance(true);
 
   pagedTerrain_ = new PagedTerrain(sceneManager_);
+  Ogre::MaterialManager::getSingletonPtr()->setVerbose(true);
 
   return true;
 }

@@ -145,9 +145,13 @@
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
+		<Unit filename="scripts\input.lua" />
 		<Unit filename="scripts\manipulator.lua" />
 		<Unit filename="scripts\player.controller.lua" />
+		<Unit filename="scripts\showcase.lua" />
+		<Unit filename="scripts\showcase_rotator.lua" />
 		<Unit filename="scripts\system.lua" />
+		<Unit filename="scripts\terrain_test.lua" />
 		<Unit filename="scripts\world.lua" />
 		<Unit filename="src\BoxCollider.cc" />
 		<Unit filename="src\BulletOgreDebugDraw.cc" />

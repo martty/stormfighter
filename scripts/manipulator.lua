@@ -29,6 +29,8 @@ function Manipulator:initialise(editor)
 
   self:findOrCreate();
 
+  self.debugDraw = true;
+
   --add modeselect omnibar
   -- todo: onguiload
   --GUI:executeJS([[omnibar.addButton("translate-icon.png", "Editor:manipulator():setMode('translate');");]]);
@@ -62,7 +64,7 @@ function Manipulator:update()
           self:translate1D();
         end
       end
-    else
+    else -- clear
         self.action = "none";
     end
     self:checkForSideSelection();
@@ -82,6 +84,9 @@ function Manipulator:update()
     end
   end
 end
+
+-- translate in the plane which is defined by the normal of the face you grabbed
+-- PROGRESS: 100%
 
 function Manipulator:translate2D()
   local origin = self.selection:transform().position;
@@ -111,7 +116,49 @@ function Manipulator:translate2D()
 end
 
 -- TODO: make this work better (make it view dependent)
+-- Translate along the normal of the face you selected
+-- PROGRESS: 60%
 function Manipulator:translate1D()
+  local rotated_normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+  local origin = self.selection:transform().position;
+  if(not (self.action == "1D_translate")) then -- begin drag
+    self.current = {};
+    self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    self.current.plane = SPlane(rotated_normal, origin);
+    local intersection = Ogre.Math:intersects(self.current.drag_begin_ray, self.current.plane);
+    if (intersection.first) then
+      self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
+      self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
+      self.current.origin = origin;
+      self.action = "1D_translate";
+    end
+  else -- continue drag
+    local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
+    local plane = SPlane(rotated_normal, self.current.origin);
+    if self.debugDraw then
+      debugdrawplane(plane, 51, SColourValue.Red, true);
+    end
+    local intersection = Ogre.Math:intersects(drag_current_ray, plane);
+    if (intersection) then
+      local diff = drag_current_ray:getPoint(intersection.second) - self.current.center_offset_to_begin;
+      if self.debugDraw then
+        debugdrawvector(drag_current_ray:getPoint(intersection.second), self.current.origin, SColourValue.Green);
+        debugdrawvector(self.current.center_offset_to_begin, self.current.origin, SColourValue.White);
+        debugdrawvector(self.current.origin, SVector3(0,0,0), SColourValue.Blue);
+      end
+      local angle = self.normal:angleBetween(diff):valueDegrees();
+      local direction = false;
+      if(angle > 90) then
+        direction = -1;
+      else
+        direction = 1;
+      end
+      self.selection:transform():move(self.normal * diff:length() * direction * Editor.settings.manipulator.translateFactor);
+    end
+  end
+end
+
+function Manipulator:translate1D_old()
   local alternate_dir_1 = SVector3(self.normal.y,self.normal.z,self.normal.x);
   local alternate_dir_2 = SVector3(self.normal.z,self.normal.x,self.normal.z);
   local plane_1_normal = self.normal:crossProduct(alternate_dir_1);
@@ -134,14 +181,18 @@ function Manipulator:translate1D()
     local plane_1 = SPlane(plane_1_normal, origin);
     local plane_2 = SPlane(plane_2_normal, origin);
     local plane_3 = SPlane(rotated_normal, origin);
-    --[[debugdrawplane(plane_1, 51, SColourValue.Red, true);
-    debugdrawplane(plane_2, 51, SColourValue.Blue, true);
-    debugdrawplane(plane_3, 51, SColourValue.White, true);--]]
+    if self.debugDraw then
+      debugdrawplane(plane_1, 51, SColourValue.Red, true);
+      debugdrawplane(plane_2, 51, SColourValue.Blue, true);
+      debugdrawplane(plane_3, 51, SColourValue.White, true);
+    end
     local intersection = self:rayIntersectTwoPlanesNearestHit(drag_current_ray, plane_1, plane_2);
     if (intersection) then
       local diff = drag_current_ray:getPoint(intersection.second) - self.current.center_offset_to_begin;
-      --debugdrawvector(drag_current_ray:getPoint(intersection.second), origin, SColourValue.Green);
-      --debugdrawvector(self.current.center_offset_to_begin, origin, SColourValue.White);
+      if self.debugDraw then
+        debugdrawvector(drag_current_ray:getPoint(intersection.second), origin, SColourValue.Green);
+        debugdrawvector(self.current.center_offset_to_begin, origin, SColourValue.White);
+      end
       local angle = self.normal:angleBetween(diff):valueDegrees();
       local direction = false;
       if(angle > 90) then
@@ -149,7 +200,7 @@ function Manipulator:translate1D()
       else
         direction = 1;
       end
-      self.selection:transform():move(self.normal * diff:length() * direction * Editor.settings.manipulator.translateFactor);
+      --self.selection:transform():move(self.normal * diff:length() * direction * Editor.settings.manipulator.translateFactor);
     end
   end
 end
@@ -421,7 +472,7 @@ function Manipulator:selectSide(goname)
       self:deselectCurrentSide();
     end
   end
-  go:component("Mesh"):setMaterialName("Editor/manipulator_selected");
+  go:component("ManualObject"):setMaterialName("Editor/manipulator_selected");
   self.currentSide = go;
   local normal = SVector3(0,0,0);
   if(side == "top") then
@@ -441,7 +492,7 @@ function Manipulator:selectSide(goname)
 end
 
 function Manipulator:deselectCurrentSide()
-  self.currentSide:component("Mesh"):setMaterialName("Editor/manipulator_transparent");
+  self.currentSide:component("ManualObject"):setMaterialName("Editor/manipulator_transparent");
   self.currentSide = nil;
   self.normal = nil;
 end

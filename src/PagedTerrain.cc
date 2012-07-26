@@ -54,12 +54,14 @@ PagedTerrain::PagedTerrain(Ogre::SceneManager* sm){
 
 PagedTerrain::~PagedTerrain(){
   LOG("deleting pagedTerrain");
+  if (pageManager_){
   Ogre::PageManager::CameraList cameras = pageManager_->getCameraList();
-  for(Ogre::PageManager::CameraList::iterator it = cameras.begin(); it != cameras.end(); it++){
-    LOG("removed camera");
-    pageManager_->removeCamera(*it);
+    for(Ogre::PageManager::CameraList::iterator it = cameras.begin(); it != cameras.end(); it++){
+      LOG("removed camera");
+      pageManager_->removeCamera(*it);
+    }
+    delete pageManager_;
   }
-  delete pageManager_;
 }
 
 void PagedTerrain::createWorld(SString name){
