@@ -101,6 +101,14 @@ void StormfighterApp::setupStormfighterScene(){
   if(!scripting_->parseFile("scripts/init.lua"))
     exit(1);
 
+  GameObject* go = hierarchy_->getRoot();
+  //Component* c = go->component("Transform");
+  LOG("saving..");
+  //c->save();
+  LOG("save done.");
+  //LOG(c->serialise());
+  resources_->writeObjectFile("test.sf_object", go->serialise(true));
+  LOG("that was it.");
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
   physics_->addCollisionGroup("faller");

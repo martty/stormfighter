@@ -468,6 +468,37 @@ void GameObject::addCollision(CollisionData* colld){
   }
 }
 
+SString GameObject::serialise(bool recursive){
+  SString ret = "!"+name_+"\n";
+  if(parent_)
+    ret+="parent:"+parent_->name()+"\n";
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    ret += (*it).second->serialise();
+  }
+  if(recursive){
+    if(children_){
+      ret += children_->_serialise();
+    }
+  }
+  return ret;
+}
+
+SString GameObject::_serialise(){
+  SString ret="!"+name_+"\n";
+  if(parent_)
+    ret+="parent:"+parent_->name()+"\n";
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    ret += (*it).second->serialise();
+  }
+  if(next_){
+    ret += next_->_serialise();
+  }
+  if(children_){
+    ret += children_->_serialise();
+  }
+  return ret;
+}
+
 SAxisAlignedBox GameObject::getBoundingBox(){
   ComponentVector meshes = allComponentInChildren("Mesh");
   ComponentVector cameras = allComponentInChildren("Camera");

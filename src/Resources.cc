@@ -1,6 +1,8 @@
 #include "Resources.h"
 #include "Graphics.h"
 #include <sys/stat.h>
+#include <iostream>
+#include <fstream>
 
 namespace SF {
 
@@ -314,6 +316,20 @@ void Resources::reloadMaterials() {
       }
   }
   rptr->reload();*/
+}
+
+void Resources::writeObjectFile(SString filename, SString content){
+  std::ofstream myfile;
+  myfile.open(filename.c_str());
+  myfile << content;
+  myfile.close();
+}
+
+SString Resources::readObjectFile(SString filename){
+  std::ifstream myfile(filename.c_str());
+  std::string str((std::istreambuf_iterator<char>(myfile)),
+                 std::istreambuf_iterator<char>());
+  return str;
 }
 
 };

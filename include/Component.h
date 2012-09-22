@@ -7,6 +7,7 @@ namespace SF {
 
 struct CollisionData;
 class Transform;
+class Serialiser;
 
 /**
  * @brief Compenents are responsible for a part of a GameObject's behavior, appearance, etc.
@@ -58,6 +59,12 @@ class Component{
   /// to be called when the holder GameObject collider, every tick
   virtual void onCollisionStay(const CollisionData* collisionData){}
 
+  virtual SString serialise(){ return ""; }
+  virtual void deserialise(SString src){}
+
+  virtual void save(){}
+  virtual void load(){}
+
   enum State {CREATED, PREPARED, READY};
 
   State state() const;
@@ -77,6 +84,8 @@ protected:
   void setState(State new_state);
 
   virtual SString name() const = 0;
+
+  Serialiser* serialiser_;
  private:
   GameObject* object_;
   StormfighterApp* application_;

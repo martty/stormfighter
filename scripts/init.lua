@@ -61,7 +61,7 @@ citywall:addComponent(Mesh:new("citywall.mesh"));
 --print(citywall:component("Mesh").type);
 cam:transform().position = SVector3(0,10,-100);
 cam:transform():lookAt(SVector3(0,0,0));
-dofile("scripts/terrain_test.lua");
+--dofile("scripts/terrain_test.lua");
 --cam:transform().orientation = SQuaternion:new_local(SQuaternion.ZERO);
 Editor:init();
 

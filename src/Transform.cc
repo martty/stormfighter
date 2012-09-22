@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "GameObject.h"
 #include "RigidBody.h"
+#include "KVSerialiser.h"
 
 namespace SF {
 
@@ -20,6 +21,8 @@ void Transform::init (SVector3 position, SQuaternion orientation, SVector3 scale
 
   Ogre::UserObjectBindings& bindings = node_->getUserObjectBindings();
   bindings.setUserAny(Ogre::Any(this));
+
+  serialiser_ = new KVSerialiser();
 }
 
 Transform::Transform(SVector3 position, SQuaternion orientation, SVector3 scale) : node_(NULL){
@@ -47,6 +50,7 @@ Transform::Transform(bool isRoot) : node_(NULL){
 
   Ogre::UserObjectBindings& bindings = node_->getUserObjectBindings();
   bindings.setUserAny(Ogre::Any(this));
+  serialiser_ = new KVSerialiser();
 }
 
 Transform* Transform::clone() const{
@@ -187,6 +191,29 @@ bool Transform::isVisible(){
       isVisible = true;
   }
   return isVisible;
+}
+
+SString Transform::serialise(){
+  save();
+  return serialiser_->serialise();
+}
+
+void Transform::deserialise(SString src){
+  serialiser_->deserialise(src);
+  load();
+}
+
+void Transform::save(){
+  serialiser_->setComponentName("Transform");
+  serialiser_->saveSVector3("position", position());
+  serialiser_->saveSQuaternion("orientation", orientation());
+  serialiser_->saveSVector3("scale", scale());
+}
+
+void Transform::load(){
+  setPosition(serialiser_->loadSVector3("position"));
+  setOrientation(serialiser_->loadSQuaternion("orientation"));
+  setScale(serialiser_->loadSVector3("scale"));
 }
 
 }; // namespace SF
