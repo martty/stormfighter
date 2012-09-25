@@ -70,7 +70,7 @@ void StormfighterApp::startStormfighter(){
   log("GUI initialized!");
   gui_->initialise();
   log("Initializing hierarchy");
-  hierarchy_ = new Hierarchy();
+  hierarchy_ = new Hierarchy(this);
   log("Hierarchy initialized!");
   log("Initializing physics");
   physics_ = new Physics(this);
@@ -107,7 +107,8 @@ void StormfighterApp::setupStormfighterScene(){
   //c->save();
   LOG("save done.");
   //LOG(c->serialise());
-  resources_->writeObjectFile("test.sf_object", go->serialise(true));
+  //resources_->writeObjectFile("test.sf_object", go->serialise(true));
+  hierarchy_->loadGameObjectFromFile("test.sf_object");
   LOG("that was it.");
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
@@ -219,7 +220,7 @@ bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
 
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
-  hierarchy_->initialise(this);
+  hierarchy_->initialise();
   //log(hierarchy_->debug());
   log("Running deferred initializations");
   scripting()->executeString("System:_deferredInit();");

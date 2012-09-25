@@ -470,8 +470,7 @@ void GameObject::addCollision(CollisionData* colld){
 
 SString GameObject::serialise(bool recursive){
   SString ret = "!"+name_+"\n";
-  if(parent_)
-    ret+="parent:"+parent_->name()+"\n";
+  // don't set parent for root of save!
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
     ret += (*it).second->serialise();
   }
@@ -497,6 +496,64 @@ SString GameObject::_serialise(){
     ret += children_->_serialise();
   }
   return ret;
+}
+
+GameObject* GameObject::deserialise(SString src){
+  size_t start = src.find("!");
+  if(start == SString::npos){
+    return NULL;
+  }
+  // extract name of GO
+  size_t end_of_name_line = src.find("\n");
+  SString name = src.substr(start+1, end_of_name_line-start-1);
+  LOG("NAME:"+name);
+  GameObject* go = new GameObject(name);
+  size_t beginning_of_component_part = src.find("#");
+  size_t current_pos = end_of_name_line+1;
+  // process all GO params
+  while(current_pos < beginning_of_component_part){
+    size_t colon = src.find(":", current_pos);
+    if(colon > beginning_of_component_part)
+      break;
+    SString key = src.substr(current_pos, colon-current_pos);
+    size_t end_of_line = src.find("\n", colon);
+    SString value = src.substr(colon+1, end_of_line-colon-1);
+    LOG("KEY:"+key);
+    LOG("VALUE:"+value);
+    current_pos = end_of_line+1;
+  }
+  // TODO: reparenting
+  // process all components
+  size_t beginning_of_next_go = src.find("!", current_pos);
+  while(current_pos < beginning_of_next_go){
+    size_t start_of_compname = src.find("#", current_pos);
+    if(start_of_compname == SString::npos || start_of_compname > beginning_of_next_go){
+      break;
+    }
+    size_t end_of_compname_line = src.find("\n", current_pos);
+    SString compname = src.substr(start_of_compname+1, end_of_compname_line-start_of_compname-1);
+    LOG("COMPNAME:"+compname);
+    size_t end_of_this_component = src.find("@", end_of_compname_line);
+    // component's data, chop off @ from the end
+    SString cmpdata = src.substr(end_of_compname_line+1, end_of_this_component-end_of_compname_line-1);
+    LOG("-------- COMPONENT DATA ----------");
+    LOG(cmpdata);
+    LOG("----------------------------------");
+    // create Component which has this name
+    Component* cmp;
+    if(compname == "Transform"){
+      // Transform already exists in new GO, do not create
+      go->transform()->deserialise(cmpdata);
+    }
+    current_pos = end_of_this_component;
+  }
+  // get part of string for next go (if there is another one left)
+  if(beginning_of_next_go != SString::npos){
+    SString next_go_source = src.substr(beginning_of_next_go);
+    // deserialise next
+    GameObject::deserialise(next_go_source);
+  }
+  return go;
 }
 
 SAxisAlignedBox GameObject::getBoundingBox(){

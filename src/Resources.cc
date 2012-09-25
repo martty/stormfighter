@@ -326,10 +326,12 @@ void Resources::writeObjectFile(SString filename, SString content){
 }
 
 SString Resources::readObjectFile(SString filename){
+  LOG("in res");
   std::ifstream myfile(filename.c_str());
-  std::string str((std::istreambuf_iterator<char>(myfile)),
-                 std::istreambuf_iterator<char>());
-  return str;
+  LOG("open");
+  SString s;
+  std::getline( myfile, s, '\0');
+  return s;
 }
 
 };

@@ -1,21 +1,22 @@
 #include "Hierarchy.h"
+#include "StormfighterApp.h"
+#include "Resources.h"
 
 namespace SF {
 
-Hierarchy::Hierarchy(){
+Hierarchy::Hierarchy(StormfighterApp* app){
   // set up root GO
   root_ = new GameObject(true);
   fresh_.clear();
+  application_ = app;
   state_ = DOWN;
-  application_ = NULL;
 }
 
 Hierarchy::~Hierarchy(){
   delete root_;
 }
 
-void Hierarchy::initialise(StormfighterApp* app){
-  application_ = app;
+void Hierarchy::initialise(){
   state_ = UP;
   root_->coreInitialize(application_, true);
   root_->scriptInitialize(application_, true);
@@ -75,6 +76,15 @@ void Hierarchy::destroyGameObject(SString name){
 
 void Hierarchy::destroyGameObject(GameObject* obj){
   return;
+}
+
+void Hierarchy::loadGameObjectFromFile(SString filename){
+  LOG("in hier");
+  SString src = application_->resources()->readObjectFile(filename);
+  LOG("read.");
+  GameObject* go = GameObject::deserialise(src);
+  if(go)
+    addChildToRoot(go);
 }
 
 GameObject* Hierarchy::find(SString name){

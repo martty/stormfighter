@@ -1,0 +1,20 @@
+!load1
+#Transform
+orientation:0.0498137 -0.998759 0 0
+position:0 101 -100
+scale:1 1 1
+@
+!load2
+parent:load1
+#Transform
+orientation:1 0 0 0
+position:0 0 0
+scale:1 1 1
+@
+!load3
+parent:load2
+#Transform
+orientation:1 0 0 0
+position:0 2 0
+scale:1 1 1
+@

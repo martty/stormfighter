@@ -13,7 +13,7 @@ namespace SF {
 
 class Hierarchy {
  public:
-  Hierarchy();
+  Hierarchy(StormfighterApp* app);
   ~Hierarchy();
 
   /// Searches for GO with given name in hierarchy (BFS)
@@ -33,7 +33,9 @@ class Hierarchy {
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
 
-  void initialise(StormfighterApp* app);
+  void loadGameObjectFromFile(SString filename);
+
+  void initialise();
   void update();
   void physicsUpdate();
 

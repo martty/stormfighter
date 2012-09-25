@@ -16,11 +16,26 @@ SString KVSerialiser::serialise(){
   for(KVmap::iterator it=KVmap_.begin(); it != KVmap_.end(); it++){
     result += (*it).first + ":" + (*it).second + "\n";
   }
-  return result;
+  return result+"@\n";
 }
 
-void KVSerialiser::deserialise(SString source){
+void KVSerialiser::deserialise(SString src){
   KVmap_.clear();
+  size_t current_pos = 0;
+  LOG("GET ERROR NAO");
+  while(current_pos < src.length()){
+    size_t colon = src.find(":", current_pos);
+    if(colon == SString::npos)
+      break;
+    SString key = src.substr(current_pos, colon-current_pos);
+    size_t end_of_line = src.find("\n", colon);
+    SString value = src.substr(colon+1, end_of_line-colon-1);
+    LOG("KEY:"+key);
+    LOG("VALUE:"+value);
+    KVmap_[key] = value;
+    current_pos = end_of_line+1;
+  }
+  LOG("NO ERROR");
 }
 
 void KVSerialiser::saveSVector3(SString key, SVector3 src){

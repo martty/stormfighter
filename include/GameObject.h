@@ -86,8 +86,8 @@ class GameObject {
   ///Serialise GO (and descendants if recursive == true)
   SString serialise(bool recursive);
 
-  ///Deserialise GO from string
-  static void deserialise(SString src);
+  ///Deserialise a GO hierarchy from string
+  static GameObject* deserialise(SString src);
 
   /// Gets an AABB which bounds this GameObject and it's descendants
   SAxisAlignedBox getBoundingBox();
