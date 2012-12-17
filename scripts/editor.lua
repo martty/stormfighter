@@ -203,6 +203,7 @@ function Editor:update()
     if(cmd:find(';')) then
       cmd = cmd:sub(1, cmd:rfind(';')); -- chop off scrambled shit if appears
       if(not (cmd == ";")) then
+        print(cmd);
         local f = loadstring(cmd);
         if(f) then
           f();
@@ -221,46 +222,29 @@ function string:rfind(token, start)
   return self:len()-pos+1;
 end
 
-function Editor:openHierarchyBrowser()
-  --obtain GOs from hierarchy
-  local js = "showHierarchy([";
-  local list = Hierarchy:debug();
-  local gos = {};
-  local pos = 0;
-  local lastpos = 0;
-  while pos < list:len() do
-    pos = list:find('\n', lastpos);
-    if(pos == nil) then
-      break;
-    end
-    table.insert(gos, list:sub(lastpos, pos));
-    lastpos = pos+1;
-  end
-  for i=1, #gos do
-    local str = gos[i];
-    gos[i] = {};
-    local s = str:find('[', 1, true);
-    local e = str:find(']', 1, true);
-    gos[i].name = '"'..str:sub(s+1, e-1)..'"';
-    local j = 0;
-    local c = 0;
-    while j do
-      j = str:find('*', j+1);
-      c = c+1;
-    end
-    gos[i].level = c-1;
-    gos[i].command = "'Editor:hierarchySelect("..gos[i].name..");'";
-   -- gos[i].command ="'print(\"ohai\");'";
-    js = js..gos[i].name..','..gos[i].level..','..gos[i].command..',';
-  end
-  js = js:sub(1, js:len()-1);
-  js = js..']);';
-  --print(js);
+logprint = print;
+function print(something)
+  logprint(something)
+  GUI:executeJS('console.log("'..something..'");');
+end
+
+function Editor:executeJS(js)
+  local escapedjs = js:gsub('"', '&quot;');
+  GUI:executeJS([[console.logJSCall("]]..escapedjs..[[");]]);
   GUI:executeJS(js);
 end
 
-function Editor:hierarchySelect(goname)
-  --self:showManipulator(goname);
+function Editor:openHierarchyBrowser()
+  -- set up commands
+  Editor:executeJS('hierarchy.setCommandPatterns({"select" : "Editor:selectGameObject($0);", "delete" : "Editor:delete($0);", "reparent" : "Editor:reparent($0, $1);"});');
+  --obtain GOs from hierarchy
+  local hierarchyJSON = Hierarchy:serialise();
+  local js = "hierarchy.update('"..hierarchyJSON.."');";
+  Editor:executeJS(js);
+end
+
+function Editor:selectGameObject(goname)
+  self:manipulator():show(goname);
 end
 
 function Editor:saveScene()
@@ -282,6 +266,7 @@ function Editor:saveScene()
 end
 
 function Editor:openInspector(goname)
+  Editor:executeJS('inspector.setCommandPatterns({"setproperty" : "Editor:setProperty($0, $1, $2);", "setcomponentproperty" : "Editor:setComponentProperty($0, $1, $2, $3);", "addcomponent" : "Editor:addComponent($0, $1);"});');
   GUI:executeJS("inspector.clear(); inspector.show();");
   GUI:executeJS("inspector.setGameObjectName('"..goname.."');");
   print("inspector.setGameObjectName('"..goname.."');");
@@ -294,13 +279,17 @@ function Editor:openInspector(goname)
     GUI:executeJS("inspector.addComponent('"..cmps[i].type.."');");
     if(System.annotations[otype]) then
       for field,v in pairs(System.annotations[otype].properties) do
-        print("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."',"..System:makeSetCommand(cmps[i], field)..");");
-        GUI:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."',"..System:makeSetCommand(cmps[i], field)..");");
-        print("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..System:simpleSerialize(System:getField(cmps[i], field)).."');");
-        GUI:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..System:simpleSerialize(System:getField(cmps[i], field)).."');");
+        print("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."');");
+        GUI:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."');");
+        print("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..tostring(System:getField(cmps[i], field)).."');");
+        GUI:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..tostring(System:getField(cmps[i], field)).."');");
       end
     end
   end
+end
+
+function Editor:setComponentProperty(goname, component, property, value)
+  print(goname..component..property..value);
 end
 
 function Editor:_generateMaterialThumbnails()

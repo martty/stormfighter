@@ -189,6 +189,8 @@ class Hierarchy {
 
   /// Returns the whole hierarchy (DFS)
   SString debug();
+
+  SString serialise();
 };
 
 class Resources : public Module{

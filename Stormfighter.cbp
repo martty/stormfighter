@@ -60,7 +60,7 @@
 			<Add directory="deps\include" />
 			<Add directory="deps\include\OGRE" />
 			<Add directory="deps\include\OIS" />
-			<Add directory="deps\boost" />
+			<Add directory="deps\boost_1_52" />
 			<Add directory="deps\include\bullet" />
 			<Add directory="deps\include\lua" />
 			<Add directory="deps\include\OGRE\Paging" />
@@ -71,9 +71,11 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="deps/lib/lua5.1.dll" />
 			<Add library="tolua++" />
+			<Add library="boost_system" />
 			<Add directory="deps\lib\$(TARGET_NAME)" />
 			<Add directory="deps\lib" />
 			<Add directory="deps\lib\Release" />
+			<Add directory="deps\boost_1_52\lib" />
 		</Linker>
 		<Unit filename="include\BoxCollider.h" />
 		<Unit filename="include\BulletOgreDebugDraw.h" />

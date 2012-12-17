@@ -59,10 +59,10 @@ class Component{
   /// to be called when the holder GameObject collider, every tick
   virtual void onCollisionStay(const CollisionData* collisionData){}
 
-  virtual SString serialise(){ return ""; }
-  virtual void deserialise(SString src){}
+  virtual SPropertyTree serialise(){ return tree_; }
+  virtual void deserialise(SPropertyTree src){ tree_ = src; }
 
-  virtual void save(){}
+  virtual void save(){tree_.put("type", type_);}
   virtual void load(){}
 
   enum State {CREATED, PREPARED, READY};
@@ -85,7 +85,15 @@ protected:
 
   virtual SString name() const = 0;
 
-  Serialiser* serialiser_;
+  SPropertyTree tree_;
+
+  void setProperty(SString key, SVector3 value){tree_.put(key, Ogre::StringConverter::toString(value));}
+  void setProperty(SString key, SQuaternion value){tree_.put(key, Ogre::StringConverter::toString(value));}
+  void setProperty(SString key, SString value){tree_.put(key, value);}
+
+  SString getSStringProperty(SString key){return tree_.get<SString>(key);}
+  SVector3 getSVector3Property(SString key){return Ogre::StringConverter::parseVector3(tree_.get<SString>(key));}
+  SQuaternion getSQuaternionProperty(SString key){return Ogre::StringConverter::parseQuaternion(tree_.get<SString>(key));}
  private:
   GameObject* object_;
   StormfighterApp* application_;

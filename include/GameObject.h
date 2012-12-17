@@ -84,10 +84,10 @@ class GameObject {
   void clearChildren();
 
   ///Serialise GO (and descendants if recursive == true)
-  SString serialise(bool recursive);
+  SPropertyTree serialise(bool recursive);
 
   ///Deserialise a GO hierarchy from string
-  static GameObject* deserialise(SString src);
+  static GameObject* deserialise(SPropertyTree src);
 
   /// Gets an AABB which bounds this GameObject and it's descendants
   SAxisAlignedBox getBoundingBox();
@@ -111,8 +111,6 @@ class GameObject {
   Component* _firstComponentInChildren(const SString& type); /// internal helper
   Component* _firstComponentGroupInChildren(const SString& group); /// internal helper
   void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
-
-  SString _serialise(); /// internal helper
 
   GameObject* _find(const SString& name);
 

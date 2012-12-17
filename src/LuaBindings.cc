@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 06/14/12 14:29:57.
+** Generated automatically by tolua++-1.0.92 on 12/16/12 12:22:45.
 */
 
 #ifndef __cplusplus
@@ -31653,6 +31653,38 @@ static int tolua_Stormfighter_SF_Hierarchy_debug00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: serialise of class  SF::Hierarchy */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_serialise00
+static int tolua_Stormfighter_SF_Hierarchy_serialise00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Hierarchy",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Hierarchy* self = (SF::Hierarchy*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'serialise'", NULL);
+#endif
+  {
+    std::string tolua_ret = (  std::string)  self->serialise();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'serialise'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: createResourceGroup of class  SF::Resources */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_createResourceGroup00
 static int tolua_Stormfighter_SF_Resources_createResourceGroup00(lua_State* tolua_S)
@@ -33793,6 +33825,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"destroyGameObject",tolua_Stormfighter_SF_Hierarchy_destroyGameObject01);
     tolua_function(tolua_S,"getRoot",tolua_Stormfighter_SF_Hierarchy_getRoot00);
     tolua_function(tolua_S,"debug",tolua_Stormfighter_SF_Hierarchy_debug00);
+    tolua_function(tolua_S,"serialise",tolua_Stormfighter_SF_Hierarchy_serialise00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Resources","SF::Resources","Module",NULL);
    tolua_beginmodule(tolua_S,"Resources");

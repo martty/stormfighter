@@ -1,6 +1,7 @@
 #include "Hierarchy.h"
 #include "StormfighterApp.h"
 #include "Resources.h"
+#include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
 
@@ -82,9 +83,10 @@ void Hierarchy::loadGameObjectFromFile(SString filename){
   LOG("in hier");
   SString src = application_->resources()->readObjectFile(filename);
   LOG("read.");
-  GameObject* go = GameObject::deserialise(src);
-  if(go)
-    addChildToRoot(go);
+  //TODO: fix
+  //GameObject* go = GameObject::deserialise(src);
+  //if(go)
+  //  addChildToRoot(go);
 }
 
 GameObject* Hierarchy::find(SString name){
@@ -114,6 +116,34 @@ SString Hierarchy::debug(){
       return str;
   }
   return str;
+}
+
+SString Hierarchy::serialise(){
+  using boost::property_tree::ptree;
+  ptree pt;
+
+  pt.add_child("hierarchy", _serialiseSubtree(root_));
+  std::stringstream ss;
+  write_json(ss, pt, false);
+  write_json("test.json", pt);
+  return ss.str();
+}
+
+boost::property_tree::ptree Hierarchy::_serialiseSubtree(GameObject* g){
+  using boost::property_tree::ptree;
+  ptree pt;
+  ptree children;
+
+  pt.put("name", g->name());
+  pt.put("isDisabled", false); // FIXME
+
+  if (g->children_){
+    for(GameObject* f = g->children_; f != NULL; f=f->next_){
+      children.push_back(std::make_pair("", _serialiseSubtree(f)));
+    }
+    pt.add_child("children", children);
+  }
+  return pt;
 }
 
 }; // namespace SF

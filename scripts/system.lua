@@ -1,7 +1,7 @@
 -- typedefs (we can drop the S if we want)
 SVector3 = Ogre.Vector3;
 SVector3.__tostring = function(e)
-  return e.x..','..e.y..','..e.z;
+  return 'SVector3('..e.x..','..e.y..','..e.z..')';
 end
 SQuaternion = Ogre.Quaternion;
 SQuaternion.__tostring = function (e)
@@ -160,6 +160,7 @@ function SVector2(x,y)
   return SVector3(x,y,0);
 end
 
+-- do some initialisation
 function System:_initialise()
   -- dump SF.* into global namespace
   local global_env = getfenv(0);
@@ -246,31 +247,15 @@ function System:registerComponent(cname, newfun)
   Components[cname] = newfun;
 end
 
-function System:_annotateBasicTypes()
-  System.annotations.SVector3 = {};
-  local v = System.annotations.SVector3;
-  v.serialize = function(vector)
-    return vector.x..','..vector.y..','..vector.z;
-  end
-  System.annotations['Ogre::Vector3'] = v;
-  System.annotations.SQuaternion = {};
-  v = System.annotations.SQuaternion;
-  v.serialize = function(quat)
-    return quat.x..','..quat.y..','..quat.z..','..quat.w;
-  end
-  System.annotations['Ogre::Quaternion'] = v;
-end
-
-function System:_annotateCoreComponents()
-  --Transform
-  self:annotate('SF::Transform', 'position', 'SVector3');
-  self:annotate('SF::Transform', 'orientation', 'SQuaternion');
-  self:annotate('SF::Transform', 'scale', 'SVector3');
-
-  self:annotate('SF::Mesh', 'meshName', 'string');
-  self:annotate('SF::Primitive', 'meshName', 'string');
-end
-
+-- Annotations
+-- because we cannot directly access usertype fields
+-- we manually provide getter and setter methods for the fields of the objects
+-- object: string name of class
+-- field: string name of field
+-- method: 'normal' -> provide set and get functions
+--         'property' -> field behaves like a property eg.: object[field] = value
+-- get, set: getter and setter functions names in string (must be global identifiers!!), only for normal method
+-- options : reserved
 function System:annotate(object, field, otype, method, get, set, options)
   local opts = options or {};
   method = method or 'property';
@@ -294,12 +279,41 @@ function System:annotate(object, field, otype, method, get, set, options)
   end
 end
 
+-- set up annotations for basic types
+function System:_annotateBasicTypes()
+  System.annotations.SVector3 = {};
+  local v = System.annotations.SVector3;
+  v.serialize = function(vector)
+    return vector.x..','..vector.y..','..vector.z;
+  end
+  System.annotations['Ogre::Vector3'] = v;
+  System.annotations.SQuaternion = {};
+  v = System.annotations.SQuaternion;
+  v.serialize = function(quat)
+    return quat.x..','..quat.y..','..quat.z..','..quat.w;
+  end
+  System.annotations['Ogre::Quaternion'] = v;
+end
+
+-- here we set up the annotations for core components
+function System:_annotateCoreComponents()
+  --Transform
+  self:annotate('SF::Transform', 'position', 'SVector3');
+  self:annotate('SF::Transform', 'orientation', 'SQuaternion');
+  self:annotate('SF::Transform', 'scale', 'SVector3');
+
+  self:annotate('SF::Mesh', 'meshName', 'SString');
+  self:annotate('SF::Primitive', 'meshName', 'SString');
+end
+
+-- assigns a unique id (ID) for an object (eg. gameobject, component..)
 function System:track(object)
   self.object_counter = self.object_counter + 1;
   object.tracking_id = self.object_counter;
   self.tracked_objects[self.object_counter] = object;
 end
 
+-- retrieves an objects based on its unique id (ID)
 function System:getObject(tracking_id)
   return self.tracked_objects[tracking_id];
 end
@@ -319,6 +333,8 @@ function System:setField(object, field, value)
 end
 
 -- returns an annotated object's field
+-- object is an existing object, eg. GO
+-- field is the string name of the given field
 function System:getField(object, field)
   local otype = tolua.type(object);
   if(self.annotations[otype] and self.annotations[otype].properties[field]) then

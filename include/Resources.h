@@ -25,7 +25,7 @@ class Resources : public Module{
   // returns the time when the given resource was modified
   long long getResourceModified(SString resourceName, SString resourceGroup);
 
-  void writeObjectFile(SString filename, SString content);
+  void writeObjectFile(SString filename, SPropertyTree tree);
 
   SString readObjectFile(SString filename);
 

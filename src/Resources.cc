@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <fstream>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
 
@@ -318,11 +319,11 @@ void Resources::reloadMaterials() {
   rptr->reload();*/
 }
 
-void Resources::writeObjectFile(SString filename, SString content){
-  std::ofstream myfile;
-  myfile.open(filename.c_str());
-  myfile << content;
-  myfile.close();
+void Resources::writeObjectFile(SString filename, SPropertyTree tree){
+  boost::property_tree::write_json(filename, tree);
+  //myfile.open(filename.c_str());
+  //myfile << content;
+  //myfile.close();
 }
 
 SString Resources::readObjectFile(SString filename){

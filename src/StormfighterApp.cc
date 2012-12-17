@@ -105,10 +105,13 @@ void StormfighterApp::setupStormfighterScene(){
   //Component* c = go->component("Transform");
   LOG("saving..");
   //c->save();
+  //go->serialise();
   LOG("save done.");
   //LOG(c->serialise());
-  //resources_->writeObjectFile("test.sf_object", go->serialise(true));
-  hierarchy_->loadGameObjectFromFile("test.sf_object");
+  //resources_->writeObjectFile("test.object.json", go->serialise(true));
+  GameObject* doppelganger = GameObject::deserialise(go->serialise(true));
+  resources_->writeObjectFile("test2.object.json", doppelganger->serialise(true));
+  //hierarchy_->loadGameObjectFromFile("test.sf_object");
   LOG("that was it.");
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");

@@ -90,9 +90,6 @@ class Transform : public Component {
   /// Detach Ogre::MovableObject from this Transform
   void detachObject(Ogre::MovableObject* object);
 
-  SString serialise();
-  void deserialise(SString src);
-
   void save();
   void load();
 
