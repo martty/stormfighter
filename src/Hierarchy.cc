@@ -8,6 +8,8 @@ namespace SF {
 Hierarchy::Hierarchy(StormfighterApp* app){
   // set up root GO
   root_ = new GameObject(true);
+  root_->addTag("no-serialise");
+  //root_->addTag("no-select");
   fresh_.clear();
   application_ = app;
   state_ = DOWN;
@@ -80,13 +82,10 @@ void Hierarchy::destroyGameObject(GameObject* obj){
 }
 
 void Hierarchy::loadGameObjectFromFile(SString filename){
-  LOG("in hier");
-  SString src = application_->resources()->readObjectFile(filename);
-  LOG("read.");
-  //TODO: fix
-  //GameObject* go = GameObject::deserialise(src);
-  //if(go)
-  //  addChildToRoot(go);
+  SPropertyTree src = application_->resources()->readObjectFile(filename);
+  GameObject* go = GameObject::deserialise(src);
+  if(go)
+    addChildToRoot(go);
 }
 
 GameObject* Hierarchy::find(SString name){
@@ -119,31 +118,12 @@ SString Hierarchy::debug(){
 }
 
 SString Hierarchy::serialise(){
-  using boost::property_tree::ptree;
-  ptree pt;
+  SPropertyTree pt;
 
-  pt.add_child("hierarchy", _serialiseSubtree(root_));
+  pt.add_child("hierarchy", root_->serialise(true));
   std::stringstream ss;
   write_json(ss, pt, false);
-  write_json("test.json", pt);
   return ss.str();
-}
-
-boost::property_tree::ptree Hierarchy::_serialiseSubtree(GameObject* g){
-  using boost::property_tree::ptree;
-  ptree pt;
-  ptree children;
-
-  pt.put("name", g->name());
-  pt.put("isDisabled", false); // FIXME
-
-  if (g->children_){
-    for(GameObject* f = g->children_; f != NULL; f=f->next_){
-      children.push_back(std::make_pair("", _serialiseSubtree(f)));
-    }
-    pt.add_child("children", children);
-  }
-  return pt;
 }
 
 }; // namespace SF

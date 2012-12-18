@@ -7,6 +7,7 @@
 #include "Physics.h"
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
 
@@ -183,14 +184,15 @@ GameObjectList GameObject::children(){
   return golist;
 }
 // BFS implementation of find (probably more efficient in usual scenegraphs)
+// TODO: tests!
 GameObject* GameObject::find(const SString& name){
   GameObject* found = NULL;
   if(name == name_)
     return this;
   if(parent_){
-    parent_->_find(name);
+    return parent_->_find(name);
   } else {
-    _find(name);
+    return _find(name);
   }
 }
 
@@ -471,6 +473,9 @@ void GameObject::addCollision(CollisionData* colld){
 }
 
 SPropertyTree GameObject::serialise(bool recursive){
+  if (hasTag("no-serialise-recursive")){ // this means we return an empty tree, serialisation hits an end
+    return SPropertyTree();
+  }
   SPropertyTree ptree;
   SPropertyTree cmps;
   SPropertyTree children;
@@ -483,29 +488,60 @@ SPropertyTree GameObject::serialise(bool recursive){
   if(recursive){
     if(children_){
       for(GameObject* f = children_; f != NULL; f=f->next_){
-        children.push_back(std::make_pair("", f->serialise(true)));
+        SPropertyTree ptch = f->serialise(true);
+        if(!ptch.empty()) // don't put empty subtrees in
+          children.push_back(std::make_pair("", ptch));
       }
-      ptree.add_child("children", children);
+      if(!children.empty()) // only create node if a children wanted serialisation
+        ptree.add_child("children", children);
     }
   }
-  return ptree;
+  if(hasTag("no-serialise")){ // this gameobject stays out of the tree, return only the children as an array
+    return children;
+  } else {
+    return ptree;
+  }
+}
+
+SString GameObject::serialiseJSON(bool recursive){
+  SPropertyTree pt = serialise(recursive);
+  std::stringstream ss;
+  boost::property_tree::write_json(ss, pt, true); // pretty print
+  return ss.str();
 }
 
 GameObject* GameObject::deserialise(SPropertyTree src){
-  SString name = src.get<SString>("name");
-  GameObject* go = new GameObject(name);
-  const SPropertyTree &components = src.get_child("components");
-  BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
-    if(v.first == "Transform"){
-      go->transform()->deserialise(v.second);
+  // two possibilities : top node - GO
+  //                   : top node - array of GOs
+  if(src.count("name") == 1){ // top node - GO
+    SString name = src.get<SString>("name");
+    GameObject* go = new GameObject(name);
+    BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
+      if(v.first == "Transform"){
+        go->transform()->deserialise(v.second);
+      }
     }
-  }
-  if(src.count("children") != 0){
-    BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("children")){
-      go->addChild(GameObject::deserialise(v.second));
+    if(src.count("children") != 0){
+      BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("children")){
+        go->addChild(GameObject::deserialise(v.second));
+      }
     }
+    return go;
+  } else {  // top node - array of GOs
+    GameObjectList gos;
+    // create all GOs and put them in a list
+    BOOST_FOREACH(SPropertyTree::value_type &v, src){
+      gos.push_back(GameObject::deserialise(v.second));
+    }
+    // if we have just one GO, we are done
+    if (gos.size() == 1)
+      return gos[0];
+    // make them siblings of the first one
+    for(int i = 1; i < gos.size(); i++){
+      gos[0]->addSibling(gos[i]);
+    }
+    return gos[0];
   }
-  return go;
 }
 
 SAxisAlignedBox GameObject::getBoundingBox(){
@@ -523,5 +559,28 @@ SAxisAlignedBox GameObject::getBoundingBox(){
   }
   return bbox;
 }
+
+void GameObject::addTag(SString tag){
+  tags_.insert(tag);
+}
+
+void GameObject::removeTag(SString tag){
+  tags_.erase(tags_.find(tag));
+}
+
+bool GameObject::hasTag(SString tag){
+  if(tags_.find(tag) == tags_.end())
+    return false;
+  else
+    return true;
+}
+
+StringVector GameObject::tags(){
+  StringVector vec;
+  for (std::set<SString>::iterator it=tags_.begin(); it!=tags_.end(); it++)
+    vec.push_back(*it);
+  return vec;
+}
+
 
 }; // namespace SF

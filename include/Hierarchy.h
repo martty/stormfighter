@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "GameObject.h"
-#include <boost/property_tree/ptree.hpp>
 
 namespace SF {
 
@@ -45,7 +44,6 @@ class Hierarchy {
 
   /// Returns a JSON representation of the structure
   SString serialise();
-  boost::property_tree::ptree _serialiseSubtree(GameObject* g);
 
  private:
   enum ModuleState { DOWN, UP};

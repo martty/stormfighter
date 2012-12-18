@@ -96,7 +96,6 @@
 		<Unit filename="include\Graphics.h" />
 		<Unit filename="include\Hierarchy.h" />
 		<Unit filename="include\Input.h" />
-		<Unit filename="include\KVSerialiser.h" />
 		<Unit filename="include\Library.h" />
 		<Unit filename="include\Light.h" />
 		<Unit filename="include\Logger.h" />
@@ -146,10 +145,12 @@
 		<Unit filename="include\core_ois.pkg" />
 		<Unit filename="include\stdlib.pkg" />
 		<Unit filename="scripts\chasecameracontroller.lua" />
+		<Unit filename="scripts\console.lua" />
 		<Unit filename="scripts\editor.lua" />
 		<Unit filename="scripts\freecameracontroller.lua" />
 		<Unit filename="scripts\init.lua" />
 		<Unit filename="scripts\input.lua" />
+		<Unit filename="scripts\inspector.lua" />
 		<Unit filename="scripts\manipulator.lua" />
 		<Unit filename="scripts\player.controller.lua" />
 		<Unit filename="scripts\showcase.lua" />
@@ -175,7 +176,6 @@
 		<Unit filename="src\Graphics.cc" />
 		<Unit filename="src\Hierarchy.cc" />
 		<Unit filename="src\Input.cc" />
-		<Unit filename="src\KVSerialiser.cc" />
 		<Unit filename="src\Light.cc" />
 		<Unit filename="src\Logger.cc" />
 		<Unit filename="src\LuaBindings.cc" />

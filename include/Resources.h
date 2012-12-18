@@ -27,7 +27,7 @@ class Resources : public Module{
 
   void writeObjectFile(SString filename, SPropertyTree tree);
 
-  SString readObjectFile(SString filename);
+  SPropertyTree readObjectFile(SString filename);
 
   // reloads all loaded materials (eg. in scene)
   void reloadMaterials();

@@ -1,5 +1,6 @@
 #include "GUI.h"
 #include "Graphics.h"
+#include "StormfighterApp.h"
 #include <locale>
 #include <iostream>
 #include <string>
@@ -11,7 +12,7 @@
 
 namespace SF {
 
-GUI::GUI(Input* input){
+GUI::GUI(StormfighterApp* app) : Module(app){
   renderBuffer_ = NULL;
   Ogre::Viewport* viewport = Graphics::getSingletonPtr()->defaultViewport();
   width_ = viewport->getActualWidth();
@@ -39,12 +40,13 @@ GUI::GUI(Input* input){
   /*if(compensateNPOT_)
       overlay_->panel->setUV(0, 0, (Real)viewWidth/(Real)texWidth_, (Real)viewHeight/(Real)texHeight_);*/
   // init sdktraymanager
-  trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", Graphics::getSingletonPtr()->defaultRenderWindow(), input->mouse_, this);
+  trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", Graphics::getSingletonPtr()->defaultRenderWindow(), application()->input()->mouse_, this);
   trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);
   trayManager_->showLogo(OgreBites::TL_BOTTOMRIGHT);
   trayManager_->hideCursor();
   counter = 0.0f;
-  input->setGUI(this, this);
+  application()->input()->setGUI(this, this);
+  ready_ = false;
 }
 
 void GUI::initialise() {
@@ -63,8 +65,9 @@ void GUI::initialise() {
     // for the page to finish loading.
     //Sleep(1);
   }
-  if(loaded)
+  if(loaded){
     displayWebView();
+  }
   awe_webview_focus(webView_);
 }
 
@@ -98,6 +101,7 @@ void GUI::update(double deltaTime){
     counter = 0.0f;
     if(awe_webview_is_dirty(webView_)){
       if (!awe_webview_is_loading_page(webView_)){
+        ready_ = true;
         displayWebView();
       }
     }
@@ -382,7 +386,8 @@ void GUI::executeJS(SString script){
 
 void GUI::reload(){
   awe_webview_load_file(webView_,  url_str_, awe_string_empty());
-  for (int i = 0; i < 10000; i++){
+  ready_ = false;
+  /*for (int i = 0; i < 10000; i++){
     // We must call WebCore::update in our update loop.
     awe_webcore_update();
     if (!awe_webview_is_loading_page(webView_)){
@@ -395,7 +400,7 @@ void GUI::reload(){
     //Sleep(1);
   }
   displayWebView();
-  awe_webview_focus(webView_);
+  awe_webview_focus(webView_);*/
 }
 
 SString GUI::pollCommands(){

@@ -51,4 +51,16 @@ class GameObject {
   void clearChildren();
 
   SAxisAlignedBox getBoundingBox();
+
+  SString serialiseJSON(bool recursive);
+
+  // Tagging
+  /// add tag to GO
+  void addTag(SString tag);
+  /// remove tag from GO
+  void removeTag(SString tag);
+  /// check for tag on GO
+  bool hasTag(SString tag);
+  /// get all tags from GO
+  StringVector tags();
 };

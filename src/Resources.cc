@@ -321,18 +321,12 @@ void Resources::reloadMaterials() {
 
 void Resources::writeObjectFile(SString filename, SPropertyTree tree){
   boost::property_tree::write_json(filename, tree);
-  //myfile.open(filename.c_str());
-  //myfile << content;
-  //myfile.close();
 }
 
-SString Resources::readObjectFile(SString filename){
-  LOG("in res");
-  std::ifstream myfile(filename.c_str());
-  LOG("open");
-  SString s;
-  std::getline( myfile, s, '\0');
-  return s;
+SPropertyTree Resources::readObjectFile(SString filename){
+  SPropertyTree tree;
+  boost::property_tree::read_json(filename, tree);
+  return tree;
 }
 
 };

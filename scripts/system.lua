@@ -1,4 +1,4 @@
--- typedefs (we can drop the S if we want)
+-- typedefs
 SVector3 = Ogre.Vector3;
 SVector3.__tostring = function(e)
   return 'SVector3('..e.x..','..e.y..','..e.z..')';
@@ -36,8 +36,11 @@ function clamp(value, min, max)
   end
 end
 
-function defaultparameter(param, default)
-  if not param then return default; else return param; end
+function string:rfind(token, start)
+  start = start or 1;
+  local rev = self:reverse();
+  local pos = rev:find(token, start);
+  return self:len()-pos+1;
 end
 
 -- hijack print, so that it does not print to stdout, but rather to log
@@ -101,6 +104,19 @@ function System.deepcopy(object)
     return setmetatable(new_table, getmetatable(object))
   end
   return _copy(object)
+end
+
+function System.writeSymbolsToFile(filename)
+  local s = "";
+  for i,k in pairs(_G) do
+    --print(i);
+    if(not (i == "_G")) then
+      s = s.."["..tostring(i) .. "]".. System:serializeNative(k);
+    end
+  end
+  local f = assert(io.open(filename, 'w'));
+  f:write(s);
+  f:close();
 end
 
 function System.stripped_type(object)
@@ -255,6 +271,8 @@ end
 -- method: 'normal' -> provide set and get functions
 --         'property' -> field behaves like a property eg.: object[field] = value
 -- get, set: getter and setter functions names in string (must be global identifiers!!), only for normal method
+--      set: takes two parameters, an object and value (eg. longhand for Object:setSpecificField(value))
+--      get: takes one parameter, the object to get for (eg. longhand for Object:getSpecificField())
 -- options : reserved
 function System:annotate(object, field, otype, method, get, set, options)
   local opts = options or {};
@@ -346,13 +364,6 @@ function System:getField(object, field)
   else
     print('Tried to get for unannotated object!');
   end
-end
-
--- returns a string which is almost a valid setField command in lua (only missing the end part)[for JS]
--- example: System:makeSetCommand(myvar, 'position')
---       -->"System:setField(System:getObject(1234), 'position',"
-function System:makeSetCommand(object, field)
-  return [["System:setField(System:getObject(]]..object.tracking_id..[[), ']]..field..[[',"]];
 end
 
 function System:_setupDeferredFunctions()

@@ -6,7 +6,7 @@ Editor.keydown = {};
 Editor.internal = {};
 Editor.settings = {};
 Editor.settings.advanced = {};
-Editor.settings.advanced.gui_poll_fps = 10;
+Editor.settings.advanced.gui_update_fps = 10;
 
 Editor.settings.manipulator = {};
 Editor.settings.manipulator.translateFactor = 0.001;
@@ -28,8 +28,25 @@ Editor.internal.mouse.downPosition = SVector2(0,0);
 
 Editor.internal.manipulator = {};
 
+Editor.internal.ui = {};
+Editor.internal.ui.inspector = {};
+Editor.internal.ui.console = {};
+
+Editor.UI = Editor.internal.ui;
+
 Manipulator = Editor.internal.manipulator;
 dofile('scripts/manipulator.lua');
+Manipulator = nil;
+
+Inspector = Editor.internal.ui.inspector;
+dofile('scripts/inspector.lua');
+Inspector = nil;
+
+Console = Editor.internal.ui.console;
+dofile('scripts/console.lua');
+Console = nil;
+
+
 
 function Editor:init()
   -- show omnibar
@@ -42,16 +59,38 @@ function Editor:init()
   self:addKey(OIS.KC_2); --translate
   self:addKey(OIS.KC_3); --rotate
   self:addKey(OIS.KC_4); --scale
-  self:manipulator():initialise(self);
+  self:manipulator():init(self);
 end
 
 function Editor:manipulator()
   return self.internal.manipulator;
 end
 
+function Editor:inspector()
+  return self.UI.inspector;
+end
+
+function Editor:console()
+  return self.UI.console;
+end
+
+function Editor.UI:init()
+  self.inspector:init();
+  self.console:init();
+  Editor:openHierarchyBrowser();
+end
+
+
+
 -- reloads the reloadable parts of the editor
-function Editor:reload()
-  dofile('scripts/manipulator.lua');
+function Editor:reloadEditor()
+  print = logprint;
+  dofile('scripts/editor.lua');
+  Editor:init();
+end
+
+function Editorreload()
+
 end
 
 function Editor:addKey(keycode)
@@ -68,6 +107,18 @@ function Editor:handleKeyPress()
 end
 
 function Editor:isKeyPressed(keycode)
+  if(Input:isKeyDown(keycode) and not self.keydown[keycode]) then
+    self.keydown[keycode] = true;
+    return true;
+  end
+  return false;
+end
+
+-- check that no modifiers are down
+function Editor:isKeyPressedOnly(keycode)
+  if(Input:isModifierDown(OIS.Modifier.Alt) or Input:isModifierDown(OIS.Modifier.Ctrl) or Input:isModifierDown(OIS.Modifier.Shift)) then
+    return false;
+  end
   if(Input:isKeyDown(keycode) and not self.keydown[keycode]) then
     self.keydown[keycode] = true;
     return true;
@@ -169,18 +220,19 @@ function Editor:update()
   if(not GUI:isInGUI(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y))) then
     self:manipulator():update();
   end
-  if(self:isKeyPressed(OIS.KC_1)) then
+  if(self:isKeyPressedOnly(OIS.KC_1)) then
     self:manipulator():setMode("select");
   end
-  if(self:isKeyPressed(OIS.KC_2)) then
+  if(self:isKeyPressedOnly(OIS.KC_2)) then
     self:manipulator():setMode("translate");
   end
-  if(self:isKeyPressed(OIS.KC_3)) then
+  if(self:isKeyPressedOnly(OIS.KC_3)) then
     self:manipulator():setMode("rotate");
   end
-  if(self:isKeyPressed(OIS.KC_4)) then
+  if(self:isKeyPressedOnly(OIS.KC_4)) then
     self:manipulator():setMode("scale");
   end
+  --[[
   if(self:isKeyPressed(OIS.KC_I)) then
     self:saveScene()
   end
@@ -197,39 +249,60 @@ function Editor:update()
   if(self:isKeyPressed(OIS.KC_M)) then
     self:reload();
   end
-  if(self:onFixedFPS('gui', self.settings.advanced.gui_poll_fps)) then
-    local cmd = GUI:pollCommands();
-    local ocmd = cmd;
-    if(cmd:find(';')) then
-      cmd = cmd:sub(1, cmd:rfind(';')); -- chop off scrambled shit if appears
-      if(not (cmd == ";")) then
-        print(cmd);
-        local f = loadstring(cmd);
-        if(f) then
-          f();
-        else
-          print('error in cmd:'..cmd..','..ocmd);
-        end
+  --]]
+  if(self:onFixedFPS('gui', self.settings.advanced.gui_update_fps)) then
+    self:updateUI();
+  end
+end
+
+function Editor:updateUI()
+  if(not GUI:ready()) then -- UI is not yet ready, don't bother
+    self.internal.ui.ready = false;
+    return
+  elseif (not self.internal.ui.ready) then -- UI is ready for the first time after a load/reload, perform init
+    self.UI:init();
+    self.UI.ready = true;
+  end
+  local cmd = GUI:pollCommands();
+  local ocmd = cmd;
+  if(cmd:find(';')) then
+    cmd = cmd:sub(1, cmd:rfind(';')); -- chop off scrambled shit if appears
+    if(not (cmd == ";")) then
+      --print(cmd);
+      local f = loadstring(cmd);
+      if(f) then
+        f();
+      else
+        print('error in cmd:'..cmd..','..ocmd);
       end
     end
   end
 end
 
-function string:rfind(token, start)
-  start = start or 1;
-  local rev = self:reverse();
-  local pos = rev:find(token, start);
-  return self:len()-pos+1;
+-- UI is being reloaded, so set ready to false
+function Editor:reloadUI()
+  self.internal.ui.ready = false;
+  GUI:reload();
 end
 
 logprint = print;
 function print(something)
   logprint(something)
-  GUI:executeJS('console.log("'..something..'");');
+  GUI:executeJS('console.log("'..escapeTextForJS(something)..'");');
+end
+
+function print(something, level)
+  level = level or 1;
+  logprint(something)
+  GUI:executeJS('console.log("'..escapeTextForJS(something)..'",'..level..');');
+end
+
+function escapeTextForJS(text)
+  return text:gsub('"', '&quot;');
 end
 
 function Editor:executeJS(js)
-  local escapedjs = js:gsub('"', '&quot;');
+  local escapedjs = escapeTextForJS(js);
   GUI:executeJS([[console.logJSCall("]]..escapedjs..[[");]]);
   GUI:executeJS(js);
 end
@@ -245,51 +318,11 @@ end
 
 function Editor:selectGameObject(goname)
   self:manipulator():show(goname);
+  self:inspector():showGameObject(goname);
 end
 
 function Editor:saveScene()
-  print('saving');
-  -- strategy :
-  -- save off hierarchy (most important)
-  -- save off module states (if needed)
-  -- save off editor state & misc
-  local scenename = "test.object.lua"; -- this should be a setable thing
-  local root = Hierarchy:getRoot();
-  local plat = root:find('platform');
-  --plat.components
-  local seri = System:serializeGameObject(plat);
-  local f = assert(io.open(scenename, 'w'));
-  print(seri);
-  f:write(seri);
-  f:close();
-  System:deserialize(seri);
-end
 
-function Editor:openInspector(goname)
-  Editor:executeJS('inspector.setCommandPatterns({"setproperty" : "Editor:setProperty($0, $1, $2);", "setcomponentproperty" : "Editor:setComponentProperty($0, $1, $2, $3);", "addcomponent" : "Editor:addComponent($0, $1);"});');
-  GUI:executeJS("inspector.clear(); inspector.show();");
-  GUI:executeJS("inspector.setGameObjectName('"..goname.."');");
-  print("inspector.setGameObjectName('"..goname.."');");
-  local go = Hierarchy:find(goname);
-  local cmps = go:allComponents();
-  for i=0,cmps:size()-1 do
-    local otype = "SF::"..cmps[i].type;
-    cmps[i] = tolua.cast(cmps[i], otype);
-    print("inspector.addComponent('"..cmps[i].type.."');");
-    GUI:executeJS("inspector.addComponent('"..cmps[i].type.."');");
-    if(System.annotations[otype]) then
-      for field,v in pairs(System.annotations[otype].properties) do
-        print("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."');");
-        GUI:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."');");
-        print("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..tostring(System:getField(cmps[i], field)).."');");
-        GUI:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..tostring(System:getField(cmps[i], field)).."');");
-      end
-    end
-  end
-end
-
-function Editor:setComponentProperty(goname, component, property, value)
-  print(goname..component..property..value);
 end
 
 function Editor:_generateMaterialThumbnails()

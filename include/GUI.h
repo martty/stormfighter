@@ -2,6 +2,7 @@
 #define STORMFIGHTER_GUI_H_
 
 #include "common.h"
+#include "Module.h"
 #include "Input.h"
 #include <SdkTrays.h>
 #include <Awesomium/awesomium_capi.h>
@@ -9,9 +10,9 @@
 
 namespace SF {
 
-class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader, public OIS::KeyListener, public OIS::MouseListener {
+class GUI : public Module, public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader, public OIS::KeyListener, public OIS::MouseListener {
  public:
-  GUI(Input* input);
+  GUI(StormfighterApp* app);
   ~GUI();
 
   void update(double deltaTime);
@@ -27,6 +28,9 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
   void loadResource(Ogre::Resource* resource);
 
   void executeJS(SString script);
+
+  /// check if the page has been loaded and you can issue JS calls
+  bool ready(){return ready_;}
 
   void reload();
 
@@ -47,6 +51,8 @@ class GUI : public OgreBites::SdkTrayListener, public Ogre::ManualResourceLoader
   int getWebKeyFromOISKey(OIS::KeyCode kc);
 
   unsigned char* temp_;
+
+  bool ready_; // flag for page loaded
 
   SReal counter;
   int width_;

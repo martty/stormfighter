@@ -160,13 +160,15 @@ class Input {
   int axisAbsolute(Axis axis);
 };
 
-class GUI  {
+class GUI : public Module {
  public:
   void update(double deltaTime);
 
   void executeJS(SString script);
 
   void reload();
+
+  bool ready();
 
   SString pollCommands();
 

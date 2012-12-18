@@ -1,6 +1,7 @@
 #ifndef STORMFIGHTER_GRAPHICS_H_
 #define STORMFIGHTER_GRAPHICS_H_
 
+#include "common.h"
 #include "Module.h"
 #include <Ogre.h>
 

@@ -77,12 +77,12 @@ function lua_update()
   --print('gui');
   Editor:update();
   --print('edi');
-  if Input:isKeyPressed(OIS.KC_R) then
+  --[[if Input:isKeyPressed(OIS.KC_R) then
     Resources:reloadMaterials();
-  end
+  end--]]
 end
 
---[[
+
 function gc_delta()
   local s = "";
     for i,k in pairs(_G) do
@@ -105,4 +105,3 @@ function gc_delta()
     f:write(g);
     f:close();
 end
---]]

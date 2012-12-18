@@ -15,7 +15,7 @@
   2D, along a plane, which normal is the selected side's normal
   unconstrained
 --]]
-function Manipulator:initialise(editor)
+function Manipulator:init(editor)
   self.editor = editor;
   -- initialise manipulator state
   self.isSelected = false;
@@ -46,7 +46,7 @@ function Manipulator:update()
         if(goname:find("manipulator-")) then -- we picked a manipulator
         else
           self:show(goname);
-          self.editor:openInspector(goname);
+          self.editor:inspector():showGameObject(goname);
         end
       else
         self:hide();
@@ -311,6 +311,7 @@ function Manipulator:findOrCreate()
     return;
   end
   self.go = Hierarchy:createGameObject("manipulator"); -- create manipulator root go
+  self.go:addTag("no-serialise-recursive");
   local man = self.go;
   local obj = Hierarchy:createGameObject("manipulator-front");
   man:transform():setInheritScale(false);

@@ -2,6 +2,7 @@
 #define STORMFIGHTER_GAMEOBJECT_H_
 
 #include <map>
+#include <set>
 #include "common.h"
 #include "Component.h"
 #include "Transform.h"
@@ -86,11 +87,25 @@ class GameObject {
   ///Serialise GO (and descendants if recursive == true)
   SPropertyTree serialise(bool recursive);
 
-  ///Deserialise a GO hierarchy from string
+  ///Serialise GO into JSON
+  SString serialiseJSON(bool recursive);
+
+  ///Deserialise a GO hierarchy from SPropertyTree
   static GameObject* deserialise(SPropertyTree src);
 
   /// Gets an AABB which bounds this GameObject and it's descendants
   SAxisAlignedBox getBoundingBox();
+
+  // Tagging
+  /// add tag to GO
+  void addTag(SString tag);
+  /// remove tag from GO
+  void removeTag(SString tag);
+  /// check for tag on GO
+  bool hasTag(SString tag);
+  /// get all tags from GO
+  StringVector tags();
+
 
  protected:
   GameObject* next(); ///The next GameObject in the list
@@ -131,6 +146,8 @@ class GameObject {
   static NameCountMap namecount_;
   /// map for registering components to calls
   CallsMap callsdispatch_;
+  /// tag set
+  std::set<SString> tags_;
 };
 
 }; // namespace SF

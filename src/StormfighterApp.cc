@@ -66,7 +66,7 @@ void StormfighterApp::startStormfighter(){
   input_ = new Input(graphics_->defaultRenderWindow());
   log("Input initialized!");
   log("Initializing GUI");
-  gui_ = new GUI(input_);
+  gui_ = new GUI(this);
   log("GUI initialized!");
   gui_->initialise();
   log("Initializing hierarchy");
@@ -109,8 +109,8 @@ void StormfighterApp::setupStormfighterScene(){
   LOG("save done.");
   //LOG(c->serialise());
   //resources_->writeObjectFile("test.object.json", go->serialise(true));
-  GameObject* doppelganger = GameObject::deserialise(go->serialise(true));
-  resources_->writeObjectFile("test2.object.json", doppelganger->serialise(true));
+  //GameObject* doppelganger = GameObject::deserialise(go->serialise(true));
+  //resources_->writeObjectFile("test2.object.json", doppelganger->serialise(true));
   //hierarchy_->loadGameObjectFromFile("test.sf_object");
   LOG("that was it.");
   physics_->addCollisionGroup("terrain");
