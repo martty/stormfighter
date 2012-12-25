@@ -1,9 +1,11 @@
 -- typedefs
 SVector3 = Ogre.Vector3;
+-- human readable (debug format)
 SVector3.__tostring = function(e)
-  return 'SVector3('..e.x..','..e.y..','..e.z..')';
+  return '<'..e.x..','..e.y..','..e.z..'>';
 end
 SQuaternion = Ogre.Quaternion;
+-- human readable (debug format)
 SQuaternion.__tostring = function (e)
   local vec, angle = SVector3(0,0,0),SDegree(2);
   e:ToAngleAxis(angle,vec);
@@ -51,7 +53,7 @@ end
 
 function print_as_table(tbl)
   for i,k in pairs(tbl) do
-    print("["..tostring(i) .. "]".. System:serializeNative(k));
+    print("["..tostring(i) .. "]".. System:serialiseNativeType(k));
   end
 end
 
@@ -72,7 +74,18 @@ end
 function debugdrawvector(vector, origin, colour)
   Graphics:debugDrawer():drawLine(origin, origin+vector, colour);
 end
-
+--[[
+oldtoluatype = tolua.type
+function tolua.type(obj)
+  local typ = oldtoluatype(tolua.type);
+  if(type == "Ogre::Vector3") then
+    return "SVector3";
+  elseif (type == "Ogre::Quaternion") then
+    return "SQuaternion";
+  end
+  return type;
+end
+--]]
 System = {};
 System.active_components = {};
 System.n_active_components = 0;
@@ -111,11 +124,19 @@ function System.writeSymbolsToFile(filename)
   for i,k in pairs(_G) do
     --print(i);
     if(not (i == "_G")) then
-      s = s.."["..tostring(i) .. "]".. System:serializeNative(k);
+      s = s.."["..tostring(i) .. "]".. System:serializeNativeType(k);
     end
   end
   local f = assert(io.open(filename, 'w'));
   f:write(s);
+  f:close();
+end
+
+-- dumps variable into filename
+function System.saveToFile(var, filename)
+  print("saving");
+  local f = assert(io.open(filename, 'w'));
+  f:write(tostring(var));
   f:close();
 end
 
@@ -171,6 +192,23 @@ function System._fireComponentEvent(tracking_id, event_name, param)
   end
 end
 
+function System.type(var)
+  local typ = tolua.type(var);
+  local rtyp = typ;
+  if (typ == "Ogre::Vector3") then
+    rtyp = "SF::SVector3";
+  elseif (typ == "Ogre::Quaternion") then
+    rtyp = "SF::SQuaternion";
+  end
+  -- strip SF:: from the beginning
+  local _,ind = rtyp:find("SF::");
+  if (ind) then
+    return rtyp:sub(ind+1);
+  else
+    return rtyp;
+  end
+end
+
 --provide 2D vector :)
 function SVector2(x,y)
   return SVector3(x,y,0);
@@ -186,9 +224,10 @@ function System:_initialise()
     end
   end
   setfenv(0, global_env);
+  self.JSON = (loadfile "scripts/JSON.lua")() -- load JSON library
   self:_hijackGameObject();
   self:_hijackModules();
-  self:_annotateBasicTypes();
+  self:_setupSFSerialise();
   self:_annotateCoreComponents();
   self:_registerComponents();
   self:_setupDeferredFunctions();
@@ -240,7 +279,7 @@ function System:_hijackGameObject()
     print("Cloned and now tracking:");
     for i=0,cmps:size()-1 do
       self:track(cmps[i]);
-      print(cmps[i].type);
+      --print(cmps[i].type);
       if(cmps[i].group == "LuaScript") then -- we need to add events
         local script = tolua.cast(cmps[i], "SF::LuaScript");
         script:setTrackingId(cmps[i].tracking_id);
@@ -266,62 +305,132 @@ end
 -- Annotations
 -- because we cannot directly access usertype fields
 -- we manually provide getter and setter methods for the fields of the objects
+
 -- object: string name of class
 -- field: string name of field
--- method: 'normal' -> provide set and get functions
---         'property' -> field behaves like a property eg.: object[field] = value
--- get, set: getter and setter functions names in string (must be global identifiers!!), only for normal method
---      set: takes two parameters, an object and value (eg. longhand for Object:setSpecificField(value))
---      get: takes one parameter, the object to get for (eg. longhand for Object:getSpecificField())
--- options : reserved
-function System:annotate(object, field, otype, method, get, set, options)
+-- otype : typename
+-- options : options passed to the UI to affect rendering the widget
+
+-- field behaves like a property eg.: object[field] = value
+function System:annotateProperty(object, field, otype, options)
   local opts = options or {};
-  method = method or 'property';
   if( not self.annotations[object] ) then
     self.annotations[object] = {};
     self.annotations[object].properties = {};
   end
   self.annotations[object].properties[field] = {};
-  if(method == 'normal') then
-    self.annotations[object].properties[field].method = 'normal';
-    self.annotations[object].properties[field].type = otype;
-    self.annotations[object].properties[field].options = opts;
-    self.annotations[object].properties[field].get_str = get;
-    self.annotations[object].properties[field].set_str = set;
-    self.annotations[object].properties[field].get = loadstring(get);
-    self.annotations[object].properties[field].set = loadstring(set);
+  self.annotations[object].properties[field].method = 'property';
+  self.annotations[object].properties[field].type = otype;
+  self.annotations[object].properties[field].options = opts;
+end
+
+
+-- provide set and get functions
+-- get, set: getter and setter functions names in string (must be global identifiers!!), only for normal method
+--      set: takes two parameters, an object and value (eg. longhand for Object:setSpecificField(value))
+--      get: takes one parameter, the object to get for (eg. longhand for Object:getSpecificField())
+function System:annotateField(object, field, otype, get, set, options)
+  local opts = options or {};
+  if( not self.annotations[object] ) then
+    self.annotations[object] = {};
+    self.annotations[object].properties = {};
+  end
+  self.annotations[object].properties[field] = {};
+  self.annotations[object].properties[field].method = 'normal';
+  self.annotations[object].properties[field].type = otype;
+  self.annotations[object].properties[field].options = opts;
+  self.annotations[object].properties[field].get_str = get;
+  self.annotations[object].properties[field].set_str = set;
+  self.annotations[object].properties[field].get = loadstring(get);
+  self.annotations[object].properties[field].set = loadstring(set);
+end
+
+-- converts options to a JS readable format (JSON) & make any modifications
+function System:processOptions(opts)
+  return self.JSON:encode(opts)
+end
+
+-- serialise both lua types and Ogre/SF types
+function System:serialise(var)
+  local luatype = type(var);
+  if (not (luatype == "userdata")) then
+    return System:serialiseNativeType(var);
   else
-    self.annotations[object].properties[field].method = 'property';
-    self.annotations[object].properties[field].type = otype;
-    self.annotations[object].properties[field].options = opts;
+    return System:serialiseSFType(var);
   end
 end
 
--- set up annotations for basic types
-function System:_annotateBasicTypes()
-  System.annotations.SVector3 = {};
-  local v = System.annotations.SVector3;
-  v.serialize = function(vector)
-    return vector.x..','..vector.y..','..vector.z;
+-- serialises a "native" type
+-- supported types:
+--                 number, string, nil, bool, function
+function System:serialiseNativeType(o, level)
+  if(level == nil) then
+    level = 0;
   end
-  System.annotations['Ogre::Vector3'] = v;
-  System.annotations.SQuaternion = {};
-  v = System.annotations.SQuaternion;
-  v.serialize = function(quat)
-    return quat.x..','..quat.y..','..quat.z..','..quat.w;
+  if(level > 3) then
+    return '';
   end
-  System.annotations['Ogre::Quaternion'] = v;
+  local serial = '';
+  if o == nil then
+    serial = serial .. '""';
+  elseif type(o) == "number" then
+    serial = serial .. o
+  elseif type(o) == "string" then
+    serial = serial .. string.format("%q", o)
+  elseif type(o) == "table" then
+    serial = serial..("{\n")
+    for k,v in pairs(o) do
+      serial = serial .. "  ".. tostring(k) .. " = "
+      serial = serial .. self:serializeNativeType(v, level + 1)
+      serial = serial .. ",\n"
+    end
+    serial = serial .. "}\n"
+  elseif type(o) == "function" then
+    serial = tostring(o);
+  else
+    --error("cannot serialize a " .. type(o))
+    serial = tostring(o);
+  end
+  return serial;
+end
+
+function System:_setupSFSerialise()
+  seri = {};
+  seri.SVector3 = function (e)
+    return 'SVector3('..e.x..','..e.y..','..e.z..')';
+  end
+  seri.SQuaternion = function (e)
+    return 'SQuaternion('..e.x..','..e.y..','..e.z..','..e.w..')';
+  end
+  seri.SColourValue = function (e)
+    return 'not impl'; --TODO: implement this
+  end
+  System.serialisable = seri;
+end
+
+-- serializes an SF type math object (eg. SVector3)
+function System:serialiseSFType(object)
+  local stripped = System.type(object);
+  return self.serialisable[stripped](object);
 end
 
 -- here we set up the annotations for core components
 function System:_annotateCoreComponents()
   --Transform
-  self:annotate('SF::Transform', 'position', 'SVector3');
-  self:annotate('SF::Transform', 'orientation', 'SQuaternion');
-  self:annotate('SF::Transform', 'scale', 'SVector3');
+  self:annotateProperty('Transform', 'position', 'SVector3');
+  self:annotateProperty('Transform', 'orientation', 'SQuaternion');
+  self:annotateProperty('Transform', 'scale', 'SVector3');
 
-  self:annotate('SF::Mesh', 'meshName', 'SString');
-  self:annotate('SF::Primitive', 'meshName', 'SString');
+  self:annotateProperty('Camera', 'nearClipDistance', 'SReal');
+  self:annotateProperty('Camera', 'farClipDistance', 'SReal');
+  self:annotateProperty('Camera', 'FOVy', 'SReal', {render = 'slider', min = 0, max = 2*math.pi});
+  self:annotateProperty('Camera', 'projectionMode', 'enum', {values = {["Camera.PROJECTION"] = Camera.PROJECTION, ["Camera.ORTHOGRAPHIC"] = Camera.ORTOGRAPHIC}});
+  --self:annotateProperty('Camera', 'polygonMode', '[Camera.POINTS, Camera.WIREFRAME, Camera.SOLID]');
+
+
+
+  self:annotateProperty('Mesh', 'meshName', 'SString');
+  self:annotateProperty('Primitive', 'meshName', 'SString');
 end
 
 -- assigns a unique id (ID) for an object (eg. gameobject, component..)
@@ -338,7 +447,7 @@ end
 
 -- sets an annotated object's field to the given value
 function System:setField(object, field, value)
-  local otype = tolua.type(object);
+  local otype = System.type(object);
   if(self.annotations[otype] and self.annotations[otype].properties[field]) then
     if(self.annotations[otype].properties[field].method == 'normal') then
       return self.annotations[otype].properties[field].set(object, value);
@@ -354,7 +463,7 @@ end
 -- object is an existing object, eg. GO
 -- field is the string name of the given field
 function System:getField(object, field)
-  local otype = tolua.type(object);
+  local otype = System.type(object);
   if(self.annotations[otype] and self.annotations[otype].properties[field]) then
     if(self.annotations[otype].properties[field].method == 'normal') then
       return self.annotations[otype].properties[field].get(object);
@@ -397,107 +506,7 @@ function System:_deferredInit()
   end
 end
 
--- serializes a basic type : lua builtins and math objects (eg. SVector3)
-function System:simpleSerialize(obj)
-  if(self.annotations[tolua.type(obj)]) then
-    return self.annotations[tolua.type(obj)].serialize(obj);
-  elseif (not type(obj) == 'userdata') then
-    return self:serializeNative(obj);
-  end
-  return '';
-end
---[[
-function System:serializeGameObject(go, ident)
-  ident = ident or '';
-  local serial = ident..'GameObject{\n';
-  ident = ident..' ';
-  serial = serial..ident..'name = "'..go:name()..'",\n';
-  local cmps = go:allComponents();
-  for i=0,cmps:size()-1 do
-    serial = serial..self:serialize(cmps[i], ident);
-  end
-  local children = go:children();
-  for i=0, children:size()-1 do
-    serial = serial..self:serializeGameObject(children[i], ident);
-  end
-  ident = ident:sub(2);
-  if(ident == '') then
-    serial = serial..ident..'}\n';
-  else
-    serial = serial..ident..'},\n';
-  end
-  return serial;
-end
 
-function System:serialize(object, ident)
-  ident = ident or '';
-  local serial = '';
-  local otype = '';
-  --print(tolua.type(object));
-  if (tolua.type(object) == 'Component') then
-    otype = 'S'..object:type();
-    object = tolua.cast(object, otype);
-  elseif( type(object) == 'userdata') then
-    otype = tolua.type(object);
-  else
-    otype = 'native';
-  end
-  if(self.annotations[otype]) then -- this is a core component or basic otype w/ annotations
-    local annot = self.annotations[otype];
-    if(annot.serialize) then -- basic otype
-      serial = annot.serialize(object);
-    else -- core component
-      serial = ident..'Component{\n';
-      ident = ident..' ';
-      serial = serial..ident..'type = "'..otype..'",\n';
-      -- properties
-      for field,v in pairs(annot.properties) do
-        serial = serial..ident..'property{\n';
-        serial = serial..ident..' name = "'..field..'",\n';
-        serial = serial..ident..' type = "'..v.type..'",\n';
-        serial = serial..ident..' value = '..self:serialize(v.get(object), ident)..'\n'..ident..'},\n';
-      end
-      ident = ident:sub(2);
-      serial = serial..ident..'},\n'
-    end
-  elseif (otype == 'native') then -- this is a lua otype
-    serial = serial .. self:serializeNative(object);
-  else -- unannotated c++ otype (probably component) -> unserializable
-    return ident..'Component{\n'..ident..' type = "'..otype..'" --unserializable \n'..ident..'},\n';
-  end
-  return serial;
-end
---]]
-function System:serializeNative(o, level)
-  if(level == nil) then
-    level = 0;
-  end
-  if(level > 3) then
-    return '';
-  end
-  local serial = '';
-  if o == nil then
-    serial = serial .. '""';
-  elseif type(o) == "number" then
-    serial = serial .. o
-  elseif type(o) == "string" then
-    serial = serial .. string.format("%q", o)
-  elseif type(o) == "table" then
-    serial = serial..("{\n")
-    for k,v in pairs(o) do
-      serial = serial .. "  ".. tostring(k) .. " = "
-      serial = serial .. self:serializeNative(v, level + 1)
-      serial = serial .. ",\n"
-    end
-    serial = serial .. "}\n"
-  elseif type(o) == "function" then
-    serial = tostring(o);
-  else
-    --error("cannot serialize a " .. type(o))
-    serial = tostring(o);
-  end
-  return serial;
-end
 --[[
 function System:deserialize(str)
   local f, err = loadstring(str);

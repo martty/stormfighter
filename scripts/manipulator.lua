@@ -444,6 +444,9 @@ function Manipulator:show(goname)
   go:addChild(self.go);
   self.isSelected = true;
   self.selection = go;
+  if(bbox:isNull()) then
+    return;
+  end
   self.go:transform().position = (bbox:getCenter());
   self.go:transform().scale = (bbox:getSize());
   self.go:transform():setVisible(true, true);

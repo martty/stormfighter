@@ -74,7 +74,7 @@ function ilua:join(tbl,delim,limit,depth)
             return "<self>"
         end
     end
-    push(self.jstack,tbl)
+    ilua.push(self.jstack,tbl)
     -- this is a hack to work out if a table is 'list-like' or 'map-like'
     -- you can switch it off with ilua.table_options {clever = false}
     local is_list
@@ -107,8 +107,8 @@ function ilua:join(tbl,delim,limit,depth)
             end
         end
     end
-    pop(self.jstack)
-    return sub(res,2)
+    ilua.pop(self.jstack)
+    return ilua.sub(res,2)
 end
 
 

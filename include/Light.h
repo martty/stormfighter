@@ -21,7 +21,8 @@ class Light : public MovableObject {
   unsigned int onAdd(SString goname, Transform* transform);
 
   /// Set diffuse colour
-  void setDiffuseColour(Ogre::ColourValue diffuse_colour);
+  void setDiffuseColour(SColourValue diffuse_colour);
+
   /// Set specular colour
   void setSpecularColour(Ogre::ColourValue specular_colour);
 

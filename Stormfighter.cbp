@@ -72,6 +72,7 @@
 			<Add option="deps/lib/lua5.1.dll" />
 			<Add library="tolua++" />
 			<Add library="boost_system" />
+			<Add library="boost_filesystem" />
 			<Add directory="deps\lib\$(TARGET_NAME)" />
 			<Add directory="deps\lib" />
 			<Add directory="deps\lib\Release" />

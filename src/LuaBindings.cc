@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 12/17/12 23:30:24.
+** Generated automatically by tolua++-1.0.92 on 12/25/12 23:15:05.
 */
 
 #ifndef __cplusplus
@@ -25062,102 +25062,189 @@ static int tolua_Stormfighter_SF_Camera_clone00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setNearClipDistance of class  SF::Camera */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Camera_setNearClipDistance00
-static int tolua_Stormfighter_SF_Camera_setNearClipDistance00(lua_State* tolua_S)
+/* get function: nearClipDistance of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_nearClipDistance
+static int tolua_get_SF__Camera_nearClipDistance(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"SF::Camera",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
   SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
-    float distance = ((   float)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNearClipDistance'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'nearClipDistance'",NULL);
 #endif
-  {
-   self->setNearClipDistance(distance);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setNearClipDistance'.",&tolua_err);
- return 0;
-#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->nearClipDistance());
+ return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setAspectRatio of class  SF::Camera */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Camera_setAspectRatio00
-static int tolua_Stormfighter_SF_Camera_setAspectRatio00(lua_State* tolua_S)
+/* set function: nearClipDistance of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_nearClipDistance
+static int tolua_set_SF__Camera_nearClipDistance(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"SF::Camera",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
   SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
-    float ratio = ((   float)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAspectRatio'", NULL);
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'nearClipDistance'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  {
-   self->setAspectRatio(ratio);
-  }
- }
+  self->setNearClipDistance(((   float)  tolua_tonumber(tolua_S,2,0))
+)
+;
  return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setAspectRatio'.",&tolua_err);
- return 0;
-#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setPolygonMode of class  SF::Camera */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Camera_setPolygonMode00
-static int tolua_Stormfighter_SF_Camera_setPolygonMode00(lua_State* tolua_S)
+/* get function: farClipDistance of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_farClipDistance
+static int tolua_get_SF__Camera_farClipDistance(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"SF::Camera",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
   SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::PolygonMode polymode = ((Ogre::PolygonMode) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPolygonMode'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'farClipDistance'",NULL);
 #endif
-  {
-   self->setPolygonMode(polymode);
-  }
- }
- return 0;
+  tolua_pushnumber(tolua_S,(lua_Number)self->farClipDistance());
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: farClipDistance of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_farClipDistance
+static int tolua_set_SF__Camera_farClipDistance(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setPolygonMode'.",&tolua_err);
- return 0;
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'farClipDistance'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
+  self->setFarClipDistance(((   float)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: aspectRatio of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_aspectRatio
+static int tolua_get_SF__Camera_aspectRatio(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'aspectRatio'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->aspectRatio());
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: aspectRatio of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_aspectRatio
+static int tolua_set_SF__Camera_aspectRatio(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'aspectRatio'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setAspectRatio(((   float)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: polygonMode of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_polygonMode
+static int tolua_get_SF__Camera_polygonMode(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'polygonMode'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->polygonMode());
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: polygonMode of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_polygonMode
+static int tolua_set_SF__Camera_polygonMode(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'polygonMode'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setPolygonMode(((SF::Camera::PolygonMode) (int)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: FOVy of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_FOVy
+static int tolua_get_SF__Camera_FOVy(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'FOVy'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->FOVy());
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: FOVy of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_FOVy
+static int tolua_set_SF__Camera_FOVy(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'FOVy'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setFOVy(((   float)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: projectionType of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Camera_projectionType
+static int tolua_get_SF__Camera_projectionType(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'projectionType'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->projectionType());
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: projectionType of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Camera_projectionType
+static int tolua_set_SF__Camera_projectionType(lua_State* tolua_S)
+{
+  SF::Camera* self = (SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'projectionType'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setProjectionType(((SF::Camera::ProjectionType) (int)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -25187,6 +25274,38 @@ static int tolua_Stormfighter_SF_Camera_activate00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'activate'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isActive of class  SF::Camera */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Camera_isActive00
+static int tolua_Stormfighter_SF_Camera_isActive00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const SF::Camera",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const SF::Camera* self = (const SF::Camera*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isActive'", NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isActive();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isActive'.",&tolua_err);
  return 0;
 #endif
 }
@@ -31861,6 +31980,39 @@ static int tolua_Stormfighter_SF_Hierarchy_debug00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: loadGameObjectFromFile of class  SF::Hierarchy */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00
+static int tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Hierarchy",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Hierarchy* self = (SF::Hierarchy*)  tolua_tousertype(tolua_S,1,0);
+   std::string filename = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'loadGameObjectFromFile'", NULL);
+#endif
+  {
+   self->loadGameObjectFromFile(filename);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'loadGameObjectFromFile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: serialise of class  SF::Hierarchy */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_serialise00
 static int tolua_Stormfighter_SF_Hierarchy_serialise00(lua_State* tolua_S)
@@ -32099,6 +32251,74 @@ static int tolua_Stormfighter_SF_Resources_reloadMaterials00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'reloadMaterials'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isDirectory of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_isDirectory00
+static int tolua_Stormfighter_SF_Resources_isDirectory00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string path = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isDirectory'", NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isDirectory(path);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isDirectory'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: readDirectoryContentsJSON of class  SF::Resources */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_readDirectoryContentsJSON00
+static int tolua_Stormfighter_SF_Resources_readDirectoryContentsJSON00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Resources",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Resources* self = (SF::Resources*)  tolua_tousertype(tolua_S,1,0);
+   std::string path = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'readDirectoryContentsJSON'", NULL);
+#endif
+  {
+    std::string tolua_ret = (  std::string)  self->readDirectoryContentsJSON(path);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'readDirectoryContentsJSON'.",&tolua_err);
  return 0;
 #endif
 }
@@ -33720,15 +33940,24 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Camera","SF::Camera","SF::MovableObject",NULL);
    #endif
    tolua_beginmodule(tolua_S,"Camera");
+    tolua_constant(tolua_S,"POINTS",SF::Camera::POINTS);
+    tolua_constant(tolua_S,"WIREFRAME",SF::Camera::WIREFRAME);
+    tolua_constant(tolua_S,"SOLID",SF::Camera::SOLID);
+    tolua_constant(tolua_S,"ORTHOGRAPHIC",SF::Camera::ORTHOGRAPHIC);
+    tolua_constant(tolua_S,"PERSPECTIVE",SF::Camera::PERSPECTIVE);
     tolua_function(tolua_S,"new",tolua_Stormfighter_SF_Camera_new00);
     tolua_function(tolua_S,"new_local",tolua_Stormfighter_SF_Camera_new00_local);
     tolua_function(tolua_S,".call",tolua_Stormfighter_SF_Camera_new00_local);
     tolua_function(tolua_S,"delete",tolua_Stormfighter_SF_Camera_delete00);
     tolua_function(tolua_S,"clone",tolua_Stormfighter_SF_Camera_clone00);
-    tolua_function(tolua_S,"setNearClipDistance",tolua_Stormfighter_SF_Camera_setNearClipDistance00);
-    tolua_function(tolua_S,"setAspectRatio",tolua_Stormfighter_SF_Camera_setAspectRatio00);
-    tolua_function(tolua_S,"setPolygonMode",tolua_Stormfighter_SF_Camera_setPolygonMode00);
+    tolua_variable(tolua_S,"nearClipDistance",tolua_get_SF__Camera_nearClipDistance,tolua_set_SF__Camera_nearClipDistance);
+    tolua_variable(tolua_S,"farClipDistance",tolua_get_SF__Camera_farClipDistance,tolua_set_SF__Camera_farClipDistance);
+    tolua_variable(tolua_S,"aspectRatio",tolua_get_SF__Camera_aspectRatio,tolua_set_SF__Camera_aspectRatio);
+    tolua_variable(tolua_S,"polygonMode",tolua_get_SF__Camera_polygonMode,tolua_set_SF__Camera_polygonMode);
+    tolua_variable(tolua_S,"FOVy",tolua_get_SF__Camera_FOVy,tolua_set_SF__Camera_FOVy);
+    tolua_variable(tolua_S,"projectionType",tolua_get_SF__Camera_projectionType,tolua_set_SF__Camera_projectionType);
     tolua_function(tolua_S,"activate",tolua_Stormfighter_SF_Camera_activate00);
+    tolua_function(tolua_S,"isActive",tolua_Stormfighter_SF_Camera_isActive00);
    tolua_endmodule(tolua_S);
    #ifdef __cplusplus
    tolua_cclass(tolua_S,"Light","SF::Light","SF::MovableObject",tolua_collect_SF__Light);
@@ -34039,6 +34268,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"destroyGameObject",tolua_Stormfighter_SF_Hierarchy_destroyGameObject01);
     tolua_function(tolua_S,"getRoot",tolua_Stormfighter_SF_Hierarchy_getRoot00);
     tolua_function(tolua_S,"debug",tolua_Stormfighter_SF_Hierarchy_debug00);
+    tolua_function(tolua_S,"loadGameObjectFromFile",tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00);
     tolua_function(tolua_S,"serialise",tolua_Stormfighter_SF_Hierarchy_serialise00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Resources","SF::Resources","Module",NULL);
@@ -34049,6 +34279,8 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getResourceDirectory",tolua_Stormfighter_SF_Resources_getResourceDirectory00);
     tolua_function(tolua_S,"getResourceModified",tolua_Stormfighter_SF_Resources_getResourceModified00);
     tolua_function(tolua_S,"reloadMaterials",tolua_Stormfighter_SF_Resources_reloadMaterials00);
+    tolua_function(tolua_S,"isDirectory",tolua_Stormfighter_SF_Resources_isDirectory00);
+    tolua_function(tolua_S,"readDirectoryContentsJSON",tolua_Stormfighter_SF_Resources_readDirectoryContentsJSON00);
     tolua_variable(tolua_S,"DEFAULT_RESOURCE_GROUP_NAME",tolua_get_SF__Resources_DEFAULT_RESOURCE_GROUP_NAME,NULL);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"StormfighterApp","SF::StormfighterApp","",NULL);

@@ -126,16 +126,44 @@ class Primitive : public Mesh {
 
 class Camera : public MovableObject {
  public:
+  enum PolygonMode {
+    POINTS = Ogre::PM_POINTS,
+    WIREFRAME = Ogre::PM_WIREFRAME,
+    SOLID = Ogre::PM_SOLID
+  };
+
+  enum ProjectionType {
+    ORTHOGRAPHIC = Ogre::PT_ORTHOGRAPHIC,
+    PERSPECTIVE = Ogre::PT_PERSPECTIVE
+  };
   Camera();
   ~Camera();
 
   Camera* clone() const;
 
-  void setNearClipDistance(SReal distance);
-  void setAspectRatio(SReal ratio);
-  void setPolygonMode(Ogre::PolygonMode polymode);
+  /// set near clip distance
+  tolua_property SReal nearClipDistance;
 
+  /// set far clip distance
+  tolua_property SReal farClipDistance;
+
+  /// set aspect ratio
+  tolua_property SReal aspectRatio;
+
+  /// set polygon mode
+  tolua_property PolygonMode polygonMode;
+
+  /// set FOV (field of view) y coordinate in radians
+  /// typical values between 45 and 60 degrees
+  tolua_property SReal FOVy;
+
+  /// set projection type (wireframe/textured)
+  tolua_property ProjectionType projectionType;
+
+  /// sets this camera the default viewport's camera
   void activate();
+  /// returns true if this camera is the default viewport's camera
+  bool isActive() const;
 };
 
 class Light : public MovableObject {

@@ -192,6 +192,8 @@ class Hierarchy {
   /// Returns the whole hierarchy (DFS)
   SString debug();
 
+  void loadGameObjectFromFile(SString filename);
+
   SString serialise();
 };
 
@@ -210,6 +212,11 @@ class Resources : public Module{
   long long getResourceModified(SString resourceName, SString resourceGroup);
 
   void reloadMaterials();
+
+  bool isDirectory(SString path);
+
+  /// reads a directory's contents (filenames)
+  SString readDirectoryContentsJSON(SString path);
 
   const SString DEFAULT_RESOURCE_GROUP_NAME;
 };

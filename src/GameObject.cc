@@ -519,6 +519,7 @@ GameObject* GameObject::deserialise(SPropertyTree src){
     BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
       if(v.first == "Transform"){
         go->transform()->deserialise(v.second);
+        go->transform()->load();
       }
     }
     if(src.count("children") != 0){

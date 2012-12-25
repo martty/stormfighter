@@ -39,8 +39,8 @@ platform:transform():setVisible(false, true);
 local cam = Hierarchy:createGameObject("cammy");
 c = Camera:new();
 cam:addComponent(c);
-c:setNearClipDistance(1);
-c:setAspectRatio(Graphics:getDefaultAspectRatio());
+c.nearClipDistance = 1;
+c.aspectRatio = Graphics:getDefaultAspectRatio();
 c:activate();
 cam:transform().position = SVector3(2312,2300,2600);
 cam:transform():lookAt(SVector3(2312,2278,2597));
@@ -88,7 +88,7 @@ function gc_delta()
     for i,k in pairs(_G) do
       --print(i);
       if(not (i == "_G")) then
-        s = s.."["..tostring(i) .. "]".. System:serializeNative(k);
+        s = s.."["..tostring(i) .. "]".. System:serializeNativeType(k);
       end
     end
     print(s);
@@ -96,7 +96,7 @@ function gc_delta()
     local g = "";
     for i,k in pairs(_G) do
       if(not (i == "_G")) then
-        g = g.."["..tostring(i) .. "]".. System:serializeNative(k);
+        g = g.."["..tostring(i) .. "]".. System:serializeNativeType(k);
       end
     end
     local f = assert(io.open("dbg.log", 'w'));

@@ -29,6 +29,12 @@ class Resources : public Module{
 
   SPropertyTree readObjectFile(SString filename);
 
+  bool isDirectory(SString path);
+
+  /// reads a directory's contents (filenames)
+  SPropertyTree readDirectoryContents(SString path);
+  SString readDirectoryContentsJSON(SString path);
+
   // reloads all loaded materials (eg. in scene)
   void reloadMaterials();
 

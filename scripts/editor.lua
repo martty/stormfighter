@@ -78,6 +78,7 @@ function Editor.UI:init()
   self.inspector:init();
   self.console:init();
   Editor:openHierarchyBrowser();
+  Editor:openFileBrowser('media/objects');
 end
 
 
@@ -87,10 +88,6 @@ function Editor:reloadEditor()
   print = logprint;
   dofile('scripts/editor.lua');
   Editor:init();
-end
-
-function Editorreload()
-
 end
 
 function Editor:addKey(keycode)
@@ -298,11 +295,14 @@ function print(something, level)
 end
 
 function escapeTextForJS(text)
-  return text:gsub('"', '&quot;');
+  if(text) then
+    return text:gsub('"', '&quot;');
+  end
 end
 
 function Editor:executeJS(js)
   local escapedjs = escapeTextForJS(js);
+  logprint(js);
   GUI:executeJS([[console.logJSCall("]]..escapedjs..[[");]]);
   GUI:executeJS(js);
 end
@@ -314,6 +314,20 @@ function Editor:openHierarchyBrowser()
   local hierarchyJSON = Hierarchy:serialise();
   local js = "hierarchy.update('"..hierarchyJSON.."');";
   Editor:executeJS(js);
+end
+
+function Editor:openFileBrowser(path)
+  -- set up commands
+  Editor:executeJS('filebrowser.setCommandPatterns({"loadobject" : "Editor:loadGameObject($0);"});');
+  --obtain GOs from hierarchy
+  local dirJSON = Resources:readDirectoryContentsJSON(path);
+  local js = "filebrowser.update('"..dirJSON.."');";
+  Editor:executeJS(js);
+end
+
+function Editor:loadGameObject(filename)
+  Hierarchy:loadGameObjectFromFile(filename);
+  Editor:openHierarchyBrowser();
 end
 
 function Editor:selectGameObject(goname)

@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <fstream>
+#include <boost/filesystem.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
@@ -327,6 +328,79 @@ SPropertyTree Resources::readObjectFile(SString filename){
   SPropertyTree tree;
   boost::property_tree::read_json(filename, tree);
   return tree;
+}
+
+bool Resources::isDirectory(SString loc){
+  using namespace boost::filesystem;
+  path p(loc);
+  try {
+    if (exists(p)){
+      return is_directory(p);
+    } else {
+      return false;
+    }
+  }catch (const filesystem_error& ex){
+    throw SException("Filesystem error"+SString(ex.what()));
+  }
+}
+
+SPropertyTree Resources::readDirectoryContents(SString loc){
+  using namespace boost::filesystem;
+  SPropertyTree pt;
+  path p(loc);
+  try {
+    if (exists(p)){    // does p actually exist?
+      if (is_regular_file(p)){        // is p a regular file?
+        throw SException("tried to read directory on a regular file");
+      } else if (is_directory(p)) {      // is p a directory?
+        typedef std::vector<path> vec;             // store paths,
+        vec v;
+
+        std::copy(directory_iterator(p), directory_iterator(), back_inserter(v));
+
+        std::sort(v.begin(), v.end());             // sort, since directory iteration
+                                              // is not ordered on some file systems
+
+        for (vec::const_iterator it (v.begin()); it != v.end(); ++it){
+          SPropertyTree item;
+          SString type;
+          if(is_regular_file(*it)){
+            type = "file";
+            item.put("size", file_size(*it));
+            item.put("extension", (*it).extension().generic_string());
+          }
+          if(is_directory(*it))
+            type = "directory";
+          if(is_symlink(*it))
+            type = "symlink";
+          if(is_other(*it))
+            type = "other";
+          item.put("type", type);
+          item.put("path", (*it).generic_string());
+          item.put("name", (*it).filename().generic_string());
+          pt.push_back(std::make_pair("", item));
+        }
+      }
+
+      else
+        throw SException("tried to read directory on a file that is neither a dir nor a regular file");
+    }
+    else
+      throw SException("tried to read on a non-existent path");
+  }
+
+  catch (const filesystem_error& ex){
+    throw SException("Filesystem error"+SString(ex.what()));
+  }
+
+  return pt;
+}
+
+SString Resources::readDirectoryContentsJSON(SString loc){
+  SPropertyTree pt = readDirectoryContents(loc);
+  std::stringstream ss;
+  write_json(ss, pt, false);
+  return ss.str();
 }
 
 };
