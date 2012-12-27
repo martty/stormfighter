@@ -33,7 +33,7 @@ class Hierarchy {
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
 
-  void loadGameObjectFromFile(SString filename);
+  GameObject* loadGameObjectFromFile(SString filename);
 
   void initialise();
   void update();

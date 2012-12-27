@@ -5,6 +5,7 @@
 #include "StormfighterApp.h"
 #include "Hierarchy.h"
 #include "Physics.h"
+#include "ComponentFactory.h"
 
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -472,6 +473,31 @@ void GameObject::addCollision(CollisionData* colld){
   }
 }
 
+void GameObject::save(bool recursive){
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->save();
+  }
+  if(recursive){
+    if(children_)
+      children_->save(true);
+    if(next_)
+      next_->save(true);
+  }
+}
+
+void GameObject::load(bool recursive){
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->load();
+  }
+  if(recursive){
+    if(children_)
+      children_->load(true);
+    if(next_)
+      next_->load(true);
+  }
+}
+
+
 SPropertyTree GameObject::serialise(bool recursive){
   if (hasTag("no-serialise-recursive")){ // this means we return an empty tree, serialisation hits an end
     return SPropertyTree();
@@ -481,7 +507,6 @@ SPropertyTree GameObject::serialise(bool recursive){
   SPropertyTree children;
   ptree.put("name", name_);
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    (*it).second->save();
     cmps.push_back(std::make_pair((*it).first, (*it).second->serialise()));
   }
   ptree.add_child("components", cmps);
@@ -520,6 +545,11 @@ GameObject* GameObject::deserialise(SPropertyTree src){
       if(v.first == "Transform"){
         go->transform()->deserialise(v.second);
         go->transform()->load();
+      } else {
+        // perform Component creation and deserialisation
+        Component* cmp = ComponentFactory::createComponent(v.first);
+        cmp->deserialise(v.second);
+        go->addComponent(cmp);
       }
     }
     if(src.count("children") != 0){

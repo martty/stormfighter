@@ -56,12 +56,13 @@ class Component{
   virtual void onCollisionEnter(const CollisionData* collisionData){}
   /// to be called when the holder GameObject stops colliding (with an other one), once
   virtual void onCollisionExit(const CollisionData* collisionData){}
-  /// to be called when the holder GameObject collider, every tick
+  /// to be called when the holder GameObject collides, every tick
   virtual void onCollisionStay(const CollisionData* collisionData){}
 
   virtual SPropertyTree serialise(){ return tree_; }
   virtual void deserialise(SPropertyTree src){ tree_ = src; }
 
+  /// pulls the current state
   virtual void save(){tree_.put("type", type_);}
   virtual void load(){}
 
@@ -87,13 +88,18 @@ protected:
 
   SPropertyTree tree_;
 
+  void setProperty(SString key, SReal value){tree_.put(key, value);}
+  void setProperty(SString key, SString value){tree_.put(key, value);}
   void setProperty(SString key, SVector3 value){tree_.put(key, Ogre::StringConverter::toString(value));}
   void setProperty(SString key, SQuaternion value){tree_.put(key, Ogre::StringConverter::toString(value));}
-  void setProperty(SString key, SString value){tree_.put(key, value);}
+  void setProperty(SString key, SColourValue value){tree_.put(key, Ogre::StringConverter::toString(value));}
 
-  SString getSStringProperty(SString key){return tree_.get<SString>(key);}
-  SVector3 getSVector3Property(SString key){return Ogre::StringConverter::parseVector3(tree_.get<SString>(key));}
-  SQuaternion getSQuaternionProperty(SString key){return Ogre::StringConverter::parseQuaternion(tree_.get<SString>(key));}
+  int getIntegerProperty(SString key) const {return tree_.get<int>(key);}
+  SReal getSRealProperty(SString key) const {return tree_.get<SReal>(key);}
+  SString getSStringProperty(SString key) const {return tree_.get<SString>(key);}
+  SVector3 getSVector3Property(SString key) const {return Ogre::StringConverter::parseVector3(tree_.get<SString>(key));}
+  SQuaternion getSQuaternionProperty(SString key) const {return Ogre::StringConverter::parseQuaternion(tree_.get<SString>(key));}
+  SColourValue getSColourValueProperty(SString key) const {return Ogre::StringConverter::parseColourValue(tree_.get<SString>(key));}
  private:
   GameObject* object_;
   StormfighterApp* application_;

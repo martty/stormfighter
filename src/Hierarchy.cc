@@ -81,11 +81,12 @@ void Hierarchy::destroyGameObject(GameObject* obj){
   return;
 }
 
-void Hierarchy::loadGameObjectFromFile(SString filename){
+GameObject* Hierarchy::loadGameObjectFromFile(SString filename){
   SPropertyTree src = application_->resources()->readObjectFile(filename);
   GameObject* go = GameObject::deserialise(src);
   if(go)
     addChildToRoot(go);
+  return go;
 }
 
 GameObject* Hierarchy::find(SString name){

@@ -50,16 +50,20 @@ Console = nil;
 
 function Editor:init()
   -- show omnibar
-  self:addKey(OIS.KC_R);
-  self:addKey(OIS.KC_H);
-  self:addKey(OIS.KC_P);
-  self:addKey(OIS.KC_T);
-  self:addKey(OIS.KC_M);
   self:addKey(OIS.KC_1); --select
   self:addKey(OIS.KC_2); --translate
   self:addKey(OIS.KC_3); --rotate
   self:addKey(OIS.KC_4); --scale
   self:manipulator():init(self);
+  self.cameraGO = Hierarchy:createGameObject("editorCamera");
+  self.cameraGO:addTag("no-serialise");
+  self.camera = Camera:new();
+  self.camera:activate();
+  self.cameraGO:addComponent(self.camera);
+  local fcc = System:loadComponent('scripts/freecameracontroller.lua');
+  self.cameraGO:addComponent(fcc);
+  self.cameraGO:transform().position = SVector3(0,0,-100);
+  self.cameraGO:transform():lookAt(SVector3(0,0,0));
 end
 
 function Editor:manipulator()
@@ -260,6 +264,7 @@ function Editor:updateUI()
     self.UI:init();
     self.UI.ready = true;
   end
+  -- poll commands from GUI
   local cmd = GUI:pollCommands();
   local ocmd = cmd;
   if(cmd:find(';')) then
@@ -274,6 +279,8 @@ function Editor:updateUI()
       end
     end
   end
+  -- update Inspector
+  self:inspector():update();
 end
 
 -- UI is being reloaded, so set ready to false
@@ -326,7 +333,8 @@ function Editor:openFileBrowser(path)
 end
 
 function Editor:loadGameObject(filename)
-  Hierarchy:loadGameObjectFromFile(filename);
+  local go = Hierarchy:loadGameObjectFromFile(filename);
+  go:load();
   Editor:openHierarchyBrowser();
 end
 

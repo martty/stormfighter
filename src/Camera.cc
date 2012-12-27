@@ -6,6 +6,11 @@ namespace SF {
 
 Camera::Camera(){
   camera_ = NULL;
+  setProperty("nearClipDistance", 0.1f);
+  setProperty("farClipDistance", 10000.f);
+  setProperty("FOVy", SDegree(60).valueRadians());
+  setProperty("aspectRatio", Graphics::getSingletonPtr()->getDefaultAspectRatio());
+  camera_ = Graphics::getSingletonPtr()->sceneManager()->createCamera("camera_"+Ogre::StringConverter::toString(Graphics::getUniqueId()));
   setState(CREATED);
 }
 
@@ -14,15 +19,30 @@ Camera::~Camera(){
   camera_ = NULL;
 }
 
+void Camera::save(){
+  Component::save();
+  setProperty("nearClipDistance", nearClipDistance());
+  setProperty("farClipDistance", farClipDistance());
+  setProperty("FOVy", FOVy());
+  setProperty("aspectRatio", aspectRatio());
+}
+
+void Camera::load(){
+  setNearClipDistance(getSRealProperty("nearClipDistance"));
+  setFarClipDistance(getSRealProperty("farClipDistance"));
+  setFOVy(getSRealProperty("FOVy"));
+  setAspectRatio(getSRealProperty("aspectRatio"));
+}
+
+
 Camera* Camera::clone() const{
-  // TODO: clone other attribs
-  return new Camera();
+  Camera* cam = new Camera();
+  cam->deserialise(tree_);
+  return cam;
 }
 
 unsigned int Camera::onAdd(SString goname, Transform* transform){
-  camera_ = Graphics::getSingletonPtr()->sceneManager()->createCamera(goname+"_camera");
   transform->attachObject(camera_);
-  camera_->setFarClipDistance(10000.0f);
   setState(READY);
   return NONE;
 }

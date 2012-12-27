@@ -199,6 +199,8 @@ function System.type(var)
     rtyp = "SF::SVector3";
   elseif (typ == "Ogre::Quaternion") then
     rtyp = "SF::SQuaternion";
+  elseif (typ == "Ogre::ColourValue") then
+    rtyp = "SF::SColourValue";
   end
   -- strip SF:: from the beginning
   local _,ind = rtyp:find("SF::");
@@ -345,11 +347,6 @@ function System:annotateField(object, field, otype, get, set, options)
   self.annotations[object].properties[field].set = loadstring(set);
 end
 
--- converts options to a JS readable format (JSON) & make any modifications
-function System:processOptions(opts)
-  return self.JSON:encode(opts)
-end
-
 -- serialise both lua types and Ogre/SF types
 function System:serialise(var)
   local luatype = type(var);
@@ -403,7 +400,7 @@ function System:_setupSFSerialise()
     return 'SQuaternion('..e.x..','..e.y..','..e.z..','..e.w..')';
   end
   seri.SColourValue = function (e)
-    return 'not impl'; --TODO: implement this
+    return 'SColourValue('..e.r..','..e.g..','..e.b..','..e.a..')';
   end
   System.serialisable = seri;
 end
@@ -411,6 +408,7 @@ end
 -- serializes an SF type math object (eg. SVector3)
 function System:serialiseSFType(object)
   local stripped = System.type(object);
+  print('serialising type:'..stripped);
   return self.serialisable[stripped](object);
 end
 
@@ -424,10 +422,12 @@ function System:_annotateCoreComponents()
   self:annotateProperty('Camera', 'nearClipDistance', 'SReal');
   self:annotateProperty('Camera', 'farClipDistance', 'SReal');
   self:annotateProperty('Camera', 'FOVy', 'SReal', {render = 'slider', min = 0, max = 2*math.pi});
-  self:annotateProperty('Camera', 'projectionMode', 'enum', {values = {["Camera.PROJECTION"] = Camera.PROJECTION, ["Camera.ORTHOGRAPHIC"] = Camera.ORTOGRAPHIC}});
-  --self:annotateProperty('Camera', 'polygonMode', '[Camera.POINTS, Camera.WIREFRAME, Camera.SOLID]');
+  self:annotateProperty('Camera', 'projectionType', 'enum', {values = {["Camera.PERSPECTIVE"] = Camera.PERSPECTIVE, ["Camera.ORTHOGRAPHIC"] = Camera.ORTHOGRAPHIC}});
+  self:annotateProperty('Camera', 'polygonMode', 'enum');
 
-
+  self:annotateProperty('Light', 'lightType', 'enum');
+  self:annotateProperty('Light', 'diffuseColour', 'SColourValue');
+  self:annotateProperty('Light', 'specularColour', 'SColourValue');
 
   self:annotateProperty('Mesh', 'meshName', 'SString');
   self:annotateProperty('Primitive', 'meshName', 'SString');

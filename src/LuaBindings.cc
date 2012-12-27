@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 12/25/12 23:15:05.
+** Generated automatically by tolua++-1.0.92 on 12/27/12 00:50:31.
 */
 
 #ifndef __cplusplus
@@ -25319,16 +25319,14 @@ static int tolua_Stormfighter_SF_Light_new00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"SF::Light",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  SF::Light::LightTypes type = ((SF::Light::LightTypes) (int)  tolua_tonumber(tolua_S,2,0));
   {
-   SF::Light* tolua_ret = (SF::Light*)  Mtolua_new((SF::Light)(type));
+   SF::Light* tolua_ret = (SF::Light*)  Mtolua_new((SF::Light)());
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Light");
   }
  }
@@ -25349,16 +25347,14 @@ static int tolua_Stormfighter_SF_Light_new00_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"SF::Light",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  SF::Light::LightTypes type = ((SF::Light::LightTypes) (int)  tolua_tonumber(tolua_S,2,0));
   {
-   SF::Light* tolua_ret = (SF::Light*)  Mtolua_new((SF::Light)(type));
+   SF::Light* tolua_ret = (SF::Light*)  Mtolua_new((SF::Light)());
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Light");
     tolua_register_gc(tolua_S,lua_gettop(tolua_S));
   }
@@ -25367,6 +25363,35 @@ static int tolua_Stormfighter_SF_Light_new00_local(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Light_delete00
+static int tolua_Stormfighter_SF_Light_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Light",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'", NULL);
+#endif
+  Mtolua_delete(self);
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
  return 0;
 #endif
 }
@@ -25404,67 +25429,136 @@ static int tolua_Stormfighter_SF_Light_clone00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setDiffuseColour of class  SF::Light */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Light_setDiffuseColour00
-static int tolua_Stormfighter_SF_Light_setDiffuseColour00(lua_State* tolua_S)
+/* get function: lightType of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Light_lightType
+static int tolua_get_SF__Light_lightType(lua_State* tolua_S)
 {
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"SF::Light",0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::ColourValue",0,&tolua_err)) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
   SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::ColourValue diffuse_colour = *((Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDiffuseColour'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'lightType'",NULL);
 #endif
-  {
-   self->setDiffuseColour(diffuse_colour);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setDiffuseColour'.",&tolua_err);
- return 0;
-#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->lightType());
+ return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setSpecularColour of class  SF::Light */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Light_setSpecularColour00
-static int tolua_Stormfighter_SF_Light_setSpecularColour00(lua_State* tolua_S)
+/* set function: lightType of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Light_lightType
+static int tolua_set_SF__Light_lightType(lua_State* tolua_S)
+{
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'lightType'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setLightType(((SF::Light::LightType) (int)  tolua_tonumber(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: diffuseColour of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Light_diffuseColour
+static int tolua_get_SF__Light_diffuseColour(lua_State* tolua_S)
+{
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'diffuseColour'",NULL);
+#endif
+   tolua_pushusertype(tolua_S,(void*)&self->diffuseColour(),"Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: diffuseColour of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Light_diffuseColour
+static int tolua_set_SF__Light_diffuseColour(lua_State* tolua_S)
+{
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'diffuseColour'",NULL);
+  if ((tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::ColourValue",0,&tolua_err)))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setDiffuseColour(*((  Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: specularColour of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_get_SF__Light_specularColour
+static int tolua_get_SF__Light_specularColour(lua_State* tolua_S)
+{
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'specularColour'",NULL);
+#endif
+   tolua_pushusertype(tolua_S,(void*)&self->specularColour(),"Ogre::ColourValue");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: specularColour of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_set_SF__Light_specularColour
+static int tolua_set_SF__Light_specularColour(lua_State* tolua_S)
+{
+  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'specularColour'",NULL);
+  if ((tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::ColourValue",0,&tolua_err)))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->setSpecularColour(*((  Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0))
+)
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getBoundingBox of class  SF::Light */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Light_getBoundingBox00
+static int tolua_Stormfighter_SF_Light_getBoundingBox00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"SF::Light",0,&tolua_err) ||
-     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Ogre::ColourValue",0,&tolua_err)) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isusertype(tolua_S,1,"const SF::Light",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  SF::Light* self = (SF::Light*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::ColourValue specular_colour = *((Ogre::ColourValue*)  tolua_tousertype(tolua_S,2,0));
+  const SF::Light* self = (const SF::Light*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpecularColour'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBoundingBox'", NULL);
 #endif
   {
-   self->setSpecularColour(specular_colour);
+    Ogre::AxisAlignedBox tolua_ret = (  Ogre::AxisAlignedBox)  self->getBoundingBox();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((Ogre::AxisAlignedBox)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Ogre::AxisAlignedBox));
+     tolua_pushusertype(tolua_S,tolua_obj,"Ogre::AxisAlignedBox");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setSpecularColour'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'getBoundingBox'.",&tolua_err);
  return 0;
 #endif
 }
@@ -28887,6 +28981,72 @@ static int tolua_Stormfighter_SF_GameObject_getBoundingBox00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: save of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_save00
+static int tolua_Stormfighter_SF_GameObject_save00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+  bool recursive = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'save'", NULL);
+#endif
+  {
+   self->save(recursive);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'save'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: load of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_load00
+static int tolua_Stormfighter_SF_GameObject_load00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+  bool recursive = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'load'", NULL);
+#endif
+  {
+   self->load(recursive);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'load'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: serialiseJSON of class  SF::GameObject */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_serialiseJSON00
 static int tolua_Stormfighter_SF_GameObject_serialiseJSON00(lua_State* tolua_S)
@@ -32001,10 +32161,11 @@ static int tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00(lua_State* t
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'loadGameObjectFromFile'", NULL);
 #endif
   {
-   self->loadGameObjectFromFile(filename);
+   SF::GameObject* tolua_ret = (SF::GameObject*)  self->loadGameObjectFromFile(filename);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::GameObject");
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'loadGameObjectFromFile'.",&tolua_err);
@@ -33965,15 +34126,18 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Light","SF::Light","SF::MovableObject",NULL);
    #endif
    tolua_beginmodule(tolua_S,"Light");
-    tolua_constant(tolua_S,"LT_POINT",SF::Light::LT_POINT);
-    tolua_constant(tolua_S,"LT_DIRECTIONAL",SF::Light::LT_DIRECTIONAL);
-    tolua_constant(tolua_S,"LT_SPOTLIGHT",SF::Light::LT_SPOTLIGHT);
+    tolua_constant(tolua_S,"POINT",SF::Light::POINT);
+    tolua_constant(tolua_S,"DIRECTIONAL",SF::Light::DIRECTIONAL);
+    tolua_constant(tolua_S,"SPOTLIGHT",SF::Light::SPOTLIGHT);
     tolua_function(tolua_S,"new",tolua_Stormfighter_SF_Light_new00);
     tolua_function(tolua_S,"new_local",tolua_Stormfighter_SF_Light_new00_local);
     tolua_function(tolua_S,".call",tolua_Stormfighter_SF_Light_new00_local);
+    tolua_function(tolua_S,"delete",tolua_Stormfighter_SF_Light_delete00);
     tolua_function(tolua_S,"clone",tolua_Stormfighter_SF_Light_clone00);
-    tolua_function(tolua_S,"setDiffuseColour",tolua_Stormfighter_SF_Light_setDiffuseColour00);
-    tolua_function(tolua_S,"setSpecularColour",tolua_Stormfighter_SF_Light_setSpecularColour00);
+    tolua_variable(tolua_S,"lightType",tolua_get_SF__Light_lightType,tolua_set_SF__Light_lightType);
+    tolua_variable(tolua_S,"diffuseColour",tolua_get_SF__Light_diffuseColour,tolua_set_SF__Light_diffuseColour);
+    tolua_variable(tolua_S,"specularColour",tolua_get_SF__Light_specularColour,tolua_set_SF__Light_specularColour);
+    tolua_function(tolua_S,"getBoundingBox",tolua_Stormfighter_SF_Light_getBoundingBox00);
     tolua_function(tolua_S,"setAsTerrainLight",tolua_Stormfighter_SF_Light_setAsTerrainLight00);
    tolua_endmodule(tolua_S);
    #ifdef __cplusplus
@@ -34138,6 +34302,8 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"find",tolua_Stormfighter_SF_GameObject_find01);
     tolua_function(tolua_S,"clearChildren",tolua_Stormfighter_SF_GameObject_clearChildren00);
     tolua_function(tolua_S,"getBoundingBox",tolua_Stormfighter_SF_GameObject_getBoundingBox00);
+    tolua_function(tolua_S,"save",tolua_Stormfighter_SF_GameObject_save00);
+    tolua_function(tolua_S,"load",tolua_Stormfighter_SF_GameObject_load00);
     tolua_function(tolua_S,"serialiseJSON",tolua_Stormfighter_SF_GameObject_serialiseJSON00);
     tolua_function(tolua_S,"addTag",tolua_Stormfighter_SF_GameObject_addTag00);
     tolua_function(tolua_S,"removeTag",tolua_Stormfighter_SF_GameObject_removeTag00);

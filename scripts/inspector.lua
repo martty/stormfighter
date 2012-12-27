@@ -42,8 +42,33 @@ function Inspector:showGameObject(goname)
       if(System.annotations[cmps[i].type]) then
         for field,v in pairs(System.annotations[cmps[i].type].properties) do
           --add property
-          -- TODO: factor in options!
-          Editor:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."');");
+          local optsjson = System.JSON:encode(v.options);
+          Editor:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..optsjson.."');");
+          --set property to current value using getField
+          local fieldval = System:getField(cmps[i], field);
+          local serivalue = System:serialise(fieldval);
+          Editor:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..serivalue.."');");
+        end
+      end
+    end
+  end
+end
+
+function Inspector:update()
+  if(not self.go) then -- no selection, nothing to update
+    return
+  end
+  local cmps = self.go:allComponents();
+  for i=0,cmps:size()-1 do
+    if(cmps[i].group == "LuaScript") then
+      print('[!]not adding LuaScript');
+    else
+      -- the components are of Component type, so make SF::type and cast
+      local otype = "SF::"..cmps[i].type;
+      cmps[i] = tolua.cast(cmps[i], otype);
+      -- if we have annotations for this type, then extract properties
+      if(System.annotations[cmps[i].type]) then
+        for field,v in pairs(System.annotations[cmps[i].type].properties) do
           --set property to current value using getField
           local fieldval = System:getField(cmps[i], field);
           local serivalue = System:serialise(fieldval);
@@ -79,8 +104,10 @@ end
 -- save a gameobject
 function Inspector:saveGameObject(goname)
   print('saving:'..goname);
+  local go = Hierarchy:find(goname);
+  go:save();
   local filename = "media/objects/"..goname..".object.json";
-  local json = Hierarchy:find(goname):serialiseJSON(true);
+  local json = go:serialiseJSON(true);
   local f = assert(io.open(filename, 'w'));
   f:write(json);
   f:close();

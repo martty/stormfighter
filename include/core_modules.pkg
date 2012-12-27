@@ -192,7 +192,7 @@ class Hierarchy {
   /// Returns the whole hierarchy (DFS)
   SString debug();
 
-  void loadGameObjectFromFile(SString filename);
+  GameObject* loadGameObjectFromFile(SString filename);
 
   SString serialise();
 };

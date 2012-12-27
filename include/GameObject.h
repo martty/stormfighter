@@ -21,7 +21,7 @@ struct CollisionData;
 /**
  *@brief Generic parent class for all GameObject
  *
- * Suggested abbroviation: GO, :)
+ * Suggested abbreviation: GO, :)
  */
 class GameObject {
  friend class Hierarchy;
@@ -64,7 +64,7 @@ class GameObject {
   /// sends collision events to components
   void collision();
 
-  // Game object list managament
+  // Hierarchy management
   ///Add equal level member to GameObject list
   void addSibling(GameObject* go);
   ///Add children(lower in hierarchy) member to GameObject list
@@ -84,9 +84,14 @@ class GameObject {
   ///Destroy all children (call their destructors)
   void clearChildren();
 
+  // Saving & loading & serialisation
+  ///Tells components to save in this GO (and descendants if recursive == true)
+  void save(bool recursive);
+  ///Tells components to load in this GO (and descendants if recursive == true)
+  void load(bool recursive);
+
   ///Serialise GO (and descendants if recursive == true)
   SPropertyTree serialise(bool recursive);
-
   ///Serialise GO into JSON
   SString serialiseJSON(bool recursive);
 

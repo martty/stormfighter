@@ -57,6 +57,8 @@ Transform* Transform::clone() const{
   return ntf;
 }
 // TODO: !important this is botched
+//        we are returning temporary variables
+//        maybe scrap tolua_property? or cache these
 const SVector3& Transform::worldPosition() const{
   return node_->convertLocalToWorldPosition(SVector3::ZERO);
 }
@@ -191,6 +193,7 @@ bool Transform::isVisible(){
 }
 
 void Transform::save(){
+  Component::save();
   setProperty("position", position());
   setProperty("orientation", orientation());
   setProperty("scale", scale());

@@ -26,6 +26,9 @@ class Camera : public MovableObject {
   Camera();
   ~Camera();
 
+  virtual void save();
+  virtual void load();
+
   Camera* clone() const;
 
   /// set near clip distance

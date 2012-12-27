@@ -52,6 +52,11 @@ class GameObject {
 
   SAxisAlignedBox getBoundingBox();
 
+  ///Tells components to save in this GO (and descendants if recursive == true)
+  void save(bool recursive);
+  ///Tells components to load in this GO (and descendants if recursive == true)
+  void load(bool recursive);
+
   SString serialiseJSON(bool recursive);
 
   // Tagging

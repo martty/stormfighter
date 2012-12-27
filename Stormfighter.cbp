@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\Stormfighter" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/Stormfighter" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -27,8 +27,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\Stormfighter" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/Stormfighter" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -47,6 +47,28 @@
 					<Add library="LinearMath" />
 				</Linker>
 			</Target>
+			<Target title="Profile">
+				<Option output="bin/Profile/Stormfighter" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Profile" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add library="OgreMain_d" />
+					<Add library="OIS_d" />
+					<Add library="OgrePaging_d" />
+					<Add library="OgreTerrain_d" />
+					<Add library="Awesomium_d" />
+					<Add library="BulletDynamics_Debug" />
+					<Add library="BulletCollision_Debug" />
+					<Add library="LinearMath_Debug" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -57,13 +79,13 @@
 			<Add option="-DWIN32" />
 			<Add option="-D_WINDOWS" />
 			<Add directory="include" />
-			<Add directory="deps\include" />
-			<Add directory="deps\include\OGRE" />
-			<Add directory="deps\include\OIS" />
-			<Add directory="deps\boost_1_52" />
-			<Add directory="deps\include\bullet" />
-			<Add directory="deps\include\lua" />
-			<Add directory="deps\include\OGRE\Paging" />
+			<Add directory="deps/include" />
+			<Add directory="deps/include/OGRE" />
+			<Add directory="deps/include/OIS" />
+			<Add directory="deps/boost_1_52" />
+			<Add directory="deps/include/bullet" />
+			<Add directory="deps/include/lua" />
+			<Add directory="deps/include/OGRE/Paging" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -73,142 +95,154 @@
 			<Add library="tolua++" />
 			<Add library="boost_system" />
 			<Add library="boost_filesystem" />
-			<Add directory="deps\lib\$(TARGET_NAME)" />
-			<Add directory="deps\lib" />
-			<Add directory="deps\lib\Release" />
-			<Add directory="deps\boost_1_52\lib" />
+			<Add directory="deps/lib/$(TARGET_NAME)" />
+			<Add directory="deps/lib" />
+			<Add directory="deps/lib/Release" />
+			<Add directory="deps/boost_1_52/lib" />
 		</Linker>
-		<Unit filename="include\BoxCollider.h" />
-		<Unit filename="include\BulletOgreDebugDraw.h" />
-		<Unit filename="include\BulletOgreGlue.h" />
-		<Unit filename="include\BulletOgreMeshToShape.h" />
-		<Unit filename="include\Camera.h" />
-		<Unit filename="include\CapsuleCollider.h" />
-		<Unit filename="include\Collider.h" />
-		<Unit filename="include\Component.h" />
-		<Unit filename="include\CompoundCollider.h" />
-		<Unit filename="include\Constraint.h" />
-		<Unit filename="include\ConvexHullCollider.h" />
-		<Unit filename="include\CylinderCollider.h" />
-		<Unit filename="include\DebugDrawer.h" />
-		<Unit filename="include\Frame.h" />
-		<Unit filename="include\GUI.h" />
-		<Unit filename="include\GameObject.h" />
-		<Unit filename="include\Graphics.h" />
-		<Unit filename="include\Hierarchy.h" />
-		<Unit filename="include\Input.h" />
-		<Unit filename="include\Library.h" />
-		<Unit filename="include\Light.h" />
-		<Unit filename="include\Logger.h" />
-		<Unit filename="include\LuaBindings.h" />
-		<Unit filename="include\LuaForward.h" />
-		<Unit filename="include\LuaScript.h" />
-		<Unit filename="include\ManualObject.h" />
-		<Unit filename="include\Mesh.h" />
-		<Unit filename="include\Module.h" />
-		<Unit filename="include\MovableObject.h" />
-		<Unit filename="include\OgreAxisAlignedBox.pkg" />
-		<Unit filename="include\OgreColourValue.pkg" />
-		<Unit filename="include\OgreImage.pkg" />
-		<Unit filename="include\OgreMath.pkg" />
-		<Unit filename="include\OgrePlane.pkg" />
-		<Unit filename="include\OgreQuaternion.pkg" />
-		<Unit filename="include\OgreSphere.pkg" />
-		<Unit filename="include\OgreTerrain.pkg" />
-		<Unit filename="include\OgreVector3.pkg" />
-		<Unit filename="include\PageProvider.h" />
-		<Unit filename="include\PagedTerrain.h" />
-		<Unit filename="include\Physics.h" />
-		<Unit filename="include\Primitive.h" />
-		<Unit filename="include\Resources.h" />
-		<Unit filename="include\RigidBody.h" />
-		<Unit filename="include\Script.h" />
-		<Unit filename="include\Scripting.h" />
-		<Unit filename="include\Serialiser.h" />
-		<Unit filename="include\SphereCollider.h" />
-		<Unit filename="include\Stormfighter.pkg" />
-		<Unit filename="include\StormfighterApp.h" />
-		<Unit filename="include\Terrain.h" />
-		<Unit filename="include\TerrainCollider.h" />
-		<Unit filename="include\TerrainPagedWorldSection.h" />
-		<Unit filename="include\TerrainPaging.h" />
-		<Unit filename="include\Transform.h" />
-		<Unit filename="include\TrimeshCollider.h" />
-		<Unit filename="include\ViewPortOverlay.h" />
-		<Unit filename="include\common.h" />
-		<Unit filename="include\core_application.pkg" />
-		<Unit filename="include\core_components_graphics.pkg" />
-		<Unit filename="include\core_components_physics.pkg" />
-		<Unit filename="include\core_components_scripting.pkg" />
-		<Unit filename="include\core_gameobject.pkg" />
-		<Unit filename="include\core_modules.pkg" />
-		<Unit filename="include\core_ogre.pkg" />
-		<Unit filename="include\core_ois.pkg" />
-		<Unit filename="include\stdlib.pkg" />
-		<Unit filename="scripts\chasecameracontroller.lua" />
-		<Unit filename="scripts\console.lua" />
-		<Unit filename="scripts\editor.lua" />
-		<Unit filename="scripts\freecameracontroller.lua" />
-		<Unit filename="scripts\init.lua" />
-		<Unit filename="scripts\input.lua" />
-		<Unit filename="scripts\inspector.lua" />
-		<Unit filename="scripts\manipulator.lua" />
-		<Unit filename="scripts\player.controller.lua" />
-		<Unit filename="scripts\showcase.lua" />
-		<Unit filename="scripts\showcase_rotator.lua" />
-		<Unit filename="scripts\system.lua" />
-		<Unit filename="scripts\terrain_test.lua" />
-		<Unit filename="scripts\world.lua" />
-		<Unit filename="src\BoxCollider.cc" />
-		<Unit filename="src\BulletOgreDebugDraw.cc" />
-		<Unit filename="src\BulletOgreMeshToShape.cc" />
-		<Unit filename="src\Camera.cc" />
-		<Unit filename="src\CapsuleCollider.cc" />
-		<Unit filename="src\Collider.cc" />
-		<Unit filename="src\Component.cc" />
-		<Unit filename="src\CompoundCollider.cc" />
-		<Unit filename="src\Constraint.cc" />
-		<Unit filename="src\ConvexHullCollider.cc" />
-		<Unit filename="src\CylinderCollider.cc" />
-		<Unit filename="src\DebugDrawer.cc" />
-		<Unit filename="src\Frame.cc" />
-		<Unit filename="src\GUI.cc" />
-		<Unit filename="src\GameObject.cc" />
-		<Unit filename="src\Graphics.cc" />
-		<Unit filename="src\Hierarchy.cc" />
-		<Unit filename="src\Input.cc" />
-		<Unit filename="src\Light.cc" />
-		<Unit filename="src\Logger.cc" />
-		<Unit filename="src\LuaBindings.cc" />
-		<Unit filename="src\LuaScript.cc" />
-		<Unit filename="src\ManualObject.cc" />
-		<Unit filename="src\Mesh.cc" />
-		<Unit filename="src\Module.cc" />
-		<Unit filename="src\PageProvider.cc" />
-		<Unit filename="src\PagedTerrain.cc" />
-		<Unit filename="src\Physics.cc" />
-		<Unit filename="src\Primitive.cc">
+		<Unit filename="include/BoxCollider.h" />
+		<Unit filename="include/BulletOgreDebugDraw.h" />
+		<Unit filename="include/BulletOgreGlue.h" />
+		<Unit filename="include/BulletOgreMeshToShape.h" />
+		<Unit filename="include/Camera.h" />
+		<Unit filename="include/CapsuleCollider.h" />
+		<Unit filename="include/Collider.h" />
+		<Unit filename="include/Component.h" />
+		<Unit filename="include/ComponentFactory.h" />
+		<Unit filename="include/CompoundCollider.h" />
+		<Unit filename="include/Constraint.h" />
+		<Unit filename="include/ConvexHullCollider.h" />
+		<Unit filename="include/CylinderCollider.h" />
+		<Unit filename="include/DebugDrawer.h" />
+		<Unit filename="include/Frame.h" />
+		<Unit filename="include/GUI.h" />
+		<Unit filename="include/GameObject.h" />
+		<Unit filename="include/Graphics.h" />
+		<Unit filename="include/Hierarchy.h" />
+		<Unit filename="include/Input.h" />
+		<Unit filename="include/Library.h" />
+		<Unit filename="include/Light.h" />
+		<Unit filename="include/Logger.h" />
+		<Unit filename="include/LuaBindings.h" />
+		<Unit filename="include/LuaForward.h" />
+		<Unit filename="include/LuaScript.h" />
+		<Unit filename="include/ManualObject.h" />
+		<Unit filename="include/Mesh.h" />
+		<Unit filename="include/Module.h" />
+		<Unit filename="include/MovableObject.h" />
+		<Unit filename="include/OgreAxisAlignedBox.pkg" />
+		<Unit filename="include/OgreColourValue.pkg" />
+		<Unit filename="include/OgreImage.pkg" />
+		<Unit filename="include/OgreMath.pkg" />
+		<Unit filename="include/OgrePlane.pkg" />
+		<Unit filename="include/OgreQuaternion.pkg" />
+		<Unit filename="include/OgreSphere.pkg" />
+		<Unit filename="include/OgreTerrain.pkg" />
+		<Unit filename="include/OgreVector3.pkg" />
+		<Unit filename="include/PageProvider.h" />
+		<Unit filename="include/PagedTerrain.h" />
+		<Unit filename="include/Physics.h" />
+		<Unit filename="include/Primitive.h" />
+		<Unit filename="include/Resources.h" />
+		<Unit filename="include/RigidBody.h" />
+		<Unit filename="include/Script.h" />
+		<Unit filename="include/Scripting.h" />
+		<Unit filename="include/Serialiser.h" />
+		<Unit filename="include/SphereCollider.h" />
+		<Unit filename="include/Stormfighter.pkg" />
+		<Unit filename="include/StormfighterApp.h" />
+		<Unit filename="include/Terrain.h" />
+		<Unit filename="include/TerrainCollider.h" />
+		<Unit filename="include/TerrainPagedWorldSection.h" />
+		<Unit filename="include/TerrainPaging.h" />
+		<Unit filename="include/Transform.h" />
+		<Unit filename="include/TrimeshCollider.h" />
+		<Unit filename="include/ViewPortOverlay.h" />
+		<Unit filename="include/common.h" />
+		<Unit filename="include/core_application.pkg" />
+		<Unit filename="include/core_components_graphics.pkg" />
+		<Unit filename="include/core_components_physics.pkg" />
+		<Unit filename="include/core_components_scripting.pkg" />
+		<Unit filename="include/core_gameobject.pkg" />
+		<Unit filename="include/core_modules.pkg" />
+		<Unit filename="include/core_ogre.pkg" />
+		<Unit filename="include/core_ois.pkg" />
+		<Unit filename="include/stdlib.pkg" />
+		<Unit filename="scripts/JSON.lua" />
+		<Unit filename="scripts/chasecameracontroller.lua" />
+		<Unit filename="scripts/console.lua" />
+		<Unit filename="scripts/editor.lua" />
+		<Unit filename="scripts/freecameracontroller.lua" />
+		<Unit filename="scripts/init.lua" />
+		<Unit filename="scripts/input.lua" />
+		<Unit filename="scripts/inspector.lua" />
+		<Unit filename="scripts/manipulator.lua" />
+		<Unit filename="scripts/player.controller.lua" />
+		<Unit filename="scripts/showcase.lua" />
+		<Unit filename="scripts/showcase_rotator.lua" />
+		<Unit filename="scripts/system.lua" />
+		<Unit filename="scripts/terrain_test.lua" />
+		<Unit filename="scripts/world.lua" />
+		<Unit filename="src/BoxCollider.cc" />
+		<Unit filename="src/BulletOgreDebugDraw.cc" />
+		<Unit filename="src/BulletOgreMeshToShape.cc" />
+		<Unit filename="src/Camera.cc" />
+		<Unit filename="src/CapsuleCollider.cc" />
+		<Unit filename="src/Collider.cc" />
+		<Unit filename="src/Component.cc" />
+		<Unit filename="src/ComponentFactory.cc" />
+		<Unit filename="src/CompoundCollider.cc" />
+		<Unit filename="src/Constraint.cc" />
+		<Unit filename="src/ConvexHullCollider.cc" />
+		<Unit filename="src/CylinderCollider.cc" />
+		<Unit filename="src/DebugDrawer.cc" />
+		<Unit filename="src/Frame.cc" />
+		<Unit filename="src/GUI.cc" />
+		<Unit filename="src/GameObject.cc" />
+		<Unit filename="src/Graphics.cc" />
+		<Unit filename="src/Hierarchy.cc" />
+		<Unit filename="src/Input.cc" />
+		<Unit filename="src/Light.cc" />
+		<Unit filename="src/Logger.cc" />
+		<Unit filename="src/LuaBindings.cc" />
+		<Unit filename="src/LuaScript.cc" />
+		<Unit filename="src/ManualObject.cc" />
+		<Unit filename="src/Mesh.cc" />
+		<Unit filename="src/Module.cc" />
+		<Unit filename="src/PageProvider.cc" />
+		<Unit filename="src/PagedTerrain.cc" />
+		<Unit filename="src/Physics.cc" />
+		<Unit filename="src/Primitive.cc">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src\Resources.cc" />
-		<Unit filename="src\RigidBody.cc" />
-		<Unit filename="src\Scripting.cc" />
-		<Unit filename="src\SphereCollider.cc" />
-		<Unit filename="src\StormfighterApp.cc" />
-		<Unit filename="src\Terrain.cc" />
-		<Unit filename="src\TerrainCollider.cc" />
-		<Unit filename="src\TerrainPagedWorldSection.cc" />
-		<Unit filename="src\TerrainPaging.cc" />
-		<Unit filename="src\Transform.cc" />
-		<Unit filename="src\TrimeshCollider.cc" />
-		<Unit filename="src\ViewPortOverlay.cc" />
-		<Unit filename="src\common.cc" />
-		<Unit filename="src\main.cc" />
+		<Unit filename="src/Resources.cc" />
+		<Unit filename="src/RigidBody.cc" />
+		<Unit filename="src/Scripting.cc" />
+		<Unit filename="src/SphereCollider.cc" />
+		<Unit filename="src/StormfighterApp.cc" />
+		<Unit filename="src/Terrain.cc" />
+		<Unit filename="src/TerrainCollider.cc" />
+		<Unit filename="src/TerrainPagedWorldSection.cc" />
+		<Unit filename="src/TerrainPaging.cc" />
+		<Unit filename="src/Transform.cc" />
+		<Unit filename="src/TrimeshCollider.cc" />
+		<Unit filename="src/ViewPortOverlay.cc" />
+		<Unit filename="src/common.cc" />
+		<Unit filename="src/main.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="4" line="2" />
+				<doxyfile_project output_directory="doc" />
+				<doxyfile_build extract_all="1" />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general use_at_in_tags="1" />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

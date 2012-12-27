@@ -14,6 +14,7 @@
 namespace SF {
 
 template<> Graphics* Ogre::Singleton<Graphics>::msSingleton = 0;
+unsigned Graphics::uniqueId_ = 0;
 
 Graphics::Graphics(StormfighterApp* app, const SString& windowTitle): Module(app), root_(NULL), sceneManager_(NULL), renderWindow_(NULL), viewport_(NULL), defaultCamera_(NULL){
   windowTitle_ = windowTitle;
@@ -327,6 +328,10 @@ void Graphics::setSkyBoxMaterial(SString mat){
 }
 void Graphics::setSkyBoxEnabled(bool enable) {
   sceneManager_->setSkyBox(enable, skyBoxMaterialName_);
+}
+
+unsigned Graphics::getUniqueId(){
+  return uniqueId_++;
 }
 
 }; // namespace SF

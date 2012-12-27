@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 12/25/12 23:15:06.
+** Generated automatically by tolua++-1.0.92 on 12/27/12 00:50:32.
 */
 
 /* Exported function */
