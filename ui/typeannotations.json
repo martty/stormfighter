@@ -1,0 +1,97 @@
+typeannotations = 
+{
+	"Unknown" : {
+		"tipText" : "No type annotation provided for this Component yet.",
+		"category" : "Unknown",
+		"properties" : {
+			
+		}
+	},
+	"Transform" : {
+		"tipText" : "The Transform component enables a GameObject to be located somewhere in the world. <br><em>It cannot be deleted.</em>",
+		"category" : "Transform",
+		"properties" : {
+			"position" : {
+				"defaultValue" : "0 0 0",
+				"tipText" : "Sets the position of the GameObject",
+				"type" : "SVector3"
+			},
+			"orientation" : {
+				"defaultValue" : "1 0 0 0",
+				"tipText" : "Sets the orientation of the GameObject",
+				"type" : "SQuaternion"
+			},
+			"scale" : {
+				"defaultValue" : "1 1 1",
+				"tipText" : "Sets the scale of the GameObject",
+				"type" : "SVector3"
+			}
+		}
+	},
+
+	"Camera" : {
+		"tipText" : "The Camera component allows the scene to be viewed.",
+		"category" : "Graphics",
+		"properties" : {
+			"nearClipDistance" : "SReal",
+			"farClipDistance"  : "SReal",
+			"FOVy" : {
+				"type" : "SReal", 
+				"render" : {
+					"display" : "slider",
+					"min" : 0,
+					"max" : "2*Math.pi"
+				}
+			},
+			"projectionType" : {
+				"type" : "SEnum",
+				"values" : {
+					"Perspective" : 0, 
+					"Ortographic" : 1
+				}
+			},
+			"polygonMode" : {
+				"type" : "SEnum",
+				"values" : {
+					"Points" : 0,
+					"Wireframe" : 1,
+					"Solid" : 2
+				}
+			},
+		}
+	},
+
+	"Light" : {
+		"tipText" : "The Light component illuminates the scene and allows shadows to be cast.",
+		"category" : "Graphics",
+		"properties" : {
+			"lightType" : {
+				"type" : "SEnum", 
+				"values" : {
+					"Point" : 0,
+					"Directional" : 1,
+					"Spotlight" : 2
+				}
+			},
+			"diffuseColour" : "SColourValue",
+			"specularColour" : "SColourValue",
+		}
+	},
+
+	"Mesh" : {
+		"tipText" : "The Mesh component defines the appearance of a GameObject.",
+		"category" : "Graphics",
+		"properties" : {
+			"meshName" : "SString"
+		}
+	},
+
+	"Primitive" : {
+		"tipText" : "Special Mesh component allowing display of cubes, spheres and planes",
+		"category" : "Graphics",
+		"group" : "Mesh",
+		"properties" : {
+			"meshName" : "SString"
+		}	
+	}
+}
