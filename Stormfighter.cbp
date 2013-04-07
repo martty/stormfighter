@@ -99,6 +99,7 @@
 			<Add directory="deps/lib" />
 			<Add directory="deps/lib/Release" />
 			<Add directory="deps/boost_1_52/lib" />
+			<Add directory="deps/lib/Debug" />
 		</Linker>
 		<Unit filename="include/BoxCollider.h" />
 		<Unit filename="include/BulletOgreDebugDraw.h" />

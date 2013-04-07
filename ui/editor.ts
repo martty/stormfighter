@@ -13,6 +13,8 @@ class Editor {
 	queue : CallData[];
 
 	constructor(){
+		this.queue = new Array();
+
 		this.containers = new Array();
 		this.containers['west'] = new Container('west');
 		this.containers['east'] = new Container('east');
@@ -41,7 +43,9 @@ class Editor {
 	}
 
 	poll() : string{
-		return JSON.stringify(this.queue);
+		var str = JSON.stringify(this.queue);
+		console.log(str);
+		return str;
 	}
 
 	receive(datastr : string) : void{

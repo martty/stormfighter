@@ -56,9 +56,6 @@ var Inspector = (function (_super) {
                 cmp.update(cmpd);
             }
         }
-        this.box.panel({
-            fit: true
-        });
         this.box.find('.tip-left').tipTip({
             defaultPosition: 'left'
         });

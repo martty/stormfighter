@@ -4,7 +4,7 @@
 
 --  a -- -al kezdõdõ sorok a kommentek
 
-print("hai");
+__ = require 'scripts/underscore'
 
 dofile('scripts/system.lua');
 dofile('scripts/input.lua');

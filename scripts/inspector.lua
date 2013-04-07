@@ -5,24 +5,75 @@
 --]]
 
 function Inspector:init()
-  -- set command patterns
-  Editor:executeJS('inspector.setCommandPatterns({"setproperty" : "Editor:inspector():setProperty($0, $1, $2);", "setcomponentproperty" : "Editor:inspector():setComponentProperty($0, $1, $2, $3);", "addcomponent" : "Editor:inspector():addComponent($0, $1);", "savegameobject" : "Editor:inspector():saveGameObject($0);"});');
   self.go = nil;
+  self.cdata = {}; -- current data of go
 end
 
-function Inspector:show()
-  Editor:executeJS('inspector.show();');
+-- dispatch endpoint
+function Inspector:receive(calldata)
+  local cmd = calldata.meta.command;
+  if (cmd == "delta") then
+    self:delta(calldata.data);
+  elseif (cmd == "destroy") then
+  elseif (cmd == "create") then
+  end
 end
 
-function Inspector:clear()
-  Editor:executeJS('inspector.clear();');
-  self.go = nil;
+
+-- updates gameobject to match incoming data
+function Inspector:delta(data)
+
 end
 
--- open Inspector and show a GO's components
-function Inspector:showGameObject(goname)
-  self:show();
-  self:clear();
+
+-- set our GO object and notify for update
+function Inspector:setGameObject(go)
+  self.go = go;
+  self:update();
+end
+
+-- updates UI representation to match engine data
+function Inspector:update()
+  if(not self.go) then -- no selection, nothing to update
+    return;
+  end
+
+  local godata = self.go:serialiseJSON(false);
+  tprint(System.JSON:decode(godata));
+--[[
+  local ndata = {}; -- new component data
+  local cmps = self.go:allComponents();
+  for i=0,cmps:size()-1 do
+    if(cmps[i].group == "LuaScript") then
+      print('[!]not adding LuaScript');
+    else
+      -- the components are of Component type, so make SF::type and cast
+      local otype = "SF::"..cmps[i].type;
+      cmps[i] = tolua.cast(cmps[i], otype);
+      -- if we have annotations for this type, then extract properties
+      if(System.annotations[cmps[i].type]) then
+        ndata[cmps[i].type] = {};
+        for field,v in pairs(System.annotations[cmps[i].type].properties) do
+          --set property to current value using getField
+          local fieldval = System:getField(cmps[i], field);
+          local serivalue = System:serialise(fieldval);
+          ndata[cmps[i].type][field] = {field_type=v.type, field_value=serivalue};
+        end
+      end
+    end
+  end
+  local equal, diff = self:tablesEqual(self.cdata, ndata);
+  if not(equal) then
+    self.cdata = ndata;
+    if(diff == "len" or diff == "key") then
+      self:showGameObject(self.go:name());
+    else
+      self:updateValues();
+    end
+  end--]]
+  print('\n'..godata);
+end
+--[[
   Editor:executeJS("inspector.setGameObjectName('"..goname.."');");
   local go = Hierarchy:find(goname);
   -- save currently selected go
@@ -53,8 +104,8 @@ function Inspector:showGameObject(goname)
     end
   end
 end
-
-function Inspector:update()
+--]]
+function Inspector:updateValues()
   if(not self.go) then -- no selection, nothing to update
     return
   end
@@ -79,6 +130,32 @@ function Inspector:update()
   end
 end
 
+-- compare two tables by key and value equivalence
+function Inspector:tablesEqual(table1, table2)
+  -- if different length, then definietly not same
+  -- pitfall: #table returns 0 for maps
+  local table1len = 0 for _, _ in pairs(table1) do table1len = table1len + 1 end
+  local table2len = 0 for _, _ in pairs(table2) do table2len = table2len + 1 end
+  if not(table1len == table2len) then
+    return false, "len";
+  end
+  for k,v in pairs(table1) do
+    if(table2[k] == nil) then -- table2 does not have an index from table1
+      return false, "key";
+    end
+    if not (table1[k] == table2[k]) then -- table1[k] value does not match table2[k] value
+      if (type(table1[k]) == "table") then -- table values should be compared through recursion
+        if not self:tablesEqual(table1[k], table2[k]) then
+          return false, "value";
+        end
+      else -- non table value means different tables
+        return false, "value";
+      end
+    end
+  end
+  return true;
+end
+
 -- Inspector widget commands go through here
 
 -- utility function to convert value strings into lua variables
@@ -101,11 +178,28 @@ function Inspector:setComponentProperty(goname, cmpname, property, valstring)
   System:setField(cmp, property, self:value(valstring));
 end
 
+-- add a component to GO
+function Inspector:addComponent(goname, cmpname)
+  local cmp;
+  if(self.go:hasComponent(cmpname)) then
+    print(goname.." already has component "..cmpname);
+    return;
+  end
+  if (cmpname == "Mesh") then
+    cmp = Mesh:new();
+  elseif (cmpname == "Camera") then
+    cmp = Camera:new();
+  elseif (cmpname == "Light") then
+    cmp = Light:new();
+  end
+  self.go:addComponent(cmp);
+end
+
 -- save a gameobject
 function Inspector:saveGameObject(goname)
   print('saving:'..goname);
   local go = Hierarchy:find(goname);
-  go:save();
+  go:save(true);
   local filename = "media/objects/"..goname..".object.json";
   local json = go:serialiseJSON(true);
   local f = assert(io.open(filename, 'w'));

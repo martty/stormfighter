@@ -660,9 +660,10 @@ function encode_value(self, value, parents, etc)
    elseif type(value) == 'boolean' then
       return tostring(value)
 
+   -- MARCI : changed so that any value not convertable will be missed from the collection rather than failing (eg.: ko.toJSON)
    elseif type(value) ~= 'table' then
-      self:onEncodeError("can't convert " .. type(value) .. " to JSON", etc)
-
+      --self:onEncodeError("can't convert " .. type(value) .. " to JSON", etc)
+      return false;
    else
       --
       -- A table to be converted to either a JSON object or array.
@@ -684,7 +685,10 @@ function encode_value(self, value, parents, etc)
          --
          local ITEMS = { }
          for i = 1, maximum_number_key do
-            table.insert(ITEMS, encode_value(self, T[i], parents, etc))
+            local encoded_value = encode_value(self, T[i], parents, etc);
+            if(encoded_value) then
+               table.insert(ITEMS, encoded_value)
+            end
          end
 
          result_value = "[" .. table.concat(ITEMS, ",") .. "]"
@@ -704,7 +708,9 @@ function encode_value(self, value, parents, etc)
          for _, key in ipairs(object_keys) do
             local encoded_key = encode_value(self, tostring(key), parents, etc)
             local encoded_val = encode_value(self, T[key],        parents, etc)
-            table.insert(PARTS, string.format("%s:%s", encoded_key, encoded_val))
+            if(encoded_val) then
+               table.insert(PARTS, string.format("%s:%s", encoded_key, encoded_val))
+            end
          end
          result_value = "{" .. table.concat(PARTS, ",") .. "}"
       else

@@ -507,7 +507,7 @@ SPropertyTree GameObject::serialise(bool recursive){
   SPropertyTree children;
   ptree.put("name", name_);
   for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    cmps.push_back(std::make_pair((*it).first, (*it).second->serialise()));
+    cmps.push_back(std::make_pair("", (*it).second->serialise()));
   }
   ptree.add_child("components", cmps);
   if(recursive){

@@ -49,6 +49,7 @@ Console = nil;
 
 
 function Editor:init()
+  self.internal.time_started = os.time();
   -- show omnibar
   self:addKey(OIS.KC_1); --select
   self:addKey(OIS.KC_2); --translate
@@ -79,10 +80,13 @@ function Editor:console()
 end
 
 function Editor.UI:init()
-  self.inspector:init();
-  self.console:init();
-  Editor:openHierarchyBrowser();
-  Editor:openFileBrowser('media/objects');
+  --self.inspector:init();
+  --self.console:init();
+  --Editor:openHierarchyBrowser();
+  --Editor:openFileBrowser('media/objects');
+  Editor.internal.time_ui_loaded = os.time();
+  Editor.internal.time_to_ui_load = Editor.internal.time_ui_loaded - Editor.internal.time_started;
+  print(tostring(Editor.internal.time_to_ui_load));
 end
 
 
@@ -264,23 +268,30 @@ function Editor:updateUI()
     self.UI:init();
     self.UI.ready = true;
   end
-  -- poll commands from GUI
-  local cmd = GUI:pollCommands();
-  local ocmd = cmd;
-  if(cmd:find(';')) then
-    cmd = cmd:sub(1, cmd:rfind(';')); -- chop off scrambled shit if appears
-    if(not (cmd == ";")) then
-      --print(cmd);
-      local f = loadstring(cmd);
-      if(f) then
-        f();
-      else
-        print('error in cmd:'..cmd..','..ocmd);
-      end
-    end
-  end
+  -- parse UI messages & execute
+  self:dispatchUIMessage(GUI:pollCommands());
   -- update Inspector
   self:inspector():update();
+end
+
+function Editor:dispatchUIMessage(msg)
+  local datas = self:parseUIMessage(msg);
+  for i=1,#datas do
+    local callee = datas[i].meta.callee;
+    if(callee == "inspector") then
+      self:inspector():receive(datas[i]);
+    else
+      print("Unknown callee");
+    end
+  end
+end
+
+function Editor:parseUIMessage(message)
+  print('Parsing...');
+  print(message);
+  local decoded = System.JSON:decode(message);
+  tprint(decoded);
+  return decoded;
 end
 
 -- UI is being reloaded, so set ready to false
@@ -316,7 +327,7 @@ end
 
 function Editor:openHierarchyBrowser()
   -- set up commands
-  Editor:executeJS('hierarchy.setCommandPatterns({"select" : "Editor:selectGameObject($0);", "delete" : "Editor:delete($0);", "reparent" : "Editor:reparent($0, $1);"});');
+  Editor:executeJS('hierarchy.setCommandPatterns({"select" : "Editor:selectGameObject($0);", "addgameobject" : "Editor:addGameObject($0, $1);", "delete" : "Editor:delete($0);", "reparent" : "Editor:reparent($0, $1);"});');
   --obtain GOs from hierarchy
   local hierarchyJSON = Hierarchy:serialise();
   local js = "hierarchy.update('"..hierarchyJSON.."');";
@@ -334,13 +345,20 @@ end
 
 function Editor:loadGameObject(filename)
   local go = Hierarchy:loadGameObjectFromFile(filename);
-  go:load();
+  go:load(true);
   Editor:openHierarchyBrowser();
 end
 
 function Editor:selectGameObject(goname)
   self:manipulator():show(goname);
   self:inspector():showGameObject(goname);
+end
+
+function Editor:addGameObject(newgoname, parentgoname)
+  local parentgo = Hierarchy:find(parentgoname);
+  local newgo = Hierarchy:createGameObject(newgoname);
+  parentgo:addChild(newgo);
+  Editor:openHierarchyBrowser();
 end
 
 function Editor:saveScene()

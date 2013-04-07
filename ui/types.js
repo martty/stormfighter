@@ -397,7 +397,7 @@ var GO = (function () {
                 });
             });
         }, 0);
-        console.log(JSON.stringify(calldata));
+        editor.send(calldata);
     };
     GO.prototype.sendDestroy = function () {
         var _this = this;
@@ -426,7 +426,7 @@ var GO = (function () {
                 _this.components.remove(cmp);
             });
         }, 0);
-        console.log(JSON.stringify(calldata));
+        editor.send(calldata);
     };
     GO.prototype.sendCreate = function (c) {
         var calldata = {
@@ -446,7 +446,7 @@ var GO = (function () {
                 }
             }
         ];
-        console.log(JSON.stringify(calldata));
+        editor.send(calldata);
     };
     GO.prototype.hasComponent = function (type) {
         for(var i = 0; i < this.components().length; i++) {

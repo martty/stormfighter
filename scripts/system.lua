@@ -51,9 +51,18 @@ function print(something)
   Logger:logMessage(tostring(something));
 end
 
-function print_as_table(tbl)
-  for i,k in pairs(tbl) do
-    print("["..tostring(i) .. "]".. System:serialiseNativeType(k));
+function tprint (tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    formatting = string.rep("  ", indent) .. k .. ": "
+    if type(v) == "table" then
+      print(formatting)
+      tprint(v, indent+1)
+    elseif type(v) == 'boolean' then
+      print(formatting .. tostring(v))
+    else
+      print(formatting .. v)
+    end
   end
 end
 
@@ -373,12 +382,12 @@ function System:serialiseNativeType(o, level)
   elseif type(o) == "number" then
     serial = serial .. o
   elseif type(o) == "string" then
-    serial = serial .. string.format("%q", o)
+    serial = serial .. string.format("%s", o)
   elseif type(o) == "table" then
     serial = serial..("{\n")
     for k,v in pairs(o) do
       serial = serial .. "  ".. tostring(k) .. " = "
-      serial = serial .. self:serializeNativeType(v, level + 1)
+      serial = serial .. self:serialiseNativeType(v, level + 1)
       serial = serial .. ",\n"
     end
     serial = serial .. "}\n"
@@ -408,7 +417,7 @@ end
 -- serializes an SF type math object (eg. SVector3)
 function System:serialiseSFType(object)
   local stripped = System.type(object);
-  print('serialising type:'..stripped);
+  --print('serialising type:'..stripped);
   return self.serialisable[stripped](object);
 end
 

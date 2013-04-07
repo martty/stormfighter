@@ -23,13 +23,13 @@ GUI::GUI(StormfighterApp* app) : Module(app){
                          awe_string_empty(),
                          true,
                          awe_string_empty(),awe_string_empty(), awe_string_empty(), awe_string_empty(),awe_string_empty(),awe_string_empty(),
-                         true, 0, false, false, awe_string_empty());
+                         true, 0, true, false, awe_string_empty());
   // Create a new WebView instance with a certain width and height, using the
   // WebCore we just created
   LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
   createMaterial();
   webView_ = awe_webcore_create_webview(width_, viewTexture_->getHeight(), false);
-  SString page = "../../media/ui/test.html";
+  SString page = "../../ui/editor.html";
   awe_webview_set_transparent(webView_, true);
   url_str_ = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
   awe_webview_load_file(webView_, url_str_, awe_string_empty());
@@ -406,12 +406,12 @@ void GUI::reload(){
 SString GUI::pollCommands(){
   if (awe_webview_is_loading_page(webView_))
     return SString(";");
-  awe_string* js = awe_string_create_from_ascii("pollCommands();", strlen("pollCommands();"));
+  awe_string* js = awe_string_create_from_ascii("editor.poll();", strlen("editor.poll();"));
   awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 30);
   if(awe_jsvalue_get_type(res) == JSVALUE_TYPE_NULL || !res){
     awe_string_destroy(js);
     awe_jsvalue_destroy(res);
-    return SString(";");
+    return SString("{}");
   } else if (awe_jsvalue_get_type(res) == JSVALUE_TYPE_STRING){ // warning: magic! :D
     awe_string* result_string = awe_jsvalue_to_string(res);
     size_t len = awe_string_to_utf8(result_string, NULL, 0);
@@ -429,7 +429,7 @@ SString GUI::pollCommands(){
   }
   awe_jsvalue_destroy(res);
   awe_string_destroy(js);
-  return SString(";");
+  return SString("{}");
 }
 
 bool GUI::isInGUI(int x, int y){

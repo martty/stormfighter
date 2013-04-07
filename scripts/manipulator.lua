@@ -42,11 +42,12 @@ function Manipulator:update()
       local ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
       local result = Graphics:closestExactRayQuery(ray);
       if(result.hitObject) then
-        local goname = result.hitObject:name();
+        local go = result.hitObject;
+        local goname = go:name();
         if(goname:find("manipulator-")) then -- we picked a manipulator
         else
-          self:show(goname);
-          self.editor:inspector():showGameObject(goname);
+          self:show(go);
+          self.editor:inspector():setGameObject(go);
         end
       else
         self:hide();
@@ -438,14 +439,13 @@ function Manipulator:findOrCreate()
   man:transform():setVisible(false, true);
 end
 
-function Manipulator:show(goname)
-  local go = Hierarchy:find(goname);
+function Manipulator:show(go)
   local bbox = go:getBoundingBox();
   go:addChild(self.go);
   self.isSelected = true;
   self.selection = go;
   if(bbox:isNull()) then
-    return;
+    bbox = SAxisAlignedBox(SVector3(-0.5, -0.5, -0.5), SVector3(0.5, 0.5, 0.5)); -- unit sized
   end
   self.go:transform().position = (bbox:getCenter());
   self.go:transform().scale = (bbox:getSize());
