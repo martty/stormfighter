@@ -212,6 +212,8 @@ var Component = (function () {
         this.properties = ko.observableArray();
         this.properties_hash = ko.observable({
         });
+        this.properties_hash_value = ko.observable({
+        });
         this.visible = ko.observable(true);
         this.dirtyItems_hash = ko.observable({
         });
@@ -241,6 +243,16 @@ var Component = (function () {
             }, {
             });
             _this.dirtyItems_hash(c);
+        });
+        this.dirtyItems.subscribe(function (newValue) {
+            var result = {
+            };
+            var c = _.reduce(_this.properties(), function (memo, num, key, list) {
+                memo[list[key].key] = list[key].value.toString();
+                return memo;
+            }, {
+            });
+            _this.properties_hash_value(c);
         });
         this.isDirty = ko.computed(function () {
             return this.dirtyItems().length > 0;
@@ -292,6 +304,9 @@ var Component = (function () {
             return;
         }
         var props = data.properties;
+        if(!props) {
+            return;
+        }
         var propkeys = _.keys(props);
         for(var i = 0; i < propkeys.length; i++) {
             var propname = propkeys[i];
@@ -387,7 +402,7 @@ var GO = (function () {
                 properties: {
                 }
             };
-            cmpdata.properties = cmp.dirtyItems_hash();
+            cmpdata.properties = cmp.properties_hash_value();
             godata.components.push(cmpdata);
         }
         setTimeout(function () {

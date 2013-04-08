@@ -39,17 +39,22 @@ class Editor {
 
 	send(data : CallData) : void {
 		this.queue.push(data);
-		console.log(JSON.stringify(data));
+		//console.log(JSON.stringify(data));
 	}
 
 	poll() : string{
 		var str = JSON.stringify(this.queue);
+		this.queue = [];
 		console.log(str);
 		return str;
 	}
 
-	receive(datastr : string) : void{
-		var data = JSON.parse(datastr);
+	receive(calldata : Object[]) : void{
+		var callee = calldata.meta.callee;
+		if(this.widgets[callee])
+			this.widgets[callee].receive(calldata);
+		else
+			console.log('Unknown widget called');
 	}
 }
 

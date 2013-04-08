@@ -37,7 +37,7 @@ void Camera::load(){
 
 Camera* Camera::clone() const{
   Camera* cam = new Camera();
-  cam->deserialise(tree_);
+  cam->deserialise(serialise());
   return cam;
 }
 

@@ -272,6 +272,7 @@ class Component {
 
 	properties = ko.observableArray();
 	properties_hash = ko.observable({});
+	properties_hash_value = ko.observable({});
 	visible = ko.observable(true);
 	dirtyItems : any;
 	dirtyItems_hash = ko.observable({});
@@ -298,6 +299,12 @@ class Component {
 			var result = {};
 			var c = _.reduce(newValue, function(memo, num, key : number, list : any[]){ memo[list[key].key] = list[key].value.toString(); return memo; }, {});
 			this.dirtyItems_hash(c);
+		});
+
+		this.dirtyItems.subscribe((newValue) => {
+			var result = {};
+			var c = _.reduce(this.properties(), function(memo, num, key : number, list : any[]){ memo[list[key].key] = list[key].value.toString(); return memo; }, {});
+			this.properties_hash_value(c);
 		});
 
 		this.isDirty = ko.computed(function() {
@@ -354,6 +361,8 @@ class Component {
 		if(data.type != this.type)
 			return;
 		var props = data.properties;
+		if(!props)
+			return;
 		var propkeys = _.keys(props);
 		for (var i = 0; i < propkeys.length; i++){
 			var propname = propkeys[i];
@@ -465,7 +474,8 @@ class GO {
 		for (var i = 0; i < dirtycmps.length; i++){
 			var cmp = dirtycmps[i];
 			var cmpdata : CmpData = {type: cmp.type, properties: {}};
-			cmpdata.properties = cmp.dirtyItems_hash();
+			//cmpdata.properties = cmp.dirtyItems_hash();  // send delta prop
+			cmpdata.properties = cmp.properties_hash_value();  // send all prop
 			godata.components.push(cmpdata);
 		}
 		// won't work without settimeout? probably because we are in a callback

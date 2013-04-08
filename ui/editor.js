@@ -19,15 +19,20 @@ var Editor = (function () {
     };
     Editor.prototype.send = function (data) {
         this.queue.push(data);
-        console.log(JSON.stringify(data));
     };
     Editor.prototype.poll = function () {
         var str = JSON.stringify(this.queue);
+        this.queue = [];
         console.log(str);
         return str;
     };
-    Editor.prototype.receive = function (datastr) {
-        var data = JSON.parse(datastr);
+    Editor.prototype.receive = function (calldata) {
+        var callee = calldata.meta.callee;
+        if(this.widgets[callee]) {
+            this.widgets[callee].receive(calldata);
+        } else {
+            console.log('Unknown widget called');
+        }
     };
     return Editor;
 })();

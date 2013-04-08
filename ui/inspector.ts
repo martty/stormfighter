@@ -63,6 +63,12 @@ class Inspector extends Widget {
 			],
 		});
 	}
+
+	// get a command from engine
+	receive(calldata : CallData) : void {
+		if(calldata.meta.command == "update")
+			this.update(calldata.data);
+	}
 	
 	// gets delta or absolute GO JSON data
 	// update internal representation and display

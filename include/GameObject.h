@@ -93,7 +93,10 @@ class GameObject {
   ///Serialise GO (and descendants if recursive == true)
   SPropertyTree serialise(bool recursive);
   ///Serialise GO into JSON
-  SString serialiseJSON(bool recursive);
+  SString serialiseJSON(bool recursive, bool pretty);
+
+  ///Update state from JSON string
+  void deserialiseJSON(SString src);
 
   ///Deserialise a GO hierarchy from SPropertyTree
   static GameObject* deserialise(SPropertyTree src);

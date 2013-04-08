@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 12/27/12 00:50:31.
+** Generated automatically by tolua++-1.0.92 on 04/08/13 12:13:56.
 */
 
 #ifndef __cplusplus
@@ -29056,7 +29056,8 @@ static int tolua_Stormfighter_SF_GameObject_serialiseJSON00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
      !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -29064,11 +29065,12 @@ static int tolua_Stormfighter_SF_GameObject_serialiseJSON00(lua_State* tolua_S)
  {
   SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
   bool recursive = ((bool)  tolua_toboolean(tolua_S,2,0));
+  bool pretty = ((bool)  tolua_toboolean(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'serialiseJSON'", NULL);
 #endif
   {
-    std::string tolua_ret = (  std::string)  self->serialiseJSON(recursive);
+    std::string tolua_ret = (  std::string)  self->serialiseJSON(recursive,pretty);
    tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
   }
  }
@@ -29076,6 +29078,39 @@ static int tolua_Stormfighter_SF_GameObject_serialiseJSON00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'serialiseJSON'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: deserialiseJSON of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_deserialiseJSON00
+static int tolua_Stormfighter_SF_GameObject_deserialiseJSON00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+   std::string str = ((  std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'deserialiseJSON'", NULL);
+#endif
+  {
+   self->deserialiseJSON(str);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'deserialiseJSON'.",&tolua_err);
  return 0;
 #endif
 }
@@ -34305,6 +34340,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"save",tolua_Stormfighter_SF_GameObject_save00);
     tolua_function(tolua_S,"load",tolua_Stormfighter_SF_GameObject_load00);
     tolua_function(tolua_S,"serialiseJSON",tolua_Stormfighter_SF_GameObject_serialiseJSON00);
+    tolua_function(tolua_S,"deserialiseJSON",tolua_Stormfighter_SF_GameObject_deserialiseJSON00);
     tolua_function(tolua_S,"addTag",tolua_Stormfighter_SF_GameObject_addTag00);
     tolua_function(tolua_S,"removeTag",tolua_Stormfighter_SF_GameObject_removeTag00);
     tolua_function(tolua_S,"hasTag",tolua_Stormfighter_SF_GameObject_hasTag00);

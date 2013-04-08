@@ -192,11 +192,11 @@ bool Transform::isVisible(){
   return isVisible;
 }
 
-void Transform::save(){
-  Component::save();
+void Transform::save() const{
   setProperty("position", position());
   setProperty("orientation", orientation());
   setProperty("scale", scale());
+  Component::save();
 }
 
 void Transform::load(){

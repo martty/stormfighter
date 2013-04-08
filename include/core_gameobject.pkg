@@ -57,7 +57,8 @@ class GameObject {
   ///Tells components to load in this GO (and descendants if recursive == true)
   void load(bool recursive);
 
-  SString serialiseJSON(bool recursive);
+  SString serialiseJSON(bool recursive, bool pretty);
+  void deserialiseJSON(SString str);
 
   // Tagging
   /// add tag to GO

@@ -294,6 +294,12 @@ function Editor:parseUIMessage(message)
   return decoded;
 end
 
+function Editor:send(message)
+  local jsstring = 'editor.receive('..message..');';
+  logprint(jsstring);
+  GUI:executeJS('editor.receive('..message..');');
+end
+
 -- UI is being reloaded, so set ready to false
 function Editor:reloadUI()
   self.internal.ui.ready = false;

@@ -38,6 +38,11 @@ var Inspector = (function (_super) {
             ]
         });
     };
+    Inspector.prototype.receive = function (calldata) {
+        if(calldata.meta.command == "update") {
+            this.update(calldata.data);
+        }
+    };
     Inspector.prototype.update = function (data) {
         var _this = this;
         if((!this.go) || (this.go.name() != data.name)) {

@@ -22,13 +22,14 @@ end
 
 -- updates gameobject to match incoming data
 function Inspector:delta(data)
-
+  self.go:deserialiseJSON(System.JSON:encode(data));
 end
 
 
 -- set our GO object and notify for update
 function Inspector:setGameObject(go)
   self.go = go;
+  self.cachedCallData = '';
   self:update();
 end
 
@@ -38,8 +39,13 @@ function Inspector:update()
     return;
   end
 
-  local godata = self.go:serialiseJSON(false);
-  tprint(System.JSON:decode(godata));
+  local godata = self.go:serialiseJSON(false, false);
+  local calldata = '{"meta" : {"callee" : "inspector", "command" : "update"}, "data" : '..godata..'}';
+  if(self.cachedCallData ~= calldata) then
+    Editor:send(calldata);
+    self.cachedCallData = calldata;
+    print('\n'..godata);
+  end
 --[[
   local ndata = {}; -- new component data
   local cmps = self.go:allComponents();
@@ -71,7 +77,6 @@ function Inspector:update()
       self:updateValues();
     end
   end--]]
-  print('\n'..godata);
 end
 --[[
   Editor:executeJS("inspector.setGameObjectName('"..goname.."');");

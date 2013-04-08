@@ -38,7 +38,7 @@ unsigned int Light::onAdd(SString goname, Transform* tf){
 
 Light* Light::clone() const{
   Light* light = new Light();
-  light->deserialise(tree_);
+  light->deserialise(serialise());
   return light;
 }
 

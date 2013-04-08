@@ -528,13 +528,14 @@ SPropertyTree GameObject::serialise(bool recursive){
   }
 }
 
-SString GameObject::serialiseJSON(bool recursive){
+SString GameObject::serialiseJSON(bool recursive, bool pretty){
   SPropertyTree pt = serialise(recursive);
   std::stringstream ss;
-  boost::property_tree::write_json(ss, pt, true); // pretty print
+  boost::property_tree::write_json(ss, pt, pretty); // pretty print
   return ss.str();
 }
 
+//TODO: Borked!!!
 GameObject* GameObject::deserialise(SPropertyTree src){
   // two possibilities : top node - GO
   //                   : top node - array of GOs
@@ -574,6 +575,25 @@ GameObject* GameObject::deserialise(SPropertyTree src){
     return gos[0];
   }
 }
+
+void GameObject::deserialiseJSON(SString str){
+  SPropertyTree src;
+  std::stringstream ss; ss << str;
+  boost::property_tree::read_json(ss, src);
+  BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
+    SString type = v.second.get<SString>("type");
+    LOG(type);
+    if(hasComponent(type)){
+      component(type)->deserialise(v.second);
+    } else {
+      // perform Component creation and deserialisation
+      Component* cmp = ComponentFactory::createComponent(type);
+      cmp->deserialise(v.second);
+      addComponent(cmp);
+    }
+  }
+}
+
 
 SAxisAlignedBox GameObject::getBoundingBox(){
   ComponentVector meshes = allComponentInChildren("Mesh");

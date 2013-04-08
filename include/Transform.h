@@ -90,8 +90,8 @@ class Transform : public Component {
   /// Detach Ogre::MovableObject from this Transform
   void detachObject(Ogre::MovableObject* object);
 
-  void save();
-  void load();
+  virtual void save() const;
+  virtual void load();
 
  protected:
   SString name() const { return "Transform"; }
