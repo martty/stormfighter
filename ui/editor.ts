@@ -10,6 +10,8 @@ class Editor {
 	private containers : Container[];
 	public typeannotations : Object[];
 
+	viewportfocus : KnockoutObservableBool;
+
 	queue : CallData[];
 
 	constructor(){
@@ -39,13 +41,13 @@ class Editor {
 
 	send(data : CallData) : void {
 		this.queue.push(data);
-		//console.log(JSON.stringify(data));
+		console.log(JSON.stringify(data));
 	}
 
 	poll() : string{
 		var str = JSON.stringify(this.queue);
 		this.queue = [];
-		console.log(str);
+		console.log('pulling:'+str);
 		return str;
 	}
 

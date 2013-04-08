@@ -20,6 +20,9 @@ class Mesh : public MovableObject {
   /// Destructor
   ~Mesh();
 
+  virtual void save() const;
+  virtual void load();
+
   virtual Mesh* clone() const;
 
   virtual unsigned int onAdd(SString goname, Transform* transform);

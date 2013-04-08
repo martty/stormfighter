@@ -15,7 +15,8 @@ Camera::Camera(){
 }
 
 Camera::~Camera(){
-  //Graphics::getSingletonPtr()->sceneManager()->destroyCamera(camera_);
+  camera_->detachFromParent();
+  Graphics::getSingletonPtr()->sceneManager()->destroyCamera(camera_);
   camera_ = NULL;
 }
 

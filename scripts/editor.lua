@@ -287,8 +287,7 @@ function Editor:dispatchUIMessage(msg)
 end
 
 function Editor:parseUIMessage(message)
-  print('Parsing...');
-  print(message);
+  print('Received:'..message);
   local decoded = System.JSON:decode(message);
   tprint(decoded);
   return decoded;
@@ -296,7 +295,7 @@ end
 
 function Editor:send(message)
   local jsstring = 'editor.receive('..message..');';
-  logprint(jsstring);
+  --logprint(jsstring);
   GUI:executeJS('editor.receive('..message..');');
 end
 

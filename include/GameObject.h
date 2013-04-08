@@ -39,7 +39,8 @@ class GameObject {
   GameObject* clone(SString name); /// Creates a clone with name
 
   // Components
-  void addComponent(Component* component);   /// Add's component to GameObject's component map
+  void addComponent(Component* component);   /// Adds component to GameObject's component map
+  void destroyComponent(const SString& type); /// Destroys the given component
   Component* component(const SString& type); /// Returns component with given type
   Component* componentGroup(const SString& group); /// Returns the component which is in the given group (not usable with Script)
   ComponentVector allComponents(); /// Returns all components in this GameObject

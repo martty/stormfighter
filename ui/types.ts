@@ -31,6 +31,11 @@ ko.dirtyFlag = function(root, isInitiallyDirty) {
     	this.reset();
     	_isOff(false);
     }
+
+    result.dirty = function() {
+    	_isInitiallyDirty(true);
+    }
+
     result.initialState = function() {
     	return _initialState();
     }
@@ -222,7 +227,7 @@ export class SQuaternion implements SFType {
 		this.x(Number(vals[0]));
 		this.y(Number(vals[1]));
 		this.z(Number(vals[2]));
-		this.z(Number(vals[3]));
+		this.w(Number(vals[3]));
 		this.dirtyFlag.on();
 	}
 
@@ -232,6 +237,43 @@ export class SQuaternion implements SFType {
 	
 	render() : string{
 		return 'SQuaternion';
+	}
+}
+
+export class SColourValue implements SFType {
+	dirtyFlag : Object;
+	public r : KnockoutObservableNumber;
+	public g : KnockoutObservableNumber;
+	public b : KnockoutObservableNumber;
+	public a : KnockoutObservableNumber;
+
+	constructor (src : string, annot : Object) {
+		var vals = src? src.split(' ') : [0,0,0,0];
+		this.r = ko.observable(Number(vals[0])).extend({numeric : ''});
+		this.g = ko.observable(Number(vals[1])).extend({numeric : ''});
+		this.b = ko.observable(Number(vals[2])).extend({numeric : ''});
+		this.a = ko.observable(Number(vals[3])).extend({numeric : ''});
+		this.dirtyFlag = new ko.dirtyFlag(this);
+
+		this.tipText = ko.observable(annot.tipText ? annot.tipText : 'SColourValue');
+	}
+
+	fromString(src : string) : void {
+		var vals = src.split(' ');
+		this.dirtyFlag.off();
+		this.r(Number(vals[0]));
+		this.g(Number(vals[1]));
+		this.b(Number(vals[2]));
+		this.a(Number(vals[3]));
+		this.dirtyFlag.on();
+	}
+
+	toString() : string {
+		return this.r()+" "+this.g()+" "+this.b()+" "+this.a();
+	}
+	
+	render() : string{
+		return 'SColourValue';
 	}
 }
 
@@ -355,6 +397,9 @@ class Component {
 			}
 			this.properties.push({key: propname, value: inst});
 		}
+		// dirty one property
+		if(this.properties()[0])
+			this.properties()[0].value.dirtyFlag.dirty();
 	}
 
 	update(data : CmpData) : void {
@@ -461,7 +506,7 @@ class GO {
 				var c = new Component(cmpannot.typename);
 				c.initialize();
 				this.addComponent(c);
-				this.sendCreate(c);
+				//this.sendCreate(c);
 			}
 		}
 	}

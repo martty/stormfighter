@@ -106,6 +106,7 @@ class Inspector extends Widget {
 			delay: 0, 
 			content : () => {ko.applyBindings(this, this.cmpaddmenu[0]); return this.cmpaddmenu},
 		});
+		this.autoSize();
 	}
 
 	test () : void {
@@ -131,7 +132,6 @@ class Inspector extends Widget {
 			]
 		}
 		this.update(go);
-		this.autoSize();
 		var go2 = {
 			name : "testGO",
 			components : [

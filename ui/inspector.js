@@ -78,6 +78,7 @@ var Inspector = (function (_super) {
                 return _this.cmpaddmenu;
             }
         });
+        this.autoSize();
     };
     Inspector.prototype.test = function () {
         var go = {
@@ -102,7 +103,6 @@ var Inspector = (function (_super) {
             ]
         };
         this.update(go);
-        this.autoSize();
         var go2 = {
             name: "testGO",
             components: [

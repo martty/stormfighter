@@ -19,11 +19,12 @@ var Editor = (function () {
     };
     Editor.prototype.send = function (data) {
         this.queue.push(data);
+        console.log(JSON.stringify(data));
     };
     Editor.prototype.poll = function () {
         var str = JSON.stringify(this.queue);
         this.queue = [];
-        console.log(str);
+        console.log('pulling:' + str);
         return str;
     };
     Editor.prototype.receive = function (calldata) {

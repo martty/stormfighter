@@ -15,6 +15,9 @@ Light::Light(){
 }
 
 Light::~Light(){
+  light_->detachFromParent();
+  Graphics::getSingletonPtr()->sceneManager()->destroyLight(light_);
+  light_ = NULL;
 }
 
 void Light::save(){

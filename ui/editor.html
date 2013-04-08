@@ -106,6 +106,18 @@
 		</div>
 	</script>
 
+	<script type="text/html" id="tpl-type-SColourValue">
+		<div class="property">
+			<fieldset>
+			<legend class="tip-left" data-bind="text: key, attr: {title : value.tipText}"></legend>
+				X <input data-bind="value: value.r, valueUpdate: 'afterkeydown'" />
+				Y <input data-bind="value: value.g, valueUpdate: 'afterkeydown'" />
+				Z <input data-bind="value: value.b, valueUpdate: 'afterkeydown'" />
+				W <input data-bind="value: value.a, valueUpdate: 'afterkeydown'" />
+			</fieldset>
+		</div>
+	</script>
+
 	<script type="text/html" id="tpl-type-Unknown">
 		<div class="property">
 			<span class="label" data-bind="text: key"></span>

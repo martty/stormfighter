@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 04/08/13 12:13:56.
+** Generated automatically by tolua++-1.0.92 on 04/08/13 20:39:54.
 */
 
 #ifndef __cplusplus
@@ -28421,6 +28421,39 @@ static int tolua_Stormfighter_SF_GameObject_addComponent00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: destroyComponent of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_destroyComponent00
+static int tolua_Stormfighter_SF_GameObject_destroyComponent00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+  const std::string type = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'destroyComponent'", NULL);
+#endif
+  {
+   self->destroyComponent(type);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'destroyComponent'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: allComponents of class  SF::GameObject */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_allComponents00
 static int tolua_Stormfighter_SF_GameObject_allComponents00(lua_State* tolua_S)
@@ -34321,6 +34354,7 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"clone",tolua_Stormfighter_SF_GameObject_clone00);
     tolua_function(tolua_S,"clone",tolua_Stormfighter_SF_GameObject_clone01);
     tolua_function(tolua_S,"addComponent",tolua_Stormfighter_SF_GameObject_addComponent00);
+    tolua_function(tolua_S,"destroyComponent",tolua_Stormfighter_SF_GameObject_destroyComponent00);
     tolua_function(tolua_S,"allComponents",tolua_Stormfighter_SF_GameObject_allComponents00);
     tolua_function(tolua_S,"component",tolua_Stormfighter_SF_GameObject_component00);
     tolua_function(tolua_S,"hasComponent",tolua_Stormfighter_SF_GameObject_hasComponent00);

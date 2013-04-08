@@ -254,6 +254,15 @@ void GameObject::addComponent(Component* cmp){
   }
 }
 
+void GameObject::destroyComponent(const SString& type){
+  Component* cmp = components_[type];
+  // remove from map
+  components_.erase(type);
+  // TODO: callsdispatchból is ki kéne bányászni
+  delete cmp;
+}
+
+
 Component* GameObject::component(const SString& name){
   if ( !hasComponent(name) ) throw SException(debug() + " | component unknown:" + name);
   return components_[name] ;

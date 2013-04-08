@@ -407,7 +407,7 @@ SString GUI::pollCommands(){
   if (awe_webview_is_loading_page(webView_))
     return SString(";");
   awe_string* js = awe_string_create_from_ascii("editor.poll();", strlen("editor.poll();"));
-  awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 30);
+  awe_jsvalue* res = awe_webview_execute_javascript_with_result(webView_, js, awe_string_empty(), 1000);
   if(awe_jsvalue_get_type(res) == JSVALUE_TYPE_NULL || !res){
     awe_string_destroy(js);
     awe_jsvalue_destroy(res);

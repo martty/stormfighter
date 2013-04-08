@@ -20,6 +20,7 @@ class GameObject {
 
   // Components
   void addComponent(Component* component);   /// Add's component to GameObject's component map
+  void destroyComponent(const SString& type); /// Destroys the given component
   ComponentVector allComponents(); /// Returns all components in this GameObject
   Component* component(const SString& type); /// Returns component with given type
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"

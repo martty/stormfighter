@@ -37,22 +37,22 @@ platform:transform():setVisible(false, true);
 
 local li = Hierarchy:createGameObject("lighty");
 l = Light:new();
-li:addComponent(l);
 l.diffuseColour = SColourValue(0.1, 0.2, 0.3, 1);
 l.specularColour = SColourValue(0.4, 0.5, 0.5, 1);
 l.lightType = Light.POINT;
 
 --local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
 --cam:addComponent(ccc);
-local compimg = Ogre.Image:new_local();
-compimg:loadTwoImagesAsRGBA("samplediffuse.png", "samplegloss.png", "General" ,Ogre.PF_BYTE_RGBA);
-compimg:save("media/common/samplediffusegloss2.png");
+--local compimg = Ogre.Image:new_local();
+--compimg:loadTwoImagesAsRGBA("samplediffuse.png", "samplegloss.png", "General" ,Ogre.PF_BYTE_RGBA);
+--compimg:save("media/common/samplediffusegloss2.png");
 --[[Showcase:createShowcase();
 Showcase:addMaterial("Base/FlatShadedExample");
 Showcase:addMaterial("Base/DiffuseGlossExample");
 Showcase:addMaterial("Base/MonsterExample");--]]
 citywall = Hierarchy:createGameObject("citywall");
 citywall:addComponent(Mesh:new("citywall.mesh"));
+citywall:addComponent(l);
 --print(citywall:component("Mesh").type);
 --dofile("scripts/terrain_test.lua");
 --cam:transform().orientation = SQuaternion:new_local(SQuaternion.ZERO);

@@ -15,6 +15,9 @@ ko.dirtyFlag = function (root, isInitiallyDirty) {
         this.reset();
         _isOff(false);
     };
+    result.dirty = function () {
+        _isInitiallyDirty(true);
+    };
     result.initialState = function () {
         return _initialState();
     };
@@ -176,7 +179,7 @@ var Types;
             this.x(Number(vals[0]));
             this.y(Number(vals[1]));
             this.z(Number(vals[2]));
-            this.z(Number(vals[3]));
+            this.w(Number(vals[3]));
             this.dirtyFlag.on();
         };
         SQuaternion.prototype.toString = function () {
@@ -188,6 +191,47 @@ var Types;
         return SQuaternion;
     })();
     Types.SQuaternion = SQuaternion;    
+    var SColourValue = (function () {
+        function SColourValue(src, annot) {
+            var vals = src ? src.split(' ') : [
+                0, 
+                0, 
+                0, 
+                0
+            ];
+            this.r = ko.observable(Number(vals[0])).extend({
+                numeric: ''
+            });
+            this.g = ko.observable(Number(vals[1])).extend({
+                numeric: ''
+            });
+            this.b = ko.observable(Number(vals[2])).extend({
+                numeric: ''
+            });
+            this.a = ko.observable(Number(vals[3])).extend({
+                numeric: ''
+            });
+            this.dirtyFlag = new ko.dirtyFlag(this);
+            this.tipText = ko.observable(annot.tipText ? annot.tipText : 'SColourValue');
+        }
+        SColourValue.prototype.fromString = function (src) {
+            var vals = src.split(' ');
+            this.dirtyFlag.off();
+            this.r(Number(vals[0]));
+            this.g(Number(vals[1]));
+            this.b(Number(vals[2]));
+            this.a(Number(vals[3]));
+            this.dirtyFlag.on();
+        };
+        SColourValue.prototype.toString = function () {
+            return this.r() + " " + this.g() + " " + this.b() + " " + this.a();
+        };
+        SColourValue.prototype.render = function () {
+            return 'SColourValue';
+        };
+        return SColourValue;
+    })();
+    Types.SColourValue = SColourValue;    
     var Unknown = (function () {
         function Unknown(src) {
             this.value = src ? src : "";
@@ -298,6 +342,9 @@ var Component = (function () {
                 value: inst
             });
         }
+        if(this.properties()[0]) {
+            this.properties()[0].value.dirtyFlag.dirty();
+        }
     };
     Component.prototype.update = function (data) {
         if(data.type != this.type) {
@@ -378,7 +425,6 @@ var GO = (function () {
                 var c = new Component(cmpannot.typename);
                 c.initialize();
                 _this.addComponent(c);
-                _this.sendCreate(c);
             }
         };
     }

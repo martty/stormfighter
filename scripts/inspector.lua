@@ -12,19 +12,34 @@ end
 -- dispatch endpoint
 function Inspector:receive(calldata)
   local cmd = calldata.meta.command;
+  tprint(calldata);
   if (cmd == "delta") then
     self:delta(calldata.data);
   elseif (cmd == "destroy") then
+    self:destroy(calldata.data);
   elseif (cmd == "create") then
+    self:create(calldata.data);
   end
 end
 
 
 -- updates gameobject to match incoming data
+-- TODO: double seri/deseri
 function Inspector:delta(data)
   self.go:deserialiseJSON(System.JSON:encode(data));
 end
 
+function Inspector:destroy(data)
+  local cmpname = data.components[1].type;
+  self.go:destroyComponent(cmpname);
+end
+
+function Inspector:create(data)
+  local cmpname = data.components[1].type;
+  local cmp = _G[cmpname]:new();
+  print('created new component'..cmpname);
+  self.go:addComponent(cmp);
+end
 
 -- set our GO object and notify for update
 function Inspector:setGameObject(go)
