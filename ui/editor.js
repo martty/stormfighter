@@ -8,23 +8,46 @@ var Editor = (function () {
         this.widgets = new Array();
         this.widgets['inspector'] = new Inspector();
         this.containers['east'].addWidget(this.widgets['inspector']);
+        this.viewportfocus = ko.observable(true);
+        ko.applyBindings(this, $('#viewport')[0]);
     }
     Editor.prototype.onContainerResize = function () {
         this.containers['left'].onResize();
         this.containers['right'].onResize();
         this.containers['bottom'].onResize();
     };
+    Editor.prototype.focusViewport = function () {
+        $('#viewport').addClass('focused');
+        $("*:focus").blur();
+        var calldata = {
+            meta: {
+                callee: 'editor',
+                command: 'focus'
+            },
+            data: 'viewport'
+        };
+        this.send(calldata);
+    };
+    Editor.prototype.focusEditor = function () {
+        $('#viewport').removeClass('focused');
+        var calldata = {
+            meta: {
+                callee: 'editor',
+                command: 'focus'
+            },
+            data: 'editor'
+        };
+        this.send(calldata);
+    };
     Editor.prototype.inspector = function () {
         return this.widgets['inspector'];
     };
     Editor.prototype.send = function (data) {
         this.queue.push(data);
-        console.log(JSON.stringify(data));
     };
     Editor.prototype.poll = function () {
         var str = JSON.stringify(this.queue);
         this.queue = [];
-        console.log('pulling:' + str);
         return str;
     };
     Editor.prototype.receive = function (calldata) {

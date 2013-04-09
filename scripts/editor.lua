@@ -280,6 +280,8 @@ function Editor:dispatchUIMessage(msg)
     local callee = datas[i].meta.callee;
     if(callee == "inspector") then
       self:inspector():receive(datas[i]);
+    elseif(callee == "editor") then
+      self:receive(datas[i]);
     else
       print("Unknown callee");
     end
@@ -287,7 +289,7 @@ function Editor:dispatchUIMessage(msg)
 end
 
 function Editor:parseUIMessage(message)
-  print('Received:'..message);
+  --print('Received:'..message);
   local decoded = System.JSON:decode(message);
   tprint(decoded);
   return decoded;
@@ -297,6 +299,22 @@ function Editor:send(message)
   local jsstring = 'editor.receive('..message..');';
   --logprint(jsstring);
   GUI:executeJS('editor.receive('..message..');');
+end
+
+function Editor:receive(calldata)
+  local command = calldata.meta.command;
+  if(command == "focus") then
+    self:focus(calldata.data);
+  end
+end
+
+-- focus tracking
+function Editor:focus(dest)
+  if(dest == 'editor') then
+    Input:setEnabled(false);
+  else
+    Input:setEnabled(true);
+  end
 end
 
 -- UI is being reloaded, so set ready to false

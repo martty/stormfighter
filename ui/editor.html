@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 	<meta http-equiv="Access-Control-Allow-Origin" content="*">
 
-	<link rel="stylesheet" type="text/css" href="themes/metro/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/black/easyui.css">
 	<link rel="stylesheet" type="text/css" href="themes/icon.css">
 
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="screen">
@@ -34,7 +34,7 @@
     <div id="south" data-options="region:'south',title:'South Title',split:true" style="height:100px;"></div>  
     <div id="east" data-options="region:'east',iconCls:'icon-reload',title:'East',split:true" style="width:350px;"></div>
     <div id="west" data-options="region:'west',title:'West',split:true" style="width:200px;"></div>
-    <div id="viewport" data-options="region:'center'" style="background:transparent; display:none"></div>
+    <div id="viewport" data-options="region:'center'" data-bind="event : { mouseover : focusViewport, mouseout: focusEditor }" style="background-color: transparent"></div>
 
 	<!-- TEMPLATES FOR ALL -->
 	<!-- Inspector -->

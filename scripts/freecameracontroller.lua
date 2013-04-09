@@ -24,7 +24,6 @@ function fcc:onInit()
     error('no camera!');
   end
   self.camera_ = self:object():component("Camera");
-  self:application():input();
   print("fcc: inited");
 end
 
@@ -32,22 +31,22 @@ function fcc:onUpdate()
   self.moveScale_ = self.moveSpeed_ * self:application():deltaTime();
   self.rotScale_ = self.rotateSpeed_ * self:application():deltaTime();
   self.translateVector_ = SVector3:new_local(SVector3.ZERO);
-  if(self:application():input():isKeyDown(OIS.KC_A)) then self.translateVector_.x = -self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_D)) then self.translateVector_.x = self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_W)) then self.translateVector_.z = -self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_S)) then self.translateVector_.z = self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_E)) then self.translateVector_.y = self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_Q)) then self.translateVector_.y = -self.moveScale_; end
-  if(self:application():input():isKeyDown(OIS.KC_LSHIFT)) then
+  if(Input:isKeyDown(OIS.KC_A)) then self.translateVector_.x = -self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_D)) then self.translateVector_.x = self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_W)) then self.translateVector_.z = -self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_S)) then self.translateVector_.z = self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_E)) then self.translateVector_.y = self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_Q)) then self.translateVector_.y = -self.moveScale_; end
+  if(Input:isKeyDown(OIS.KC_LSHIFT)) then
     self:object():transform():moveRelative(self.translateVector_);
   else
     self:object():transform():moveRelative(self.translateVector_ / 10);
   end
-  --[[if(self:application():input():isKeyDown(OIS.KC_P)) then self.camera_:setPolygonMode(Ogre.PM_WIREFRAME); end
-  if(self:application():input():isKeyDown(OIS.KC_O)) then self.camera_:setPolygonMode(Ogre.PM_SOLID); end--]]
+  --[[if(Input:isKeyDown(OIS.KC_P)) then self.camera_:setPolygonMode(Ogre.PM_WIREFRAME); end
+  if(Input:isKeyDown(OIS.KC_O)) then self.camera_:setPolygonMode(Ogre.PM_SOLID); end--]]
   if(Input:isButtonDown(OIS.MB_Right)) then
-    self:object():transform():yaw(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.X) * -0.1)));
-    self:object():transform():pitch(to_rad(SDegree:new_local(self:application():input():axisRelative(Input.Y) * -0.1)));
+    self:object():transform():yaw(to_rad(SDegree:new_local(Input:axisRelative(Input.X) * -0.1)));
+    self:object():transform():pitch(to_rad(SDegree:new_local(Input:axisRelative(Input.Y) * -0.1)));
   end
  --[[ if(Input:isKeyDown(OIS.KC_P)) then
     print("position:"..tostring(self:object():transform().position));

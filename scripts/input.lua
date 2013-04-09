@@ -1,4 +1,5 @@
---Input.keys = {};
+Input.enabled = true;
+
 Input.keydown = {};
 
 Input.mouse = {};
@@ -10,6 +11,27 @@ Input.mouse.isDraggedRight = false;
 Input.mouse.isMoved = false;
 Input.mouse.lastPosition = SVector2(0,0);
 Input.mouse.downPosition = SVector2(0,0);
+
+-- do Input enable control
+do
+  local axisAbs = Input.axisAbsolute;
+  function Input:axisAbsolute(axis)
+    if(self.enabled) then
+      return axisAbs(Input,axis);
+    else
+      return 0;
+    end
+  end
+
+  local keydown = Input.isKeyDown;
+  function Input:isKeyDown(key)
+    if(self.enabled) then
+      return keydown(Input,key);
+    else
+      return false;
+    end
+  end
+end
 
 function Input:addKey(keycode)
   --table.insert(self.keys, keycode);
@@ -120,4 +142,8 @@ end
 function Input:update()
   self:handleKeyPress();
   self:handleMouse();
+end
+
+function Input:setEnabled(en)
+  self.enabled = en;
 end
