@@ -27,6 +27,7 @@ end
 -- TODO: double seri/deseri
 function Inspector:delta(data)
   self.go:deserialiseJSON(System.JSON:encode(data));
+  Editor:manipulator():rescale();
 end
 
 function Inspector:destroy(data)
