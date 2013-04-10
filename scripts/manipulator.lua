@@ -15,7 +15,7 @@
   2D, along a plane, which normal is the selected side's normal
   unconstrained
 --]]
-function Manipulator:initialise(editor)
+function Manipulator:init(editor)
   self.editor = editor;
   -- initialise manipulator state
   self.isSelected = false;
@@ -34,6 +34,13 @@ function Manipulator:initialise(editor)
   --add modeselect omnibar
   -- todo: onguiload
   --GUI:executeJS([[omnibar.addButton("translate-icon.png", "Editor:manipulator():setMode('translate');");]]);
+
+  self.translateFactor1D = 0.5;
+  self.translateFactorFree = 1;
+  self.rotateFactor2D = 1;
+  self.scaleFactor1D = 0.1;
+  self.scaleFactor2D = 0.0001;
+  self.scaleFactor3D = 0.00001;
 end
 
 function Manipulator:update()
@@ -42,11 +49,12 @@ function Manipulator:update()
       local ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
       local result = Graphics:closestExactRayQuery(ray);
       if(result.hitObject) then
-        local goname = result.hitObject:name();
+        local go = result.hitObject;
+        local goname = go:name();
         if(goname:find("manipulator-")) then -- we picked a manipulator
         else
-          self:show(goname);
-          self.editor:openInspector(goname);
+          self:show(go);
+          self.editor:inspector():setGameObject(go);
         end
       else
         self:hide();
@@ -63,6 +71,8 @@ function Manipulator:update()
         else
           self:translate1D();
         end
+      else
+        self:translateFree();
       end
     else -- clear
         self.action = "none";
@@ -70,14 +80,24 @@ function Manipulator:update()
     self:checkForSideSelection();
   elseif (self.mode == "rotate") then
     if(self.editor:isMouseDragged() and self.isSelected) then
-      self:rotate1D();
+      if(self.currentSide) then -- restricted translate
+        self:rotate1D();
+      end
     else
       self.action = "none";
       self:checkForSideSelection();
     end
   elseif (self.mode == "scale") then
     if(self.editor:isMouseDragged() and self.isSelected) then
-      self:scale1D();
+      if(self.currentSide) then -- restricted scale
+        if(Input:isModifierDown(OIS.Modifier.Alt)) then -- 2D restrict
+          self:scale2D();
+        else
+          self:scale1D();
+        end
+      else
+        self:scale3D();
+      end
     else
       self.action = "none";
       self:checkForSideSelection();
@@ -94,7 +114,7 @@ function Manipulator:translate2D()
   if(self.translation_mode == "local") then
     normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
   end
-  if(not (self.action == "2D_translate")) then -- begin drag
+  if(not (self.action == "translate2D")) then -- begin drag
     self.current = {};
     self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
     self.current.drag_begin_plane = SPlane(normal, origin);
@@ -102,12 +122,12 @@ function Manipulator:translate2D()
     if(intersection.first) then
       self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
       self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
-      self.action = "2D_translate";
+      self.action = "translate2D";
     end
   else -- continue drag
     local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
     local plane = SPlane(normal, origin);
-    debugdrawplane(plane, 50, SColourValue.White, true);
+    debugdrawplane(plane, self.go:transform().scale:dotProduct(self.normal), SColourValue.White, true);
     local intersection = Ogre.Math:intersects(drag_current_ray,plane);
     if (intersection.first) then
       self.selection:transform().position = drag_current_ray:getPoint(intersection.second) - self.current.center_offset_to_begin;
@@ -115,92 +135,97 @@ function Manipulator:translate2D()
   end
 end
 
--- TODO: make this work better (make it view dependent)
+-- 1D Translate
 -- Translate along the normal of the face you selected
--- PROGRESS: 60%
+-- Basically creates translates along a normal based on the length you drag in camera space
 function Manipulator:translate1D()
-  local rotated_normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+  -- note: camera looks down -z
+  -- get picked manipulator face normal in world space
+  local normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+  -- get camera normal in world space
+  local camera_normal = self.editor.cameraGO:transform().orientation * SVector3(0,0,-1);
+  -- get selection origin
   local origin = self.selection:transform().position;
-  if(not (self.action == "1D_translate")) then -- begin drag
+  -- create plane on which we will work (intersections)
+  local workplane = SPlane(camera_normal, origin);
+  -- get normal vector scale
+  local scale = self.go:transform().scale:dotProduct(self.normal);
+  -- draw axis of translation to better visualise transform
+  -- TODO: debugdraw is not appropriate?
+  debugdrawvector(normal*scale*2, origin-normal*scale, SColourValue.White);
+
+  if(not (self.action == "translate1D")) then -- begin drag
     self.current = {};
-    self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
-    self.current.plane = SPlane(rotated_normal, origin);
-    local intersection = Ogre.Math:intersects(self.current.drag_begin_ray, self.current.plane);
+    -- make a ray from mouse coordinates through active camera
+    local drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    -- save workplane
+    self.current.plane = workplane;
+    -- intersect ray with workplane
+    local intersection = Ogre.Math:intersects(drag_begin_ray, workplane);
     if (intersection.first) then
-      self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
-      self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
-      self.current.origin = origin;
-      self.action = "1D_translate";
+      -- save begin point
+      self.current.drag_begin_point = drag_begin_ray:getPoint(intersection.second);
+      self.action = "translate1D";
     end
   else -- continue drag
+    -- make a ray from mouse coordinates through active camera
     local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
-    local plane = SPlane(rotated_normal, self.current.origin);
-    if self.debugDraw then
-      debugdrawplane(plane, 51, SColourValue.Red, true);
-    end
-    local intersection = Ogre.Math:intersects(drag_current_ray, plane);
+    -- intersect with saved plane (because new work plane might be different)
+    -- using current workplane results in a less snappy version (but also works)
+    local intersection = Ogre.Math:intersects(drag_current_ray, self.current.plane);
     if (intersection) then
-      local diff = drag_current_ray:getPoint(intersection.second) - self.current.center_offset_to_begin;
-      if self.debugDraw then
-        debugdrawvector(drag_current_ray:getPoint(intersection.second), self.current.origin, SColourValue.Green);
-        debugdrawvector(self.current.center_offset_to_begin, self.current.origin, SColourValue.White);
-        debugdrawvector(self.current.origin, SVector3(0,0,0), SColourValue.Blue);
-      end
-      local angle = self.normal:angleBetween(diff):valueDegrees();
-      local direction = false;
-      if(angle > 90) then
-        direction = -1;
-      else
-        direction = 1;
-      end
-      self.selection:transform():move(self.normal * diff:length() * direction * Editor.settings.manipulator.translateFactor);
+      local current_point = drag_current_ray:getPoint(intersection.second);
+      -- calculate difference from last point
+      local diff = current_point - self.current.drag_begin_point;
+      -- project difference onto normal
+      local delta_amount = normal:dotProduct(diff);
+      -- scale normal by difference
+      local delta_vec = normal * delta_amount * self.translateFactor1D;
+      -- move object by difference
+      self.selection:transform():move(delta_vec);
+      -- save new point as starting point
+      self.current.drag_begin_point = current_point;
     end
   end
 end
 
-function Manipulator:translate1D_old()
-  local alternate_dir_1 = SVector3(self.normal.y,self.normal.z,self.normal.x);
-  local alternate_dir_2 = SVector3(self.normal.z,self.normal.x,self.normal.z);
-  local plane_1_normal = self.normal:crossProduct(alternate_dir_1);
-  local plane_2_normal = self.normal:crossProduct(alternate_dir_2);
-  local rotated_normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+-- Free Translate
+-- Translate on the plane defined by (camera normal, origin)
+function Manipulator:translateFree()
+  -- note: camera looks down -z
+  -- get camera normal in world space
+  local camera_normal = self.editor.cameraGO:transform().orientation * SVector3(0,0,-1);
+  -- get selection origin
   local origin = self.selection:transform().position;
-  if(not (self.action == "1D_translate")) then -- begin drag
+  -- create plane on which we will work (intersections)
+  local workplane = SPlane(camera_normal, origin);
+
+  if(not (self.action == "translateFree")) then -- begin drag
     self.current = {};
-    self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
-    self.current.drag_begin_plane_1 = SPlane(plane_1_normal, origin);
-    self.current.drag_begin_plane_2 = SPlane(plane_2_normal, origin);
-    local intersection = self:rayIntersectTwoPlanesNearestHit(self.current.drag_begin_ray, self.current.drag_begin_plane_1, self.current.drag_begin_plane_2);
-    if(intersection) then
-      self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
-      self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
-      self.action = "1D_translate";
+    -- make a ray from mouse coordinates through active camera
+    local drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    -- intersect ray with workplane
+    local intersection = Ogre.Math:intersects(drag_begin_ray, workplane);
+    if (intersection.first) then
+      -- save begin point
+      self.current.drag_begin_point = drag_begin_ray:getPoint(intersection.second);
+      self.action = "translateFree";
     end
   else -- continue drag
+    -- make a ray from mouse coordinates through active camera
     local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
-    local plane_1 = SPlane(plane_1_normal, origin);
-    local plane_2 = SPlane(plane_2_normal, origin);
-    local plane_3 = SPlane(rotated_normal, origin);
-    if self.debugDraw then
-      debugdrawplane(plane_1, 51, SColourValue.Red, true);
-      debugdrawplane(plane_2, 51, SColourValue.Blue, true);
-      debugdrawplane(plane_3, 51, SColourValue.White, true);
-    end
-    local intersection = self:rayIntersectTwoPlanesNearestHit(drag_current_ray, plane_1, plane_2);
+    -- intersect with current workplane (doesn't change)
+    local intersection = Ogre.Math:intersects(drag_current_ray, workplane);
     if (intersection) then
-      local diff = drag_current_ray:getPoint(intersection.second) - self.current.center_offset_to_begin;
-      if self.debugDraw then
-        debugdrawvector(drag_current_ray:getPoint(intersection.second), origin, SColourValue.Green);
-        debugdrawvector(self.current.center_offset_to_begin, origin, SColourValue.White);
-      end
-      local angle = self.normal:angleBetween(diff):valueDegrees();
-      local direction = false;
-      if(angle > 90) then
-        direction = -1;
-      else
-        direction = 1;
-      end
-      --self.selection:transform():move(self.normal * diff:length() * direction * Editor.settings.manipulator.translateFactor);
+      local current_point = drag_current_ray:getPoint(intersection.second);
+      -- calculate difference from last point
+      local diff = current_point - self.current.drag_begin_point;
+      -- scale difference by a factor
+      local delta_vec = diff * self.translateFactorFree;
+      -- move object by difference
+      self.selection:transform():move(delta_vec);
+      -- save new point as starting point
+      self.current.drag_begin_point = current_point;
     end
   end
 end
@@ -228,7 +253,7 @@ function Manipulator:rotate1D()
   local plane_offset = self.selection:transform().orientation*(SVector3(self.go:transform().scale)*self.normal*0.5);
   local origin = self.selection:transform().position + plane_offset;
   if(self.currentSide) then -- restricted rotate
-    if(not (self.action == "1D_rotate")) then -- begin drag
+    if(not (self.action == "rotate1D")) then -- begin drag
       self.current = {};
       self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
       self.current.drag_begin_plane = SPlane(rotated_normal, origin);
@@ -237,7 +262,7 @@ function Manipulator:rotate1D()
         self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
         self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
         self.current.delta_rotation = SQuaternion(SQuaternion.IDENTITY);
-        self.action = "1D_rotate";
+        self.action = "rotate1D";
       end
     else -- continue drag
       local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
@@ -262,43 +287,160 @@ function Manipulator:rotate1D()
   end
 end
 
+-- 1D Scale
+-- Scales the object along the selected face's normal
 function Manipulator:scale1D()
-  local rotated_normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
-  local plane_offset = self.selection:transform().orientation*(SVector3(self.go:transform().scale)*self.normal*0.5);
-  local origin = self.selection:transform().position + plane_offset;
-  if(self.currentSide) then -- restricted rotate
-    if(not (self.action == "1D_scale")) then -- begin drag
-      self.current = {};
-      self.current.drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
-      self.current.drag_begin_plane = SPlane(rotated_normal, origin);
-      local intersection = Ogre.Math:intersects(self.current.drag_begin_ray, self.current.drag_begin_plane);
-      if(intersection.first) then
-        self.current.drag_begin_point = self.current.drag_begin_ray:getPoint(intersection.second);
-        self.current.center_offset_to_begin = self.current.drag_begin_point - origin;
-        self.action = "1D_scale";
-      end
-    else -- continue drag
-      local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
-      local plane = SPlane(rotated_normal, origin);
-      debugdrawplane(plane, 70, SColourValue.White, true);
-      local intersection = Ogre.Math:intersects(drag_current_ray,plane);
-      if (intersection.first) then
-        local center_offset_to_current = drag_current_ray:getPoint(intersection.second) - origin;
-        debugdrawvector(center_offset_to_current, origin, SColourValue.Blue);
-        debugdrawvector(self.current.center_offset_to_begin, origin, SColourValue.Red);
-        local diff = center_offset_to_current - self.current.center_offset_to_begin;
-        local angle = center_offset_to_current:angleBetween(self.current.center_offset_to_begin):valueDegrees();
-        local direction = false;
-        if(angle > 90) then
-          direction = -1;
-        else
-          direction = 1;
-        end
-        local delta_scale = rotated_normal * direction * center_offset_to_current:length() * self.editor.settings.manipulator.scaleFactor;
-        self.selection:transform().scale = self.selection:transform().scale + delta_scale;
-        local bbox = self.selection:getBoundingBox();
-        self.go:transform().scale = bbox:getSize();
-      end
+  -- note: camera looks down -z
+  -- get picked manipulator face normal in world space
+  local normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+  -- get camera normal in world space
+  local camera_normal = self.editor.cameraGO:transform().orientation * SVector3(0,0,-1);
+  -- get selection origin
+  local origin = self.selection:transform().position;
+  -- create plane on which we will work (intersections)
+  local workplane = SPlane(camera_normal, origin);
+  -- get normal vector scale
+  local scale = self.go:transform().scale:dotProduct(self.normal);
+  -- draw axis of translation to better visualise transform
+  -- TODO: debugdraw is not appropriate?
+  debugdrawvector(normal*scale*2, origin-normal*scale, SColourValue.White);
+
+  if(not (self.action == "scale1D")) then -- begin drag
+    self.current = {};
+    -- make a ray from mouse coordinates through active camera
+    local drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    -- save workplane
+    self.current.plane = workplane;
+    -- intersect ray with workplane
+    local intersection = Ogre.Math:intersects(drag_begin_ray, workplane);
+    if (intersection.first) then
+      -- save begin point
+      self.current.drag_begin_point = drag_begin_ray:getPoint(intersection.second);
+      self.action = "scale1D";
+    end
+  else -- continue drag
+    -- make a ray from mouse coordinates through active camera
+    local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
+    -- intersect with saved plane (because new work plane might be different)
+    -- using current workplane results in a less snappy version (but also works)
+    local intersection = Ogre.Math:intersects(drag_current_ray, self.current.plane);
+    if (intersection) then
+      local current_point = drag_current_ray:getPoint(intersection.second);
+      -- calculate difference from last point
+      local diff = current_point - self.current.drag_begin_point;
+      -- project difference onto normal
+      local delta_amount = normal:dotProduct(diff);
+      -- scale normal by difference, use object-space normal!
+      local delta_vec = self.normal * delta_amount;
+      -- scale object by difference
+      self.selection:transform().scale = self.selection:transform().scale + delta_vec * self.scaleFactor1D;
+      -- also scale manipulator
+      self:rescale();
+      -- save new point as starting point
+      self.current.drag_begin_point = current_point;
+    end
+  end
+end
+
+function Manipulator:scale2D()
+  -- note: camera looks down -z
+  -- get picked manipulator face normal in world space
+  local normal = (self.selection:transform().orientation*self.normal):normalisedCopy();
+  -- get camera normal in world space
+  local camera_normal = self.editor.cameraGO:transform().orientation * SVector3(0,0,-1);
+  -- get selection origin
+  local origin = self.selection:transform().position;
+  -- create plane on which we will work (intersections)
+  local workplane = SPlane(camera_normal, origin);
+
+  if(not (self.action == "scale2D")) then -- begin drag
+    self.current = {};
+    -- make a ray from mouse coordinates through active camera
+    local drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    -- intersect ray with workplane
+    local intersection = Ogre.Math:intersects(drag_begin_ray, workplane);
+    if (intersection.first) then
+      -- save begin point
+      self.current.drag_begin_point = drag_begin_ray:getPoint(intersection.second);
+      self.action = "scale2D";
+    end
+  else -- continue drag
+    -- make a ray from mouse coordinates through active camera
+    local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
+    -- intersect with workplane
+    local intersection = Ogre.Math:intersects(drag_current_ray, workplane);
+    if (intersection) then
+      local current_point = drag_current_ray:getPoint(intersection.second);
+      -- calculate difference from last point
+      local diff = current_point - self.current.drag_begin_point;
+      -- from origin to start point
+      local to_start = current_point-origin;
+      -- make dot product
+      local dot = to_start:dotProduct(diff);
+      -- determine dot product sign
+      local sign = dot>0 and 1 or dot<0 and -1 or 0;
+      -- determine the axes which need to be modified
+      -- + boolean to number conversion
+      local dx = (self.normal:dotProduct(SVector3.UNIT_X) == 0) and 1 or 0;
+      local dy = (self.normal:dotProduct(SVector3.UNIT_Y) == 0) and 1 or 0;
+      local dz = (self.normal:dotProduct(SVector3.UNIT_Z) == 0) and 1 or 0;
+      -- project difference onto axes
+      local dtx = SVector3(dx,0,0):dotProduct(diff);
+      local dty = SVector3(0,dy,0):dotProduct(diff);
+      local dtz = SVector3(0,0,dz):dotProduct(diff);
+      -- construct delta vector out of individual components
+      local delta_vec = SVector3(dx,dy,dz)*dot;--SVector3(dtx,dty,dtz);
+      -- scale object by difference
+      self.selection:transform().scale = self.selection:transform().scale + delta_vec * self.scaleFactor2D;
+      -- also scale manipulator
+      self:rescale();
+      -- save new point as starting point
+      self.current.drag_begin_point = current_point;
+    end
+  end
+end
+
+-- 3D Scale
+-- Scale all three axes by drag amount
+function Manipulator:scale3D()
+  -- note: camera looks down -z
+  -- get camera normal in world space
+  local camera_normal = self.editor.cameraGO:transform().orientation * SVector3(0,0,-1);
+  -- get selection origin
+  local origin = self.selection:transform().position;
+  -- create plane on which we will work (intersections)
+  local workplane = SPlane(camera_normal, origin);
+
+  if(not (self.action == "scale3D")) then -- begin drag
+    self.current = {};
+    -- make a ray from mouse coordinates through active camera
+    local drag_begin_ray = Graphics:activeCameraToViewportRay(self.editor.internal.mouse.downPosition.x, self.editor.internal.mouse.downPosition.y);
+    -- intersect ray with workplane
+    local intersection = Ogre.Math:intersects(drag_begin_ray, workplane);
+    if (intersection.first) then
+      -- save begin point
+      self.current.drag_begin_point = drag_begin_ray:getPoint(intersection.second);
+      self.action = "scale3D";
+    end
+  else -- continue drag
+    -- make a ray from mouse coordinates through active camera
+    local drag_current_ray = Graphics:activeCameraToViewportRay(Input:axisAbsolute(Input.X), Input:axisAbsolute(Input.Y));
+    -- intersect with current workplane (doesn't change)
+    local intersection = Ogre.Math:intersects(drag_current_ray, workplane);
+    if (intersection) then
+      local current_point = drag_current_ray:getPoint(intersection.second);
+      -- calculate difference from last point
+      local diff = current_point - self.current.drag_begin_point;
+      -- from origin to start point
+      local to_start = self.current.drag_begin_point-origin;
+      -- scale difference by a factor
+      local delta_vec = SVector3(1,1,1) * to_start:dotProduct(diff) * self.scaleFactor3D;
+      -- scale object uniformly by difference
+      self.selection:transform().scale = self.selection:transform().scale + delta_vec;
+      -- rescale manipulator
+      self:rescale();
+      -- save new point as starting point
+      self.current.drag_begin_point = current_point;
     end
   end
 end
@@ -311,6 +453,7 @@ function Manipulator:findOrCreate()
     return;
   end
   self.go = Hierarchy:createGameObject("manipulator"); -- create manipulator root go
+  self.go:addTag("no-serialise-recursive");
   local man = self.go;
   local obj = Hierarchy:createGameObject("manipulator-front");
   man:transform():setInheritScale(false);
@@ -437,15 +580,22 @@ function Manipulator:findOrCreate()
   man:transform():setVisible(false, true);
 end
 
-function Manipulator:show(goname)
-  local go = Hierarchy:find(goname);
-  local bbox = go:getBoundingBox();
-  go:addChild(self.go);
+function Manipulator:show(selection)
+  selection:addChild(self.go);
   self.isSelected = true;
-  self.selection = go;
-  self.go:transform().position = (bbox:getCenter());
-  self.go:transform().scale = (bbox:getSize());
+  self.selection = selection;
   self.go:transform():setVisible(true, true);
+  local bbox = self:rescale();
+  self.go:transform().position = bbox:getCenter();
+end
+
+function Manipulator:rescale()
+  local bbox = self.selection:getBoundingBox();
+  if(bbox:isNull()) then
+    bbox = SAxisAlignedBox(SVector3(-0.5, -0.5, -0.5), SVector3(0.5, 0.5, 0.5)); -- unit sized
+  end
+  self.go:transform().scale = bbox:getSize();
+  return bbox;
 end
 
 function Manipulator:checkForSideSelection()
@@ -457,6 +607,8 @@ function Manipulator:checkForSideSelection()
       if(goname:find("manipulator-") and not (goname == "manipulator-edges")) then -- we picked a manipulator
         self:selectSide(goname);
       end
+    else
+      self:deselectCurrentSide();
     end
   end
 end
@@ -492,9 +644,11 @@ function Manipulator:selectSide(goname)
 end
 
 function Manipulator:deselectCurrentSide()
-  self.currentSide:component("ManualObject"):setMaterialName("Editor/manipulator_transparent");
-  self.currentSide = nil;
-  self.normal = nil;
+  if(self.currentSide) then
+    self.currentSide:component("ManualObject"):setMaterialName("Editor/manipulator_transparent");
+    self.currentSide = nil;
+    self.normal = nil;
+  end
 end
 
 function Manipulator:hide()

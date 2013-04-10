@@ -5,6 +5,10 @@
 #include "StormfighterApp.h"
 #include "Hierarchy.h"
 #include "Physics.h"
+#include "ComponentFactory.h"
+
+#include <boost/foreach.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
 
@@ -181,14 +185,15 @@ GameObjectList GameObject::children(){
   return golist;
 }
 // BFS implementation of find (probably more efficient in usual scenegraphs)
+// TODO: tests!
 GameObject* GameObject::find(const SString& name){
   GameObject* found = NULL;
   if(name == name_)
     return this;
   if(parent_){
-    parent_->_find(name);
+    return parent_->_find(name);
   } else {
-    _find(name);
+    return _find(name);
   }
 }
 
@@ -248,6 +253,15 @@ void GameObject::addComponent(Component* cmp){
     }
   }
 }
+
+void GameObject::destroyComponent(const SString& type){
+  Component* cmp = components_[type];
+  // remove from map
+  components_.erase(type);
+  // TODO: callsdispatchból is ki kéne bányászni
+  delete cmp;
+}
+
 
 Component* GameObject::component(const SString& name){
   if ( !hasComponent(name) ) throw SException(debug() + " | component unknown:" + name);
@@ -468,6 +482,128 @@ void GameObject::addCollision(CollisionData* colld){
   }
 }
 
+void GameObject::save(bool recursive){
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->save();
+  }
+  if(recursive){
+    if(children_)
+      children_->save(true);
+    if(next_)
+      next_->save(true);
+  }
+}
+
+void GameObject::load(bool recursive){
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    (*it).second->load();
+  }
+  if(recursive){
+    if(children_)
+      children_->load(true);
+    if(next_)
+      next_->load(true);
+  }
+}
+
+
+SPropertyTree GameObject::serialise(bool recursive){
+  if (hasTag("no-serialise-recursive")){ // this means we return an empty tree, serialisation hits an end
+    return SPropertyTree();
+  }
+  SPropertyTree ptree;
+  SPropertyTree cmps;
+  SPropertyTree children;
+  ptree.put("name", name_);
+  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+    cmps.push_back(std::make_pair("", (*it).second->serialise()));
+  }
+  ptree.add_child("components", cmps);
+  if(recursive){
+    if(children_){
+      for(GameObject* f = children_; f != NULL; f=f->next_){
+        SPropertyTree ptch = f->serialise(true);
+        if(!ptch.empty()) // don't put empty subtrees in
+          children.push_back(std::make_pair("", ptch));
+      }
+      if(!children.empty()) // only create node if a children wanted serialisation
+        ptree.add_child("children", children);
+    }
+  }
+  if(hasTag("no-serialise")){ // this gameobject stays out of the tree, return only the children as an array
+    return children;
+  } else {
+    return ptree;
+  }
+}
+
+SString GameObject::serialiseJSON(bool recursive, bool pretty){
+  SPropertyTree pt = serialise(recursive);
+  std::stringstream ss;
+  boost::property_tree::write_json(ss, pt, pretty); // pretty print
+  return ss.str();
+}
+
+//TODO: Borked!!!
+GameObject* GameObject::deserialise(SPropertyTree src){
+  // two possibilities : top node - GO
+  //                   : top node - array of GOs
+  if(src.count("name") == 1){ // top node - GO
+    SString name = src.get<SString>("name");
+    GameObject* go = new GameObject(name);
+    BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
+      if(v.first == "Transform"){
+        go->transform()->deserialise(v.second);
+        go->transform()->load();
+      } else {
+        // perform Component creation and deserialisation
+        Component* cmp = ComponentFactory::createComponent(v.first);
+        cmp->deserialise(v.second);
+        go->addComponent(cmp);
+      }
+    }
+    if(src.count("children") != 0){
+      BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("children")){
+        go->addChild(GameObject::deserialise(v.second));
+      }
+    }
+    return go;
+  } else {  // top node - array of GOs
+    GameObjectList gos;
+    // create all GOs and put them in a list
+    BOOST_FOREACH(SPropertyTree::value_type &v, src){
+      gos.push_back(GameObject::deserialise(v.second));
+    }
+    // if we have just one GO, we are done
+    if (gos.size() == 1)
+      return gos[0];
+    // make them siblings of the first one
+    for(int i = 1; i < gos.size(); i++){
+      gos[0]->addSibling(gos[i]);
+    }
+    return gos[0];
+  }
+}
+
+void GameObject::deserialiseJSON(SString str){
+  SPropertyTree src;
+  std::stringstream ss; ss << str;
+  boost::property_tree::read_json(ss, src);
+  BOOST_FOREACH(SPropertyTree::value_type &v, src.get_child("components")){
+    SString type = v.second.get<SString>("type");
+    LOG(type);
+    if(hasComponent(type)){
+      component(type)->deserialise(v.second);
+    } else {
+      // perform Component creation and deserialisation
+      Component* cmp = ComponentFactory::createComponent(type);
+      cmp->deserialise(v.second);
+      addComponent(cmp);
+    }
+  }
+}
+
+
 SAxisAlignedBox GameObject::getBoundingBox(){
   ComponentVector meshes = allComponentInChildren("Mesh");
   ComponentVector cameras = allComponentInChildren("Camera");
@@ -483,5 +619,28 @@ SAxisAlignedBox GameObject::getBoundingBox(){
   }
   return bbox;
 }
+
+void GameObject::addTag(SString tag){
+  tags_.insert(tag);
+}
+
+void GameObject::removeTag(SString tag){
+  tags_.erase(tags_.find(tag));
+}
+
+bool GameObject::hasTag(SString tag){
+  if(tags_.find(tag) == tags_.end())
+    return false;
+  else
+    return true;
+}
+
+StringVector GameObject::tags(){
+  StringVector vec;
+  for (std::set<SString>::iterator it=tags_.begin(); it!=tags_.end(); it++)
+    vec.push_back(*it);
+  return vec;
+}
+
 
 }; // namespace SF

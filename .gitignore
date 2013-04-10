@@ -12,3 +12,5 @@ doc/
 deps/
 Default/
 tools/
+ui/*.sublime*
+*.out

@@ -1,21 +1,25 @@
 #include "Hierarchy.h"
+#include "StormfighterApp.h"
+#include "Resources.h"
+#include <boost/property_tree/json_parser.hpp>
 
 namespace SF {
 
-Hierarchy::Hierarchy(){
+Hierarchy::Hierarchy(StormfighterApp* app){
   // set up root GO
   root_ = new GameObject(true);
+  root_->addTag("no-serialise");
+  //root_->addTag("no-select");
   fresh_.clear();
+  application_ = app;
   state_ = DOWN;
-  application_ = NULL;
 }
 
 Hierarchy::~Hierarchy(){
   delete root_;
 }
 
-void Hierarchy::initialise(StormfighterApp* app){
-  application_ = app;
+void Hierarchy::initialise(){
   state_ = UP;
   root_->coreInitialize(application_, true);
   root_->scriptInitialize(application_, true);
@@ -77,6 +81,14 @@ void Hierarchy::destroyGameObject(GameObject* obj){
   return;
 }
 
+GameObject* Hierarchy::loadGameObjectFromFile(SString filename){
+  SPropertyTree src = application_->resources()->readObjectFile(filename);
+  GameObject* go = GameObject::deserialise(src);
+  if(go)
+    addChildToRoot(go);
+  return go;
+}
+
 GameObject* Hierarchy::find(SString name){
   return root_->find(name);
 }
@@ -104,6 +116,15 @@ SString Hierarchy::debug(){
       return str;
   }
   return str;
+}
+
+SString Hierarchy::serialise(){
+  SPropertyTree pt;
+
+  pt.add_child("hierarchy", root_->serialise(true));
+  std::stringstream ss;
+  write_json(ss, pt, false);
+  return ss.str();
 }
 
 }; // namespace SF

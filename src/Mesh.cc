@@ -6,8 +6,12 @@ namespace SF {
 
 Mesh::Mesh(){
   entity_ = NULL;
-  meshname_ = "";
+  meshname_ = "unitcube.mesh";
   materialname_ = "";
+  setProperty("meshName", "unitcube.mesh");
+  entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity("entity_"+Ogre::StringConverter::toString(Graphics::getUniqueId()), meshname_);
+  Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
+  binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
   setState(CREATED);
 }
 
@@ -15,11 +19,25 @@ Mesh::Mesh(SString meshname){
   entity_ = NULL;
   meshname_ = meshname;
   materialname_ = "";
+  entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity("entity_"+Ogre::StringConverter::toString(Graphics::getUniqueId()), meshname_);
+  Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
+  binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
   setState(CREATED);
 }
 
 Mesh::~Mesh(){
-  // TODO: cleanup
+  entity_->detachFromParent();
+  Graphics::getSingletonPtr()->sceneManager()->destroyEntity(entity_);
+  entity_ = NULL;
+}
+
+void Mesh::save() const{
+  Component::save();
+  setProperty("meshName", meshname_);
+}
+
+void Mesh::load(){
+  setMeshName(getSStringProperty("meshName"));
 }
 
 Mesh* Mesh::clone() const{
@@ -34,9 +52,6 @@ unsigned int Mesh::onAdd(SString goname, Transform* transform){
   if(meshname_.empty()){
     valid_ = false;
   } else {
-    entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname+meshname_, meshname_);
-    Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
-    binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
     transform_->attachObject(entity_);
     valid_ = true;
   }
@@ -49,10 +64,10 @@ unsigned int Mesh::onAdd(SString goname, Transform* transform){
 
 void Mesh::setMeshName(SString meshname){
   if(valid_) {
-    delete entity_;
+    Graphics::getSingletonPtr()->sceneManager()->destroyEntity(entity_);
   }
   meshname_ = meshname;
-  entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(goname_+meshname_, meshname_);
+  entity_ = Graphics::getSingletonPtr()->sceneManager()->createEntity(meshname_);
   Ogre::UserObjectBindings& binds = entity_->getUserObjectBindings();
   binds.setUserAny(Ogre::Any(static_cast<Component*>(this)));
   transform_->attachObject(entity_);

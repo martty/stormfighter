@@ -6,36 +6,60 @@
 #include "MovableObject.h"
 
 namespace SF {
-
+/********************************************//**
+ * @brief Light component
+ *
+ * This makes the GameObject which has this Component act like a light source.
+ * There are three types of lights : point, directional and spotlight.
+ *
+ * The class is a wrapper for the implementation of a light source of the Graphics engine (Ogre::Light).
+ ***********************************************/
 class Light : public MovableObject {
  public:
-  enum LightTypes {
-    LT_POINT = Ogre::Light::LT_POINT,
-    LT_DIRECTIONAL = Ogre::Light::LT_DIRECTIONAL,
-    LT_SPOTLIGHT = Ogre::Light::LT_SPOTLIGHT
+  /// Enum of light types, importing Ogre constants
+  enum LightType {
+    POINT = Ogre::Light::LT_POINT, /// Point light
+    DIRECTIONAL = Ogre::Light::LT_DIRECTIONAL, /// Directional light
+    SPOTLIGHT = Ogre::Light::LT_SPOTLIGHT /// Spotlight
   };
-  Light(LightTypes type);
+
+  Light();
+
+  ~Light();
+
+  virtual void save();
+  virtual void load();
 
   Light* clone() const;
 
-  unsigned int onAdd(SString goname, Transform* transform);
+  /// Set light type
+  void setLightType(LightType type);
+  /// Get light type
+  LightType lightType() const;
 
   /// Set diffuse colour
-  void setDiffuseColour(Ogre::ColourValue diffuse_colour);
-  /// Set specular colour
-  void setSpecularColour(Ogre::ColourValue specular_colour);
+  void setDiffuseColour(SColourValue diffuse_colour);
+  /// Get diffuse colour
+  const SColourValue& diffuseColour() const;
 
+  /// Set specular colour
+  void setSpecularColour(SColourValue specular_colour);
+  /// Get specular colour
+  const SColourValue& specularColour() const;
+
+  /// Returns the bounding box for this Light
   SAxisAlignedBox getBoundingBox() const;
 
   /// Sets this light the light which is used to compute lightmaps for terrains
   void setAsTerrainLight();
+
+  unsigned int onAdd(SString goname, Transform* transform);
 
  protected:
   SString name() const { return "Light"; }
 
  private:
   Ogre::Light* light_;
-  LightTypes type_;
 };
 
 }; // namespace SF

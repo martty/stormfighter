@@ -25,6 +25,16 @@ class Resources : public Module{
   // returns the time when the given resource was modified
   long long getResourceModified(SString resourceName, SString resourceGroup);
 
+  void writeObjectFile(SString filename, SPropertyTree tree);
+
+  SPropertyTree readObjectFile(SString filename);
+
+  bool isDirectory(SString path);
+
+  /// reads a directory's contents (filenames)
+  SPropertyTree readDirectoryContents(SString path);
+  SString readDirectoryContentsJSON(SString path);
+
   // reloads all loaded materials (eg. in scene)
   void reloadMaterials();
 

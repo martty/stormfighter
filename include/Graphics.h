@@ -1,6 +1,7 @@
 #ifndef STORMFIGHTER_GRAPHICS_H_
 #define STORMFIGHTER_GRAPHICS_H_
 
+#include "common.h"
 #include "Module.h"
 #include <Ogre.h>
 
@@ -36,6 +37,9 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
 
   /// Renders a single GameObject & saves it as a file
   void renderGameObjectIntoFile(GameObject* go, SString filename, SReal width, SReal height);
+
+  /// Get a unique unsigned id
+  static unsigned getUniqueId();
 
   /// Returns the names of loaded Materials
   StringVector getLoadedMaterialNames();
@@ -83,6 +87,8 @@ class Graphics : public Module, public Ogre::Singleton<Graphics>, Ogre::RenderTa
   SString skyBoxMaterialName_;
 
   std::map<SString, bool> vismap_;
+
+  static unsigned int uniqueId_;
 
   Ogre::Camera* defaultCamera_;
   Ogre::Camera* rttCamera_;

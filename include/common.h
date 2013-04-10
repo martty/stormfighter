@@ -8,6 +8,8 @@
 #include "BulletOgreGlue.h"
 #include "Logger.h"
 
+#include <boost/property_tree/ptree.hpp>
+
 #define DEBUG true
 #define TEST true||DEBUG
 
@@ -44,6 +46,9 @@ typedef Ogre::Plane SPlane;
 
 /// An std::vector of SStrings
 typedef std::vector<SString> StringVector;
+
+/// Boost::property_tree::ptree - Property tree
+typedef boost::property_tree::ptree SPropertyTree;
 
 /// Any code may use pointers to these classes
 class GameObject;

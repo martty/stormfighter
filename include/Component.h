@@ -7,6 +7,7 @@ namespace SF {
 
 struct CollisionData;
 class Transform;
+class Serialiser;
 
 /**
  * @brief Compenents are responsible for a part of a GameObject's behavior, appearance, etc.
@@ -55,8 +56,22 @@ class Component{
   virtual void onCollisionEnter(const CollisionData* collisionData){}
   /// to be called when the holder GameObject stops colliding (with an other one), once
   virtual void onCollisionExit(const CollisionData* collisionData){}
-  /// to be called when the holder GameObject collider, every tick
+  /// to be called when the holder GameObject collides, every tick
   virtual void onCollisionStay(const CollisionData* collisionData){}
+
+  /// pulls properties into foreground state and returns it
+  SPropertyTree serialise() const{ save(); return fg_state_; }
+  /// writes foreground state and writes to properties
+  void deserialise(SPropertyTree src){ fg_state_ = src; load(); }
+
+  /// pulls properties to foreground state
+  virtual void save() const{fg_state_.put("type", type());}
+  /// writes properteis to foreground state
+  virtual void load(){}
+  /// pulls foreground state to background state
+  void saveFG(){bg_state_ = fg_state_; }
+  /// pulls background state to foreground state
+  void loadBG(){fg_state_ = bg_state_; }
 
   enum State {CREATED, PREPARED, READY};
 
@@ -77,6 +92,24 @@ protected:
   void setState(State new_state);
 
   virtual SString name() const = 0;
+
+  /// foreground state (eg.: current)
+  mutable SPropertyTree fg_state_;
+  /// background state (eg.: sth stored)
+  SPropertyTree bg_state_;
+
+  void setProperty(SString key, SReal value) const {fg_state_.put("properties."+key, value);}
+  void setProperty(SString key, SString value) const {fg_state_.put("properties."+key, value);}
+  void setProperty(SString key, SVector3 value) const {fg_state_.put("properties."+key, Ogre::StringConverter::toString(value));}
+  void setProperty(SString key, SQuaternion value) const {fg_state_.put("properties."+key, Ogre::StringConverter::toString(value));}
+  void setProperty(SString key, SColourValue value) const {fg_state_.put("properties."+key, Ogre::StringConverter::toString(value));}
+
+  int getIntegerProperty(SString key) const {return fg_state_.get<int>("properties."+key);}
+  SReal getSRealProperty(SString key) const {return fg_state_.get<SReal>("properties."+key);}
+  SString getSStringProperty(SString key) const {return fg_state_.get<SString>("properties."+key);}
+  SVector3 getSVector3Property(SString key) const {return Ogre::StringConverter::parseVector3(fg_state_.get<SString>("properties."+key));}
+  SQuaternion getSQuaternionProperty(SString key) const {return Ogre::StringConverter::parseQuaternion(fg_state_.get<SString>("properties."+key));}
+  SColourValue getSColourValueProperty(SString key) const {return Ogre::StringConverter::parseColourValue(fg_state_.get<SString>("properties."+key));}
  private:
   GameObject* object_;
   StormfighterApp* application_;

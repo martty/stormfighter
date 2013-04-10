@@ -2,6 +2,7 @@
 #define STORMFIGHTER_GAMEOBJECT_H_
 
 #include <map>
+#include <set>
 #include "common.h"
 #include "Component.h"
 #include "Transform.h"
@@ -20,7 +21,7 @@ struct CollisionData;
 /**
  *@brief Generic parent class for all GameObject
  *
- * Suggested abbroviation: GO, :)
+ * Suggested abbreviation: GO, :)
  */
 class GameObject {
  friend class Hierarchy;
@@ -38,7 +39,8 @@ class GameObject {
   GameObject* clone(SString name); /// Creates a clone with name
 
   // Components
-  void addComponent(Component* component);   /// Add's component to GameObject's component map
+  void addComponent(Component* component);   /// Adds component to GameObject's component map
+  void destroyComponent(const SString& type); /// Destroys the given component
   Component* component(const SString& type); /// Returns component with given type
   Component* componentGroup(const SString& group); /// Returns the component which is in the given group (not usable with Script)
   ComponentVector allComponents(); /// Returns all components in this GameObject
@@ -63,7 +65,7 @@ class GameObject {
   /// sends collision events to components
   void collision();
 
-  // Game object list managament
+  // Hierarchy management
   ///Add equal level member to GameObject list
   void addSibling(GameObject* go);
   ///Add children(lower in hierarchy) member to GameObject list
@@ -83,8 +85,36 @@ class GameObject {
   ///Destroy all children (call their destructors)
   void clearChildren();
 
+  // Saving & loading & serialisation
+  ///Tells components to save in this GO (and descendants if recursive == true)
+  void save(bool recursive);
+  ///Tells components to load in this GO (and descendants if recursive == true)
+  void load(bool recursive);
+
+  ///Serialise GO (and descendants if recursive == true)
+  SPropertyTree serialise(bool recursive);
+  ///Serialise GO into JSON
+  SString serialiseJSON(bool recursive, bool pretty);
+
+  ///Update state from JSON string
+  void deserialiseJSON(SString src);
+
+  ///Deserialise a GO hierarchy from SPropertyTree
+  static GameObject* deserialise(SPropertyTree src);
+
   /// Gets an AABB which bounds this GameObject and it's descendants
   SAxisAlignedBox getBoundingBox();
+
+  // Tagging
+  /// add tag to GO
+  void addTag(SString tag);
+  /// remove tag from GO
+  void removeTag(SString tag);
+  /// check for tag on GO
+  bool hasTag(SString tag);
+  /// get all tags from GO
+  StringVector tags();
+
 
  protected:
   GameObject* next(); ///The next GameObject in the list
@@ -125,6 +155,8 @@ class GameObject {
   static NameCountMap namecount_;
   /// map for registering components to calls
   CallsMap callsdispatch_;
+  /// tag set
+  std::set<SString> tags_;
 };
 
 }; // namespace SF

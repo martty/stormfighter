@@ -13,7 +13,7 @@ namespace SF {
 
 class Hierarchy {
  public:
-  Hierarchy();
+  Hierarchy(StormfighterApp* app);
   ~Hierarchy();
 
   /// Searches for GO with given name in hierarchy (BFS)
@@ -33,12 +33,17 @@ class Hierarchy {
   void destroyGameObject(SString name);
   void destroyGameObject(GameObject* gameObject);
 
-  void initialise(StormfighterApp* app);
+  GameObject* loadGameObjectFromFile(SString filename);
+
+  void initialise();
   void update();
   void physicsUpdate();
 
   /// Returns the whole hierarchy (DFS)
   SString debug();
+
+  /// Returns a JSON representation of the structure
+  SString serialise();
 
  private:
   enum ModuleState { DOWN, UP};

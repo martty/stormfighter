@@ -66,11 +66,11 @@ void StormfighterApp::startStormfighter(){
   input_ = new Input(graphics_->defaultRenderWindow());
   log("Input initialized!");
   log("Initializing GUI");
-  gui_ = new GUI(input_);
+  gui_ = new GUI(this);
   log("GUI initialized!");
   gui_->initialise();
   log("Initializing hierarchy");
-  hierarchy_ = new Hierarchy();
+  hierarchy_ = new Hierarchy(this);
   log("Hierarchy initialized!");
   log("Initializing physics");
   physics_ = new Physics(this);
@@ -101,6 +101,18 @@ void StormfighterApp::setupStormfighterScene(){
   if(!scripting_->parseFile("scripts/init.lua"))
     exit(1);
 
+  GameObject* go = hierarchy_->getRoot();
+  //Component* c = go->component("Transform");
+  LOG("saving..");
+  //c->save();
+  //go->serialise();
+  LOG("save done.");
+  //LOG(c->serialise());
+  //resources_->writeObjectFile("test.object.json", go->serialise(true));
+  //GameObject* doppelganger = GameObject::deserialise(go->serialise(true));
+  //resources_->writeObjectFile("test2.object.json", doppelganger->serialise(true));
+  //hierarchy_->loadGameObjectFromFile("test.sf_object");
+  LOG("that was it.");
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
   physics_->addCollisionGroup("faller");
@@ -211,7 +223,7 @@ bool StormfighterApp::frameEnded(const Ogre::FrameEvent& evt){
 
 void StormfighterApp::runStormfighter(){
   log("Initializing GameObjects");
-  hierarchy_->initialise(this);
+  hierarchy_->initialise();
   //log(hierarchy_->debug());
   log("Running deferred initializations");
   scripting()->executeString("System:_deferredInit();");

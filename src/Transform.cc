@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "GameObject.h"
 #include "RigidBody.h"
+#include "KVSerialiser.h"
 
 namespace SF {
 
@@ -56,6 +57,8 @@ Transform* Transform::clone() const{
   return ntf;
 }
 // TODO: !important this is botched
+//        we are returning temporary variables
+//        maybe scrap tolua_property? or cache these
 const SVector3& Transform::worldPosition() const{
   return node_->convertLocalToWorldPosition(SVector3::ZERO);
 }
@@ -187,6 +190,19 @@ bool Transform::isVisible(){
       isVisible = true;
   }
   return isVisible;
+}
+
+void Transform::save() const{
+  setProperty("position", position());
+  setProperty("orientation", orientation());
+  setProperty("scale", scale());
+  Component::save();
+}
+
+void Transform::load(){
+  setPosition(getSVector3Property("position"));
+  setOrientation(getSQuaternionProperty("orientation"));
+  setScale(getSVector3Property("scale"));
 }
 
 }; // namespace SF

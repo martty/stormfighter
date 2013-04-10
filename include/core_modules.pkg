@@ -160,13 +160,15 @@ class Input {
   int axisAbsolute(Axis axis);
 };
 
-class GUI  {
+class GUI : public Module {
  public:
   void update(double deltaTime);
 
   void executeJS(SString script);
 
   void reload();
+
+  bool ready();
 
   SString pollCommands();
 
@@ -189,6 +191,10 @@ class Hierarchy {
 
   /// Returns the whole hierarchy (DFS)
   SString debug();
+
+  GameObject* loadGameObjectFromFile(SString filename);
+
+  SString serialise();
 };
 
 class Resources : public Module{
@@ -206,6 +212,11 @@ class Resources : public Module{
   long long getResourceModified(SString resourceName, SString resourceGroup);
 
   void reloadMaterials();
+
+  bool isDirectory(SString path);
+
+  /// reads a directory's contents (filenames)
+  SString readDirectoryContentsJSON(SString path);
 
   const SString DEFAULT_RESOURCE_GROUP_NAME;
 };

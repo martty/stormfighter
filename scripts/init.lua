@@ -1,10 +1,10 @@
 -- INIT FILE
 -- LEFUT AMIKOR ELINDUL A PROGRAM
--- …S M¡R MINDEN ALRENDSZER K…SZ ¡LLAPOTBAN VAN
+-- √âS M√ÅR MINDEN ALRENDSZER K√âSZ √ÅLLAPOTBAN VAN
 
---  a -- -al kezdıdı sorok a kommentek
+--  a -- -al kezd√µd√µ sorok a kommentek
 
-print("hai");
+__ = require 'scripts/underscore'
 
 dofile('scripts/system.lua');
 dofile('scripts/input.lua');
@@ -13,55 +13,48 @@ dofile('scripts/showcase.lua');
 dofile('scripts/editor.lua');
 System:_initialise();
 World:initialise("world1");
--- innentıl jˆn az igazi kÛd
+-- innent√µl j√∂n az igazi k√≥d
 
--- egy ˙j GameObject lÈtrehoz·sa
+-- egy √∫j GameObject l√©trehoz√°sa
 --[[
 platform = Hierarchy:createGameObject("platform");
 
--- a GameObject Transform komponensÈvel be·llÌtjuk a nagyÌt·st Ès pozÌciÛt
+-- a GameObject Transform komponens√©vel be√°ll√≠tjuk a nagy√≠t√°st √©s poz√≠ci√≥t
 platform:transform().scale = (SVector3(2, 0.1, 8));
 platform:transform().position = SVector3(0, 0, 0);
--- hozz·adunk egy Primitive komponenst, ami jelen esetben egy kocka (de ugye a scale miatt has·b lesz)
+-- hozz√°adunk egy Primitive komponenst, ami jelen esetben egy kocka (de ugye a scale miatt has√°b lesz)
 platform:addComponent(Primitive:new(Primitive.CUBE));
--- be·llÌtjuk az "anyag·t", ez most egyszer˚en egy text˙ra
+-- be√°ll√≠tjuk az "anyag√°t", ez most egyszer√ªen egy text√∫ra
 --platform:component("Primitive"):setMaterialName("Test/Grass");
--- hozz·adunk egy BoxCollider komponenst, ez a fizikai szimul·ciÛban haszn·lt testet adja meg
+-- hozz√°adunk egy BoxCollider komponenst, ez a fizikai szimul√°ci√≥ban haszn√°lt testet adja meg
 platform:addComponent(BoxCollider:new());
--- hozz·adunk egy RigidBody komponenst, ez a fizikai szimul·ciÛt engedÈlyezi erre a testre (merevtest)
--- a 0-s paramÈter a tˆmege a testnek, teh·t ez nem fog mozogni
+-- hozz√°adunk egy RigidBody komponenst, ez a fizikai szimul√°ci√≥t enged√©lyezi erre a testre (merevtest)
+-- a 0-s param√©ter a t√∂mege a testnek, teh√°t ez nem fog mozogni
 platform:addComponent(RigidBody:new(0, true));
 
 platform:transform():setVisible(false, true);
 --]]
 
--- megcsin·ljuk a kamer·t
-local cam = Hierarchy:createGameObject("cammy");
-c = Camera:new();
-cam:addComponent(c);
-c:setNearClipDistance(1);
-c:setAspectRatio(Graphics:getDefaultAspectRatio());
-c:activate();
-cam:transform().position = SVector3(2312,2300,2600);
-cam:transform():lookAt(SVector3(2312,2278,2597));
+local li = Hierarchy:createGameObject("lighty");
+l = Light:new();
+l.diffuseColour = SColourValue(0.1, 0.2, 0.3, 1);
+l.specularColour = SColourValue(0.4, 0.5, 0.5, 1);
+l.lightType = Light.POINT;
 
-local fcc = System:loadComponent('scripts/freecameracontroller.lua');
-cam:addComponent(fcc);
-local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
+--local ccc = System:loadComponent('scripts/chasecameracontroller.lua');
 --cam:addComponent(ccc);
-local compimg = Ogre.Image:new_local();
-compimg:loadTwoImagesAsRGBA("samplediffuse.png", "samplegloss.png", "General" ,Ogre.PF_BYTE_RGBA);
-compimg:save("media/common/samplediffusegloss2.png");
+--local compimg = Ogre.Image:new_local();
+--compimg:loadTwoImagesAsRGBA("samplediffuse.png", "samplegloss.png", "General" ,Ogre.PF_BYTE_RGBA);
+--compimg:save("media/common/samplediffusegloss2.png");
 --[[Showcase:createShowcase();
 Showcase:addMaterial("Base/FlatShadedExample");
 Showcase:addMaterial("Base/DiffuseGlossExample");
 Showcase:addMaterial("Base/MonsterExample");--]]
 citywall = Hierarchy:createGameObject("citywall");
 citywall:addComponent(Mesh:new("citywall.mesh"));
+citywall:addComponent(l);
 --print(citywall:component("Mesh").type);
-cam:transform().position = SVector3(0,10,-100);
-cam:transform():lookAt(SVector3(0,0,0));
-dofile("scripts/terrain_test.lua");
+--dofile("scripts/terrain_test.lua");
 --cam:transform().orientation = SQuaternion:new_local(SQuaternion.ZERO);
 Editor:init();
 
@@ -77,18 +70,18 @@ function lua_update()
   --print('gui');
   Editor:update();
   --print('edi');
-  if Input:isKeyPressed(OIS.KC_R) then
+  --[[if Input:isKeyPressed(OIS.KC_R) then
     Resources:reloadMaterials();
-  end
+  end--]]
 end
 
---[[
+
 function gc_delta()
   local s = "";
     for i,k in pairs(_G) do
       --print(i);
       if(not (i == "_G")) then
-        s = s.."["..tostring(i) .. "]".. System:serializeNative(k);
+        s = s.."["..tostring(i) .. "]".. System:serializeNativeType(k);
       end
     end
     print(s);
@@ -96,7 +89,7 @@ function gc_delta()
     local g = "";
     for i,k in pairs(_G) do
       if(not (i == "_G")) then
-        g = g.."["..tostring(i) .. "]".. System:serializeNative(k);
+        g = g.."["..tostring(i) .. "]".. System:serializeNativeType(k);
       end
     end
     local f = assert(io.open("dbg.log", 'w'));
@@ -105,4 +98,3 @@ function gc_delta()
     f:write(g);
     f:close();
 end
---]]
