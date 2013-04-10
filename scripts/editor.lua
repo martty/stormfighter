@@ -63,8 +63,9 @@ function Editor:init()
   self.cameraGO:addComponent(self.camera);
   local fcc = System:loadComponent('scripts/freecameracontroller.lua');
   self.cameraGO:addComponent(fcc);
-  self.cameraGO:transform().position = SVector3(0,0,-100);
-  self.cameraGO:transform():lookAt(SVector3(0,0,0));
+  self.cameraGO:transform().position = SVector3(0,0,300);
+  -- note: camera looks down -z
+  --self.cameraGO:transform():lookAt(SVector3(0,0,0));
 end
 
 function Editor:manipulator()
@@ -88,8 +89,6 @@ function Editor.UI:init()
   Editor.internal.time_to_ui_load = Editor.internal.time_ui_loaded - Editor.internal.time_started;
   print(tostring(Editor.internal.time_to_ui_load));
 end
-
-
 
 -- reloads the reloadable parts of the editor
 function Editor:reloadEditor()
@@ -291,7 +290,7 @@ end
 function Editor:parseUIMessage(message)
   --print('Received:'..message);
   local decoded = System.JSON:decode(message);
-  tprint(decoded);
+  --tprint(decoded);
   return decoded;
 end
 
@@ -322,7 +321,7 @@ function Editor:reloadUI()
   self.internal.ui.ready = false;
   GUI:reload();
 end
-
+--[[
 logprint = print;
 function print(something)
   logprint(something)
@@ -340,11 +339,11 @@ function escapeTextForJS(text)
     return text:gsub('"', '&quot;');
   end
 end
-
+--]]
 function Editor:executeJS(js)
   local escapedjs = escapeTextForJS(js);
-  logprint(js);
-  GUI:executeJS([[console.logJSCall("]]..escapedjs..[[");]]);
+  --logprint(js);
+  --GUI:executeJS([[console.logJSCall("]]..escapedjs..[[");]]);
   GUI:executeJS(js);
 end
 

@@ -12,7 +12,7 @@ end
 -- dispatch endpoint
 function Inspector:receive(calldata)
   local cmd = calldata.meta.command;
-  tprint(calldata);
+  --tprint(calldata);
   if (cmd == "delta") then
     self:delta(calldata.data);
   elseif (cmd == "destroy") then
@@ -59,7 +59,7 @@ function Inspector:update()
   if(self.cachedCallData ~= calldata) then
     Editor:send(calldata);
     self.cachedCallData = calldata;
-    print('\n'..godata);
+    --print('\n'..godata);
   end
 --[[
   local ndata = {}; -- new component data
