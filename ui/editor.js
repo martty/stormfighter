@@ -7,7 +7,9 @@ var Editor = (function () {
         this.containers['south'] = new Container('south');
         this.widgets = new Array();
         this.widgets['inspector'] = new Inspector();
+        this.widgets['hierarchy'] = new Hierarchy();
         this.containers['east'].addWidget(this.widgets['inspector']);
+        this.containers['west'].addWidget(this.widgets['hierarchy']);
         this.viewportfocus = ko.observable(true);
         ko.applyBindings(this, $('#viewport')[0]);
     }
@@ -41,6 +43,9 @@ var Editor = (function () {
     };
     Editor.prototype.inspector = function () {
         return this.widgets['inspector'];
+    };
+    Editor.prototype.hierarchy = function () {
+        return this.widgets['hierarchy'];
     };
     Editor.prototype.send = function (data) {
         this.queue.push(data);

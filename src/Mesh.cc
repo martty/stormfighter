@@ -56,9 +56,6 @@ unsigned int Mesh::onAdd(SString goname, Transform* transform){
     valid_ = true;
   }
   setState(READY);
-  if(!materialname_.empty()){
-      setMaterialName(materialname_);
-  }
   return NONE;
 }
 

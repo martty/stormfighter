@@ -91,10 +91,13 @@ class GameObject {
   ///Tells components to load in this GO (and descendants if recursive == true)
   void load(bool recursive);
 
-  ///Serialise GO (and descendants if recursive == true)
+  ///Serialise GO & Components (and descendants if recursive == true)
   SPropertyTree serialise(bool recursive);
   ///Serialise GO into JSON
   SString serialiseJSON(bool recursive, bool pretty);
+
+  ///Serialise GO, but not the Components (and descendants if recursive == true)
+  SPropertyTree serialiseStructure(bool recursive);
 
   ///Update state from JSON string
   void deserialiseJSON(SString src);
@@ -137,6 +140,8 @@ class GameObject {
   void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
 
   GameObject* _find(const SString& name);
+
+  SPropertyTree _serialise(bool recursive, bool components); /// internal helper, to prevent code duplication
 
   bool isRoot_;
   SString name_;

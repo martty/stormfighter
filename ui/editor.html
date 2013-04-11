@@ -26,26 +26,28 @@
 	<script type="text/javascript" src="container.js"></script>
 	<script type="text/javascript" src="widget.js"></script>
 	<script type="text/javascript" src="inspector.js"></script>
+	<script type="text/javascript" src="hierarchy.js"></script>
 	<script type="text/javascript" src="filebrowser.js"></script>
 </head>
 
 <body class="easyui-layout">  
-    <div id="north" data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>  
-    <div id="south" data-options="region:'south',title:'South Title',split:true" style="height:100px;"></div>  
-    <div id="east" data-options="region:'east',iconCls:'icon-reload',title:'East',split:true" style="width:350px;"></div>
-    <div id="west" data-options="region:'west',title:'West',split:true" style="width:200px;"></div>
+    <div id="north" data-options="region:'north', split:true" style="height:50px;"></div>  
+    <div id="south" data-options="region:'south',title:'South',split:true" style="height:100px;">
+    </div>  
+    <div id="east" data-options="region:'east',title:'East',split:true" style="width:350px;"></div>
+    <div id="west" data-options="region:'west',title:'West',split:true" style="width:175px;"></div>
     <div id="viewport" data-options="region:'center'" data-bind="event : { mouseover : focusViewport, mouseout: focusEditor }" style="background-color: transparent"></div>
 
 	<!-- TEMPLATES FOR ALL -->
 	<!-- Inspector -->
 	<script type="text/html" id="tpl-inspector-cmpaddmenu">
 		<div data-bind="with: typeAnnotations" id="inspector-cmpaddmenu">
-			<ul data-bind="foreach: pickCategories">
-				<li><span data-bind="text: $data"></span>
+			<div data-bind="foreach: pickCategories">
+				<div data-bind="attr: {title: $data}">
 					<ul data-bind="foreach: $parent.filterByCategory($data)">
 						<li data-bind="text: typename, click: $root.go.newComponent"></li>
 					</ul>
-				</li>
+				</div>
 			</ul>
 		</div>
 	</script>

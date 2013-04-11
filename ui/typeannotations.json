@@ -82,7 +82,11 @@ typeannotations =
 		"tipText" : "The Mesh component defines the appearance of a GameObject.",
 		"category" : "Graphics",
 		"properties" : {
-			"meshName" : "SString"
+			"meshName" : {
+				"type" : "SString",
+				"defaultValue" : "unitcube.mesh",
+				"tipText" : "Mesh file name (.mesh)",
+			}
 		}
 	},
 
@@ -93,5 +97,12 @@ typeannotations =
 		"properties" : {
 			"meshName" : "SString"
 		}	
+	},
+
+	"RigidBody" : {
+		"tipText" : "RigidBody",
+		"category" : "Physics",
+		"properties" : {
+		}		
 	}
 }

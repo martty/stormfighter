@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 04/08/13 20:39:54.
+** Generated automatically by tolua++-1.0.92 on 04/10/13 23:56:25.
 */
 
 #ifndef __cplusplus
@@ -32242,9 +32242,9 @@ static int tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00(lua_State* t
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: serialise of class  SF::Hierarchy */
-#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_serialise00
-static int tolua_Stormfighter_SF_Hierarchy_serialise00(lua_State* tolua_S)
+/* method: serialiseJSON of class  SF::Hierarchy */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_serialiseJSON00
+static int tolua_Stormfighter_SF_Hierarchy_serialiseJSON00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -32258,17 +32258,49 @@ static int tolua_Stormfighter_SF_Hierarchy_serialise00(lua_State* tolua_S)
  {
   SF::Hierarchy* self = (SF::Hierarchy*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'serialise'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'serialiseJSON'", NULL);
 #endif
   {
-    std::string tolua_ret = (  std::string)  self->serialise();
+    std::string tolua_ret = (  std::string)  self->serialiseJSON();
    tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'serialise'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'serialiseJSON'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: serialiseStructureJSON of class  SF::Hierarchy */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Hierarchy_serialiseStructureJSON00
+static int tolua_Stormfighter_SF_Hierarchy_serialiseStructureJSON00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Hierarchy",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Hierarchy* self = (SF::Hierarchy*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'serialiseStructureJSON'", NULL);
+#endif
+  {
+    std::string tolua_ret = (  std::string)  self->serialiseStructureJSON();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'serialiseStructureJSON'.",&tolua_err);
  return 0;
 #endif
 }
@@ -34505,7 +34537,8 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getRoot",tolua_Stormfighter_SF_Hierarchy_getRoot00);
     tolua_function(tolua_S,"debug",tolua_Stormfighter_SF_Hierarchy_debug00);
     tolua_function(tolua_S,"loadGameObjectFromFile",tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00);
-    tolua_function(tolua_S,"serialise",tolua_Stormfighter_SF_Hierarchy_serialise00);
+    tolua_function(tolua_S,"serialiseJSON",tolua_Stormfighter_SF_Hierarchy_serialiseJSON00);
+    tolua_function(tolua_S,"serialiseStructureJSON",tolua_Stormfighter_SF_Hierarchy_serialiseStructureJSON00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Resources","SF::Resources","Module",NULL);
    tolua_beginmodule(tolua_S,"Resources");

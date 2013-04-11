@@ -73,6 +73,7 @@ var Inspector = (function (_super) {
             edgeOffset: 7,
             keepAlive: true,
             delay: 0,
+            maxWidth: 'auto',
             content: function () {
                 ko.applyBindings(_this, _this.cmpaddmenu[0]);
                 return _this.cmpaddmenu;

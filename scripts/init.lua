@@ -53,6 +53,25 @@ Showcase:addMaterial("Base/MonsterExample");--]]
 citywall = Hierarchy:createGameObject("citywall");
 citywall:addComponent(Mesh:new("citywall.mesh"));
 citywall:addComponent(l);
+
+a = citywall:serialiseJSON(false,true);
+b = citywall:serialiseJSON(false,false);
+print('\n'..a..'\n'..b..'\n---------------------------');
+-- setup some test data
+A = Hierarchy:createGameObject("A");
+citywall:addChild(A)
+A:addChild(Hierarchy:createGameObject("AA"));
+A:addChild(Hierarchy:createGameObject("AB"));
+AC = Hierarchy:createGameObject("AC");
+A:addChild(AC);
+AC:addChild(Hierarchy:createGameObject("ACA"));
+B= Hierarchy:createGameObject("B");
+citywall:addChild(B)
+B:addChild(Hierarchy:createGameObject("BA"));
+B:addChild(Hierarchy:createGameObject("BB"));
+citywall:addChild(Hierarchy:createGameObject("C"))
+c = Hierarchy:serialiseStructureJSON();
+print('\n'..c);
 --print(citywall:component("Mesh").type);
 --dofile("scripts/terrain_test.lua");
 --cam:transform().orientation = SQuaternion:new_local(SQuaternion.ZERO);

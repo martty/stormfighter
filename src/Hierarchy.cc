@@ -118,13 +118,23 @@ SString Hierarchy::debug(){
   return str;
 }
 
-SString Hierarchy::serialise(){
+SString Hierarchy::serialiseJSON(){
   SPropertyTree pt;
 
-  pt.add_child("hierarchy", root_->serialise(true));
+  pt = root_->serialise(true);
   std::stringstream ss;
   write_json(ss, pt, false);
   return ss.str();
 }
+
+SString Hierarchy::serialiseStructureJSON(){
+  SPropertyTree pt;
+
+  pt = root_->serialiseStructure(true);
+  std::stringstream ss;
+  write_json(ss, pt, false);
+  return ss.str();
+}
+
 
 }; // namespace SF

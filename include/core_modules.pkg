@@ -194,7 +194,8 @@ class Hierarchy {
 
   GameObject* loadGameObjectFromFile(SString filename);
 
-  SString serialise();
+  SString serialiseJSON();
+  SString serialiseStructureJSON();
 };
 
 class Resources : public Module{

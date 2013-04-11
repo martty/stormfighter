@@ -53,8 +53,7 @@ function Manipulator:update()
         local goname = go:name();
         if(goname:find("manipulator-")) then -- we picked a manipulator
         else
-          self:show(go);
-          self.editor:inspector():setGameObject(go);
+          self.editor:select(go);
         end
       else
         self:hide();
@@ -661,6 +660,7 @@ function Manipulator:hide()
   go:reParent();
   go:transform().scale = SVector3(0,0,0);
   go:transform():setVisible(false, true);
+  self.editor:deselect();
 end
 
 function Manipulator:setMode(mode)

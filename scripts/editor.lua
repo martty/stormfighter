@@ -31,6 +31,7 @@ Editor.internal.manipulator = {};
 Editor.internal.ui = {};
 Editor.internal.ui.inspector = {};
 Editor.internal.ui.console = {};
+Editor.internal.ui.hierarchy = {};
 
 Editor.UI = Editor.internal.ui;
 
@@ -45,6 +46,10 @@ Inspector = nil;
 Console = Editor.internal.ui.console;
 dofile('scripts/console.lua');
 Console = nil;
+
+HierarchyW = Editor.internal.ui.hierarchy;
+dofile('scripts/hierarchy.lua');
+HierarchyW = nil;
 
 
 
@@ -78,6 +83,10 @@ end
 
 function Editor:console()
   return self.UI.console;
+end
+
+function Editor:hierarchy()
+  return self.UI.hierarchy;
 end
 
 function Editor.UI:init()
@@ -271,6 +280,8 @@ function Editor:updateUI()
   self:dispatchUIMessage(GUI:pollCommands());
   -- update Inspector
   self:inspector():update();
+  -- update Hierarchy
+  self:hierarchy():update();
 end
 
 function Editor:dispatchUIMessage(msg)
@@ -279,6 +290,8 @@ function Editor:dispatchUIMessage(msg)
     local callee = datas[i].meta.callee;
     if(callee == "inspector") then
       self:inspector():receive(datas[i]);
+    elseif(callee == "hierarchy") then
+      self:hierarchy():receive(datas[i]);
     elseif(callee == "editor") then
       self:receive(datas[i]);
     else
@@ -304,6 +317,8 @@ function Editor:receive(calldata)
   local command = calldata.meta.command;
   if(command == "focus") then
     self:focus(calldata.data);
+  elseif (command == "select") then
+    self:select(Hierarchy:find(calldata.data.name));
   end
 end
 
@@ -347,15 +362,6 @@ function Editor:executeJS(js)
   GUI:executeJS(js);
 end
 
-function Editor:openHierarchyBrowser()
-  -- set up commands
-  Editor:executeJS('hierarchy.setCommandPatterns({"select" : "Editor:selectGameObject($0);", "addgameobject" : "Editor:addGameObject($0, $1);", "delete" : "Editor:delete($0);", "reparent" : "Editor:reparent($0, $1);"});');
-  --obtain GOs from hierarchy
-  local hierarchyJSON = Hierarchy:serialise();
-  local js = "hierarchy.update('"..hierarchyJSON.."');";
-  Editor:executeJS(js);
-end
-
 function Editor:openFileBrowser(path)
   -- set up commands
   Editor:executeJS('filebrowser.setCommandPatterns({"loadobject" : "Editor:loadGameObject($0);"});');
@@ -371,10 +377,17 @@ function Editor:loadGameObject(filename)
   Editor:openHierarchyBrowser();
 end
 
-function Editor:selectGameObject(goname)
-  self:manipulator():show(goname);
-  self:inspector():showGameObject(goname);
+function Editor:select(go)
+  self:manipulator():show(go);
+  self:inspector():setGameObject(go);
+  self:hierarchy():select(go);
 end
+
+function Editor:deselect(go)
+  self:inspector():unsetGameObject(go);
+  self:hierarchy():deselect(go);
+end
+
 
 function Editor:addGameObject(newgoname, parentgoname)
   local parentgo = Hierarchy:find(parentgoname);

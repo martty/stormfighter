@@ -49,6 +49,13 @@ function Inspector:setGameObject(go)
   self:update();
 end
 
+-- unset our GO object and notify for update
+function Inspector:setGameObject(go)
+  self.go = nil;
+  self.cachedCallData = '';
+  self:update();
+end
+
 -- updates UI representation to match engine data
 function Inspector:update()
   if(not self.go) then -- no selection, nothing to update
@@ -61,93 +68,6 @@ function Inspector:update()
     Editor:send(calldata);
     self.cachedCallData = calldata;
     --print('\n'..godata);
-  end
---[[
-  local ndata = {}; -- new component data
-  local cmps = self.go:allComponents();
-  for i=0,cmps:size()-1 do
-    if(cmps[i].group == "LuaScript") then
-      print('[!]not adding LuaScript');
-    else
-      -- the components are of Component type, so make SF::type and cast
-      local otype = "SF::"..cmps[i].type;
-      cmps[i] = tolua.cast(cmps[i], otype);
-      -- if we have annotations for this type, then extract properties
-      if(System.annotations[cmps[i].type]) then
-        ndata[cmps[i].type] = {};
-        for field,v in pairs(System.annotations[cmps[i].type].properties) do
-          --set property to current value using getField
-          local fieldval = System:getField(cmps[i], field);
-          local serivalue = System:serialise(fieldval);
-          ndata[cmps[i].type][field] = {field_type=v.type, field_value=serivalue};
-        end
-      end
-    end
-  end
-  local equal, diff = self:tablesEqual(self.cdata, ndata);
-  if not(equal) then
-    self.cdata = ndata;
-    if(diff == "len" or diff == "key") then
-      self:showGameObject(self.go:name());
-    else
-      self:updateValues();
-    end
-  end--]]
-end
---[[
-  Editor:executeJS("inspector.setGameObjectName('"..goname.."');");
-  local go = Hierarchy:find(goname);
-  -- save currently selected go
-  self.go = go;
-  -- get all components for go
-  local cmps = go:allComponents();
-  for i=0,cmps:size()-1 do
-    if(cmps[i].group == "LuaScript") then
-      print('[!]not adding LuaScript');
-    else
-      -- the components are of Component type, so make SF::type and cast
-      local otype = "SF::"..cmps[i].type;
-      cmps[i] = tolua.cast(cmps[i], otype);
-      -- add component
-      Editor:executeJS("inspector.addComponent('"..cmps[i].type.."');");
-      -- if we have annotations for this type, then extract properties
-      if(System.annotations[cmps[i].type]) then
-        for field,v in pairs(System.annotations[cmps[i].type].properties) do
-          --add property
-          local optsjson = System.JSON:encode(v.options);
-          Editor:executeJS("inspector.addProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..optsjson.."');");
-          --set property to current value using getField
-          local fieldval = System:getField(cmps[i], field);
-          local serivalue = System:serialise(fieldval);
-          Editor:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..serivalue.."');");
-        end
-      end
-    end
-  end
-end
---]]
-function Inspector:updateValues()
-  if(not self.go) then -- no selection, nothing to update
-    return
-  end
-  local cmps = self.go:allComponents();
-  for i=0,cmps:size()-1 do
-    if(cmps[i].group == "LuaScript") then
-      print('[!]not adding LuaScript');
-    else
-      -- the components are of Component type, so make SF::type and cast
-      local otype = "SF::"..cmps[i].type;
-      cmps[i] = tolua.cast(cmps[i], otype);
-      -- if we have annotations for this type, then extract properties
-      if(System.annotations[cmps[i].type]) then
-        for field,v in pairs(System.annotations[cmps[i].type].properties) do
-          --set property to current value using getField
-          local fieldval = System:getField(cmps[i], field);
-          local serivalue = System:serialise(fieldval);
-          Editor:executeJS("inspector.setProperty('"..cmps[i].type.."','"..field.."','"..v.type.."','"..serivalue.."');");
-        end
-      end
-    end
   end
 end
 
@@ -175,45 +95,6 @@ function Inspector:tablesEqual(table1, table2)
     end
   end
   return true;
-end
-
--- Inspector widget commands go through here
-
--- utility function to convert value strings into lua variables
-function Inspector:value(valstring)
-  local f,err = loadstring('return '..valstring,'local')
-  if (err) then
-    print('[Inspector]Error when converting value:'..err, 0);
-  end
-  return f();
-end
-
--- set property of a GO
-function Inspector:setProperty(gameobject, property, valstring)
-  System:setField(self.go, property, self:value(valstring));
-end
-
--- set property of a GO's component
-function Inspector:setComponentProperty(goname, cmpname, property, valstring)
-  local cmp = self.go:component(cmpname);
-  System:setField(cmp, property, self:value(valstring));
-end
-
--- add a component to GO
-function Inspector:addComponent(goname, cmpname)
-  local cmp;
-  if(self.go:hasComponent(cmpname)) then
-    print(goname.." already has component "..cmpname);
-    return;
-  end
-  if (cmpname == "Mesh") then
-    cmp = Mesh:new();
-  elseif (cmpname == "Camera") then
-    cmp = Camera:new();
-  elseif (cmpname == "Light") then
-    cmp = Light:new();
-  end
-  self.go:addComponent(cmp);
 end
 
 -- save a gameobject

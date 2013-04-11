@@ -42,8 +42,10 @@ class Hierarchy {
   /// Returns the whole hierarchy (DFS)
   SString debug();
 
-  /// Returns a JSON representation of the structure
-  SString serialise();
+  /// Returns a JSON representation of the full hierarchy
+  SString serialiseJSON();
+  /// Returns a JSON representation of the structure (no component data)
+  SString serialiseStructureJSON();
 
  private:
   enum ModuleState { DOWN, UP};

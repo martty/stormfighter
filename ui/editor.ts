@@ -23,7 +23,9 @@ class Editor {
 		this.containers['south'] = new Container('south');
 		this.widgets = new Array();
 		this.widgets['inspector'] = new Inspector();
+		this.widgets['hierarchy'] = new Hierarchy();
 		this.containers['east'].addWidget(this.widgets['inspector']);
+		this.containers['west'].addWidget(this.widgets['hierarchy']);
 
 		this.viewportfocus = ko.observable(true);
 		ko.applyBindings(this, $('#viewport')[0]);
@@ -53,6 +55,10 @@ class Editor {
 
 	inspector() : Inspector {
 		return this.widgets['inspector'];
+	}
+
+	hierarchy() : Inspector {
+		return this.widgets['hierarchy'];
 	}
 
 	send(data : CallData) : void {

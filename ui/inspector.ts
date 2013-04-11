@@ -1,6 +1,6 @@
 // inspector.ts
 /// <reference path="dep/jquery-1.8.d.ts" />
-/// <reference path="dep/underscone-typed.d.ts" />
+/// <reference path="dep/underscore-typed.d.ts" />
 /// <reference path="types.ts" />
 /// <reference path="widget.ts" />
 
@@ -104,6 +104,7 @@ class Inspector extends Widget {
 			edgeOffset : 7,
 			keepAlive : true,
 			delay: 0, 
+			maxWidth: 'auto',
 			content : () => {ko.applyBindings(this, this.cmpaddmenu[0]); return this.cmpaddmenu},
 		});
 		this.autoSize();

@@ -507,7 +507,7 @@ void GameObject::load(bool recursive){
 }
 
 
-SPropertyTree GameObject::serialise(bool recursive){
+SPropertyTree GameObject::_serialise(bool recursive, bool components){
   if (hasTag("no-serialise-recursive")){ // this means we return an empty tree, serialisation hits an end
     return SPropertyTree();
   }
@@ -515,14 +515,16 @@ SPropertyTree GameObject::serialise(bool recursive){
   SPropertyTree cmps;
   SPropertyTree children;
   ptree.put("name", name_);
-  for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
-    cmps.push_back(std::make_pair("", (*it).second->serialise()));
+  if(components){
+    for(ComponentMap::iterator it=components_.begin(); it != components_.end(); it++){
+      cmps.push_back(std::make_pair("", (*it).second->serialise()));
+    }
+    ptree.add_child("components", cmps);
   }
-  ptree.add_child("components", cmps);
   if(recursive){
     if(children_){
       for(GameObject* f = children_; f != NULL; f=f->next_){
-        SPropertyTree ptch = f->serialise(true);
+        SPropertyTree ptch = f->_serialise(recursive, components);
         if(!ptch.empty()) // don't put empty subtrees in
           children.push_back(std::make_pair("", ptch));
       }
@@ -537,12 +539,22 @@ SPropertyTree GameObject::serialise(bool recursive){
   }
 }
 
+SPropertyTree GameObject::serialise(bool recursive){
+  return _serialise(recursive, true);
+}
+
+
 SString GameObject::serialiseJSON(bool recursive, bool pretty){
-  SPropertyTree pt = serialise(recursive);
+  SPropertyTree pt = _serialise(recursive, true);
   std::stringstream ss;
   boost::property_tree::write_json(ss, pt, pretty); // pretty print
   return ss.str();
 }
+
+SPropertyTree GameObject::serialiseStructure(bool recursive){
+  return _serialise(recursive, false);
+}
+
 
 //TODO: Borked!!!
 GameObject* GameObject::deserialise(SPropertyTree src){
@@ -558,8 +570,8 @@ GameObject* GameObject::deserialise(SPropertyTree src){
       } else {
         // perform Component creation and deserialisation
         Component* cmp = ComponentFactory::createComponent(v.first);
-        cmp->deserialise(v.second);
         go->addComponent(cmp);
+        cmp->deserialise(v.second);
       }
     }
     if(src.count("children") != 0){
@@ -597,8 +609,8 @@ void GameObject::deserialiseJSON(SString str){
     } else {
       // perform Component creation and deserialisation
       Component* cmp = ComponentFactory::createComponent(type);
-      cmp->deserialise(v.second);
       addComponent(cmp);
+      cmp->deserialise(v.second);
     }
   }
 }
