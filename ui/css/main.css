@@ -206,15 +206,15 @@ input {
 
 /****************** Hierarchy *********************/
 /* ui-icon-bullet */
-.tree-folder {
+#hierarchy .tree-folder {
 	background-position: -79px -144px; 
 }
 /* ui-icon-radio-on */
-.tree-folder-open {
+#hierarchy .tree-folder-open {
 	background-position: -96px -144px;
 }
 /* ui-icon-radio-off */
-.tree-file {
+#hierarchy .tree-file {
 	background-position: -112px -144px;
 }
 
@@ -224,4 +224,15 @@ input {
 
 .dialog-content {
 	padding: 3px;
+}
+
+/**************** FileBrowser *********************/
+
+/* ui-icon-folder-collapsed */
+#filebrowser .tree-folder {
+	background-position: 0 -96px;
+}
+/* ui-icon-folder-open */
+#filebrowser .tree-folder-open {
+	background-position: -16px -96px;
 }

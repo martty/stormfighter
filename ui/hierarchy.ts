@@ -30,7 +30,7 @@ class Hierarchy extends Widget {
 		});
 	}
 
-	onAdd(container : JQuery) : void {
+	focus(container : JQuery) : void {
 		container.panel({
 			title: "Hierarchy",
 			iconCls : 'ui-icon ui-icon-link',
@@ -47,6 +47,10 @@ class Hierarchy extends Widget {
 			}
 			],
 		});
+	}
+
+	onAdd(container : JQuery) : void {
+		
 	}
 	// INCOMING
 	// get a command from engine

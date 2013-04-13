@@ -31,15 +31,40 @@
 	<script type="text/javascript" src="filebrowser.js"></script>
 </head>
 
-<body class="easyui-layout">  
-    <div id="north" data-options="region:'north', split:true" style="height:50px;"></div>  
-    <div id="south" data-options="region:'south',title:'South',split:true" style="height:100px;">
-    </div>  
-    <div id="east" data-options="region:'east',title:'East',split:true" style="width:350px;"></div>
-    <div id="west" data-options="region:'west',title:'West',split:true" style="width:175px;"></div>
-    <div id="viewport" data-options="region:'center'" data-bind="event : { mouseover : focusViewport, mouseout: focusEditor }" style="background-color: transparent"></div>
+	<body class="easyui-layout">  
+	<div id="north" data-options="region:'north'" style="height:28px;">
+		<a href="#" data-bind="click: saveSceneDialog" class="easyui-linkbutton" data-options="plain:true,iconCls:'ui-cc-s-save'">Save scene</a>
+		<a href="#" data-bind="click: loadSceneDialog" class="easyui-splitbutton" data-options="iconCls:'ui-cc-s-folder-open', menu:'#menu-load-scene'">Load scene</a>
+		<div id="menu-load-scene">
+			<div data-options="iconCls:'ui-cc-s-indent-increase', disabled:'true'">Merge keep-new</div>
+			<div data-options="iconCls:'ui-cc-s-indent-decrease', disabled:'true'">Merge keep-old</div> 
+			<div data-options="iconCls:'ui-cc-s-align-center', disabled:'true'">Merge keep-both</div>
+		</div>
+		<a href="#" data-bind="click: resetVM" class="easyui-linkbutton" data-options="plain:true,iconCls:'ui-cc-s-delete-server'">Reset VM</a>
+	</div>  
+	<div id="south" data-options="region:'south',title:'South',split:true" style="height:100px;">
+	</div>  
+	<div id="east" data-options="region:'east',title:'East',split:true" style="width:350px;">
+	</div>
+	<div id="west" data-options="region:'west',title:'West',split:true" style="width:175px;">
+		<div id="hiefiletabs" data-options="plain:'true', tabPosition: 'bottom', fit: 'true'" class="easyui-tabs" >
+			<div id="hierarchy" title="Hierarchy">
+			</div>
+			<div id="filebrowser" title="Files">
+		</div>
+	</div>
+	</div>
+	<div id="viewport" data-options="region:'center'" data-bind="event : { mouseover : focusViewport, mouseout: focusEditor }" style="background-color: transparent"></div>
 
 	<!-- TEMPLATES FOR ALL -->
+<div style="display: none">
+	<!-- Editor -->
+	<div id="tpl-editor-saveasdialog" class="dialog-content">
+		<span>Save file as: </span><input name="filename"/>
+	</div>
+	<div id="hiefiletabs-tools">
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'layout-button-left'" onclick="$('body').layout('collapse', 'west')"></a>
+	</div>
 	<!-- Hierarchy -->
 	<div id="tpl-hierarchy-addgodialog" class="dialog-content">
 		<span>New GameObject name: </span><input name="goname"/>
@@ -141,6 +166,7 @@
 			Unknown : <span data-bind="text: value.value"></span>
 		</div>
 	</script>
+</div>
 </body> 
 
 </html>

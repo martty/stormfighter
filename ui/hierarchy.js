@@ -17,7 +17,7 @@ var Hierarchy = (function (_super) {
             }
         });
     }
-    Hierarchy.prototype.onAdd = function (container) {
+    Hierarchy.prototype.focus = function (container) {
         container.panel({
             title: "Hierarchy",
             iconCls: 'ui-icon ui-icon-link',
@@ -42,6 +42,8 @@ var Hierarchy = (function (_super) {
                 }
             ]
         });
+    };
+    Hierarchy.prototype.onAdd = function (container) {
     };
     Hierarchy.prototype.receive = function (calldata) {
         if(calldata.meta.command == "update") {

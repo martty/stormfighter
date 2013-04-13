@@ -1,5 +1,6 @@
 var Editor = (function () {
     function Editor() {
+        var _this = this;
         this.queue = new Array();
         this.containers = new Array();
         this.containers['west'] = new Container('west');
@@ -8,10 +9,20 @@ var Editor = (function () {
         this.widgets = new Array();
         this.widgets['inspector'] = new Inspector();
         this.widgets['hierarchy'] = new Hierarchy();
+        this.widgets['filebrowser'] = new FileBrowser();
         this.containers['east'].addWidget(this.widgets['inspector']);
-        this.containers['west'].addWidget(this.widgets['hierarchy']);
+        $('#hiefiletabs').tabs({
+            onSelect: function (title, index) {
+                _this.hiefileSwitch(title, index);
+            }
+        });
+        $('#hierarchy').append(this.widgets.hierarchy.content());
+        this.widgets.hierarchy.onAdd($('#hierarchy'));
+        $('#filebrowser').append(this.widgets.filebrowser.content());
+        this.widgets.filebrowser.onAdd($('#filebrowser'));
         this.viewportfocus = ko.observable(true);
         ko.applyBindings(this, $('#viewport')[0]);
+        ko.applyBindings(this, $('#north')[0]);
     }
     Editor.prototype.onContainerResize = function () {
         this.containers['left'].onResize();
@@ -61,6 +72,57 @@ var Editor = (function () {
             this.widgets[callee].receive(calldata);
         } else {
             console.log('Unknown widget called');
+        }
+    };
+    Editor.prototype.saveSceneDialog = function () {
+        var _this = this;
+        var dialog = $('#tpl-editor-saveasdialog');
+        dialog.dialog({
+            title: 'Save scene as..',
+            closed: false,
+            buttons: [
+                {
+                    text: 'Save',
+                    iconCls: 'ui-cc-s-checkmark',
+                    handler: function () {
+                        var filename = dialog.find('input').val();
+                        _this.send({
+                            meta: {
+                                callee: 'editor',
+                                command: 'save-scene-as'
+                            },
+                            data: filename
+                        });
+                        setTimeout(function () {
+                            $('#tpl-editor-saveasdialog').dialog('close');
+                        }, 0);
+                    }
+                }, 
+                {
+                    text: 'Cancel',
+                    iconCls: 'ui-cc-s-cancel',
+                    handler: function () {
+                        $('#tpl-editor-saveasdialog').dialog('close');
+                    }
+                }
+            ]
+        });
+    };
+    Editor.prototype.loadSceneDialog = function () {
+    };
+    Editor.prototype.resetVM = function () {
+    };
+    Editor.prototype.hiefileSwitch = function (title, index) {
+        if(title == "Hierarchy") {
+            if(this.widgets.hierarchy) {
+                this.widgets.hierarchy.focus($('#west'));
+            }
+        } else {
+            if(title == "Files") {
+                if(this.widgets.filebrowser) {
+                    this.widgets.filebrowser.focus($('#west'));
+                }
+            }
         }
     };
     return Editor;

@@ -14,7 +14,8 @@ dofile('scripts/editor.lua');
 System:_initialise();
 World:initialise("world1");
 -- innentõl jön az igazi kód
-
+tprint(System.JSON:decode(Resources:readDirectoryContentsJSON('media/')));
+print(Resources:readDirectoryContentsJSON('media/'));
 -- egy új GameObject létrehozása
 --[[
 platform = Hierarchy:createGameObject("platform");

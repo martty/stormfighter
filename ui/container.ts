@@ -11,19 +11,19 @@ class Container {
 	constructor(name:string){
 		this.container = $('#'+name);
 		this.mypanel = $('body').layout('panel', name);
-		/*this.mypanel.panel({
-			onResize : function(e){
-				var id = $(this).attr('id');
-				// resize height
-				if(id == "south"){
-					//$(this).find('.widget').panel('resize', {height: $(this).height()});
-
-				} else { // resize width
-					//$(this).find('.widget').panel('resize', {width: $(this).width()});
-					//$(this).find('.widget').panel({fit : true});
+		this.mypanel.panel({
+			onResize : (e) => {
+				if(name == "west"){
+					var hief = $('#hiefiletabs');
+					if(hief){
+						var tab = hief.tabs('getSelected');
+						var index = hief.tabs('getTabIndex',tab);
+						hief.tabs({fit: true});
+						hief.tabs('select', index);
+					}
 				}
 			}
-		});*/
+		});
 		/*this.container.droppable({
 			onDrop:function(e,source){
 				var id = $(this).attr('id');
