@@ -28,7 +28,7 @@ class Inspector extends Widget {
 		super("inspector");
 		this.typeAnnotations = new TypeAnnotations();
 
-		var cmpdiv = $('<div data-bind="template: { name: \'tpl-inspector-gameobject\', data: go}"></div>');
+		var cmpdiv = $('<div data-bind="template: { name: \'tpl-inspector-gameobject\', data: go}" class="inspector-gameobject"></div>');
 		this.body.append(cmpdiv);
 
 		this.cmpaddmenu = $('<div data-bind="template: { name: \'tpl-inspector-cmpaddmenu\'}"></div>');
@@ -74,13 +74,18 @@ class Inspector extends Widget {
 	// update internal representation and display
 
 	update(data : GOData) : void {
+		if(data == ''){
+			this.go = null;
+			ko.removeNode(this.box.find('.gameobject')[0]);
+			return;
+		}
 		// check for name change
 		if ((!this.go) || (this.go.name() != data.name)) {
 			// on change create new GO object
 			this.go = new GO();
 			this.go.name(data.name);
+			ko.cleanNode(this.box[0]);
 			ko.applyBindings(this, this.box[0]);
-			console.log('new go');
 		}
 		// loop through incoming component data
 		for (var i = 0; i < data.components.length; i++){

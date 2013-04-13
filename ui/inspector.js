@@ -8,7 +8,7 @@ var Inspector = (function (_super) {
     function Inspector() {
         _super.call(this, "inspector");
         this.typeAnnotations = new TypeAnnotations();
-        var cmpdiv = $('<div data-bind="template: { name: \'tpl-inspector-gameobject\', data: go}"></div>');
+        var cmpdiv = $('<div data-bind="template: { name: \'tpl-inspector-gameobject\', data: go}" class="inspector-gameobject"></div>');
         this.body.append(cmpdiv);
         this.cmpaddmenu = $('<div data-bind="template: { name: \'tpl-inspector-cmpaddmenu\'}"></div>');
     }
@@ -45,11 +45,16 @@ var Inspector = (function (_super) {
     };
     Inspector.prototype.update = function (data) {
         var _this = this;
+        if(data == '') {
+            this.go = null;
+            ko.removeNode(this.box.find('.gameobject')[0]);
+            return;
+        }
         if((!this.go) || (this.go.name() != data.name)) {
             this.go = new GO();
             this.go.name(data.name);
+            ko.cleanNode(this.box[0]);
             ko.applyBindings(this, this.box[0]);
-            console.log('new go');
         }
         for(var i = 0; i < data.components.length; i++) {
             var cmpd = data.components[i];

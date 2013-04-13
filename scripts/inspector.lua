@@ -50,19 +50,20 @@ function Inspector:setGameObject(go)
 end
 
 -- unset our GO object and notify for update
-function Inspector:setGameObject(go)
+function Inspector:unsetGameObject(go)
   self.go = nil;
-  self.cachedCallData = '';
   self:update();
 end
 
 -- updates UI representation to match engine data
 function Inspector:update()
-  if(not self.go) then -- no selection, nothing to update
-    return;
+  local godata = '""';
+  if(not self.go) then -- no selection, send empty data
+    godata = '""';
+  else
+    godata = self.go:serialiseJSON(false, false);
   end
 
-  local godata = self.go:serialiseJSON(false, false);
   local calldata = '{"meta" : {"callee" : "inspector", "command" : "update"}, "data" : '..godata..'}';
   if(self.cachedCallData ~= calldata) then
     Editor:send(calldata);

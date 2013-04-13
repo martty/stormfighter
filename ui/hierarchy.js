@@ -43,7 +43,7 @@ var Hierarchy = (function (_super) {
             if(calldata.meta.command == "select") {
                 this.select(calldata.data);
             } else {
-                if(calldata.meta.command == "select") {
+                if(calldata.meta.command == "deselect") {
                     this.deselect();
                 }
             }

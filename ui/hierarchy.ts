@@ -51,7 +51,7 @@ class Hierarchy extends Widget {
 			this.update(calldata.data)
 		} else if (calldata.meta.command == "select"){
 			this.select(calldata.data);
-		} else if (calldata.meta.command == "select"){
+		} else if (calldata.meta.command == "deselect"){
 			this.deselect();
 		}
 	}

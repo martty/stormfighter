@@ -318,7 +318,9 @@ function Editor:receive(calldata)
   if(command == "focus") then
     self:focus(calldata.data);
   elseif (command == "select") then
-    self:select(Hierarchy:find(calldata.data.name));
+    if(calldata.data.name) then
+      self:select(Hierarchy:find(calldata.data.name));
+    end
   end
 end
 
