@@ -26,17 +26,17 @@ GUI::GUI(StormfighterApp* app) : Module(app){
                          true, 0, true, false, awe_string_empty());
   // Create a new WebView instance with a certain width and height, using the
   // WebCore we just created
-  LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
+  LOG("Wanted dimensions:"+STRING(width_)+","+STRING(height_));
   createMaterial();
-  webView_ = awe_webcore_create_webview(width_, viewTexture_->getHeight(), false);
+  webView_ = awe_webcore_create_webview(viewTexture_->getWidth(), viewTexture_->getHeight(), false);
   SString page = "../../ui/editor.html";
   awe_webview_set_transparent(webView_, true);
   url_str_ = awe_string_create_from_ascii(page.c_str(), strlen(page.c_str()));
   awe_webview_load_file(webView_, url_str_, awe_string_empty());
   // Destroy our URL string
-  LOG("DIMENSIONS:"+STRING(width_)+","+STRING(height_));
+  LOG("Creating WV:"+STRING(viewTexture_->getWidth())+","+STRING(viewTexture_->getHeight()));
   OverlayPosition pos(0, 0);
-  overlay_ = new ViewportOverlay("AWE_overlay", viewport, width_, viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
+  overlay_ = new ViewportOverlay("AWE_overlay", viewport, viewTexture_->getWidth(), viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
   /*if(compensateNPOT_)
       overlay_->panel->setUV(0, 0, (Real)viewWidth/(Real)texWidth_, (Real)viewHeight/(Real)texHeight_);*/
   // init sdktraymanager
@@ -109,6 +109,7 @@ void GUI::update(double deltaTime){
 }
 
 void GUI::createMaterial(){
+  compensateNPOT_ = false;
   texWidth = width_;
   texHeight = height_;
 	if(opacity_ > 1)
@@ -119,9 +120,11 @@ void GUI::createMaterial(){
 	if(!Ogre::Bitwise::isPO2(width_) || !Ogre::Bitwise::isPO2(height_)){
 		if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_NON_POWER_OF_2_TEXTURES)){
 			if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNonPOW2TexturesLimited()){
-				compensateNPOT_ = true;
+        LOG("Limited nonPOW2");
+        compensateNPOT_ = true;
 			}
 		} else {
+		  LOG("No nonPOW2");
       compensateNPOT_ = true;
 		}
 		if(compensateNPOT_){
