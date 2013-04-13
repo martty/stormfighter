@@ -6,9 +6,16 @@ var __extends = this.__extends || function (d, b) {
 var Hierarchy = (function (_super) {
     __extends(Hierarchy, _super);
     function Hierarchy() {
+        var _this = this;
         _super.call(this, "hierarchy");
         this.tree = $('<ul id="hierarchy-container"></ul>');
         this.body.append(this.tree);
+        var ctxmenu = $('#tpl-hierarchy-gocontext');
+        ctxmenu.menu({
+            onClick: function (item) {
+                _this.contextMenuClick(item.name, _this.tree.tree('getSelected'));
+            }
+        });
     }
     Hierarchy.prototype.onAdd = function (container) {
         container.panel({
@@ -22,9 +29,9 @@ var Hierarchy = (function (_super) {
                     }
                 }, 
                 {
-                    iconCls: 'ui-icon ui-icon-disk',
+                    iconCls: 'ui-icon ui-icon-plusthick',
                     handler: function () {
-                        alert('save');
+                        editor.hierarchy().showSetGONameDialog();
                     }
                 }, 
                 {
@@ -52,6 +59,8 @@ var Hierarchy = (function (_super) {
     Hierarchy.prototype.changeKeys = function (data) {
         for(var i = 0; i < data.length; i++) {
             if(data[i].name) {
+                data[i].attributes = _.extend({
+                }, data[i]);
                 data[i].id = data[i].name;
                 data[i].text = data[i].name;
                 data[i].iconCls = 'ui-icon';
@@ -73,6 +82,11 @@ var Hierarchy = (function (_super) {
             },
             onDrop: function (target, source, point) {
                 _this.sendDrop(target, source, point);
+            },
+            onContextMenu: function (e, node) {
+                e.preventDefault();
+                _this.tree.tree('select', node.target);
+                _this.showContextMenu(node, e.pageX, e.pageY);
             }
         });
         this.autoSize();
@@ -126,6 +140,70 @@ var Hierarchy = (function (_super) {
         };
         calldata.data = data;
         editor.send(calldata);
+    };
+    Hierarchy.prototype.newGO = function (goname, parentname) {
+        var calldata = {
+            meta: {
+                callee: 'hierarchy',
+                command: 'new-go'
+            },
+            data: {
+                name: goname,
+                parentname: parentname
+            }
+        };
+        editor.send(calldata);
+    };
+    Hierarchy.prototype.showSetGONameDialog = function (parentgoname) {
+        var _this = this;
+        var dialog = $('#tpl-hierarchy-addgodialog');
+        dialog.dialog({
+            title: 'Set name for new GameObject',
+            closed: false,
+            buttons: [
+                {
+                    text: 'Ok',
+                    iconCls: 'ui-cc-s-checkmark',
+                    handler: function () {
+                        _this.newGO(dialog.find('input').val(), parentgoname);
+                        setTimeout(function () {
+                            $('#tpl-hierarchy-addgodialog').dialog('close');
+                        }, 0);
+                    }
+                }, 
+                {
+                    text: 'Cancel',
+                    iconCls: 'ui-cc-s-cancel',
+                    handler: function () {
+                        $('#tpl-hierarchy-addgodialog').dialog('close');
+                    }
+                }
+            ]
+        });
+    };
+    Hierarchy.prototype.showContextMenu = function (node, x, y) {
+        var ctxmenu = $('#tpl-hierarchy-gocontext');
+        ctxmenu.menu('show', {
+            left: x,
+            top: y
+        });
+    };
+    Hierarchy.prototype.contextMenuClick = function (action, node) {
+        var goname = node.id;
+        if((action != 'new-child') && (action != 'new-sibling')) {
+            var calldata = {
+                meta: {
+                    callee: 'hierarchy',
+                    command: action
+                },
+                data: {
+                    name: goname
+                }
+            };
+            editor.send(calldata);
+        } else {
+            this.showSetGONameDialog(goname);
+        }
     };
     Hierarchy.prototype.test = function () {
         var data = [

@@ -66,6 +66,6 @@ var Editor = (function () {
     return Editor;
 })();
 $(window).load(function () {
-    $.parser.parse();
     window.editor = new Editor();
+    $.parser.parse();
 });

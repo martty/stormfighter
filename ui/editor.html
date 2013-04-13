@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="screen">
 
 	<link rel="stylesheet" href="css/icons_jqueryui.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="css/icons_cc.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="dep/tipTip.css" type="text/css" media="screen">
 
 
@@ -39,6 +40,20 @@
     <div id="viewport" data-options="region:'center'" data-bind="event : { mouseover : focusViewport, mouseout: focusEditor }" style="background-color: transparent"></div>
 
 	<!-- TEMPLATES FOR ALL -->
+	<!-- Hierarchy -->
+	<div id="tpl-hierarchy-addgodialog" class="dialog-content">
+		<span>New GameObject name: </span><input name="goname"/>
+	</div>
+	<div id="tpl-hierarchy-gocontext" style="width:120px;" class="easyui-menu">
+		<div data-options="name:'new-child', iconCls:'ui-icon ui-icon-plusthick'">New child..</div>
+		<div data-options="name:'new-sibling', iconCls:'ui-icon ui-icon-plus', disabled:'true'">New sibling..</div>
+		<div class="menu-sep"></div>
+		<div data-options="name:'disable',iconCls:'ui-icon ui-icon-cancel', disabled:'true'">Disable</div>
+		<div class="menu-sep"></div>
+		<div data-options="name:'toref',iconCls:'ui-icon ui-icon-shuffle', disabled:'true'">Convert to reference</div>
+		<div class="menu-sep"></div>
+		<div data-options="name:'destroy',iconCls:'ui-icon ui-icon-trash'">Destroy</div>
+	</div>
 	<!-- Inspector -->
 	<script type="text/html" id="tpl-inspector-cmpaddmenu">
 		<div data-bind="with: typeAnnotations" id="inspector-cmpaddmenu">

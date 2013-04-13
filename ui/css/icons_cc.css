@@ -1,0 +1,10 @@
+/* states and images */
+.ui-cc-s { width: 16px; height: 16px; background-repeat: no-repeat;}
+.ui-cc-m { width: 24px; height: 24px; background-repeat: no-repeat;}
+.ui-cc-l { width: 32px; height: 32px; background-repeat: no-repeat;}
+.ui-cc-xl { width: 48px; height: 48px}
+
+.ui-cc-s-roundplus {background-image: url('images/cc/black/16/round_plus_icon&16.png');}
+
+.ui-cc-s-checkmark {background-image: url('images/cc/black/16/checkmark_icon&16.png'); background-repeat: no-repeat;}
+.ui-cc-s-cancel {background-image: url('images/cc/black/16/cancel_icon&16.png'); background-repeat: no-repeat;}

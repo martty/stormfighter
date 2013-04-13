@@ -22,8 +22,12 @@ class Hierarchy extends Widget {
 
 		this.tree = $('<ul id="hierarchy-container"></ul>');
 		this.body.append(this.tree);
-
-		/*this.cmpaddmenu = $('<div data-bind="template: { name: \'tpl-inspector-cmpaddmenu\'}"></div>');*/
+		var ctxmenu = $('#tpl-hierarchy-gocontext');
+		ctxmenu.menu({
+			onClick: (item) => {
+				this.contextMenuClick(item.name, this.tree.tree('getSelected'));
+			}
+		});
 	}
 
 	onAdd(container : JQuery) : void {
@@ -33,10 +37,10 @@ class Hierarchy extends Widget {
 			tools: [
 			{
 				iconCls:'ui-icon ui-icon-play',  
-				handler: function () { editor.hierarchy().test()}
+				handler: function () { editor.hierarchy().test();}
 			},{  
-				iconCls:'ui-icon ui-icon-disk',  
-				handler:function(){alert('save')}
+				iconCls:'ui-icon ui-icon-plusthick',  
+				handler:function(){editor.hierarchy().showSetGONameDialog();}
 			},{
 				iconCls:'ui-icon ui-icon-wrench',  
 				handler:function(){alert('properties')}
@@ -44,7 +48,7 @@ class Hierarchy extends Widget {
 			],
 		});
 	}
-
+	// INCOMING
 	// get a command from engine
 	receive(calldata : CallData) : void {
 		if(calldata.meta.command == "update"){
@@ -59,16 +63,16 @@ class Hierarchy extends Widget {
 	changeKeys(data : GOData) : void {
 		for (var i = 0; i < data.length; i++){
 			if(data[i].name){
+				data[i].attributes = _.extend({}, data[i]);
 				data[i].id = data[i].name;
 				data[i].text = data[i].name;
-				data[i].iconCls = 'ui-icon'
+				data[i].iconCls = 'ui-icon';
 			}
 			if(data[i].children){
 				this.changeKeys(data[i].children)
 			}
 		}
 	}
-	
 	// get hierarchy data
 	// update internal representation and display
 
@@ -80,7 +84,14 @@ class Hierarchy extends Widget {
 			dnd: true,
 			data: data,
 			onSelect: (node) => {this.sendSelect(node);},
-			onDrop: (target, source, point) => {this.sendDrop(target, source, point);}
+			onDrop: (target, source, point) => {this.sendDrop(target, source, point);},
+			onContextMenu: (e, node) => {
+				e.preventDefault();
+				// select the node
+				this.tree.tree('select', node.target);
+				// display context menu
+				this.showContextMenu(node, e.pageX, e.pageY);
+			}
 			});
 		this.autoSize();
 	}
@@ -93,7 +104,7 @@ class Hierarchy extends Widget {
 	deselect() : void {
 		this.tree.tree('select', this.tree.tree('getRoot'))
 	}
-
+	// OUTGOING
 	sendSelect(node : any) : void {
 		var calldata = {meta : {callee: 'editor', command : 'select'}, data: {name: node.text}};
 		editor.send(calldata);
@@ -120,6 +131,51 @@ class Hierarchy extends Widget {
 		};
 		calldata.data = data;
 		editor.send(calldata);	
+	}
+
+	newGO(goname : string,parentname: string) : void {
+		var calldata = {meta : {callee: 'hierarchy', command : 'new-go'}, data: {name: goname, parentname: parentname}};
+		editor.send(calldata);
+	}
+
+	showSetGONameDialog(parentgoname : string) : void {
+		var dialog = $('#tpl-hierarchy-addgodialog');
+		dialog.dialog({
+			title: 'Set name for new GameObject',
+			closed: false,
+			buttons: [{  
+			text:'Ok',  
+			iconCls:'ui-cc-s-checkmark',
+			handler:() => { 
+				this.newGO(dialog.find('input').val(), parentgoname);
+				setTimeout(()=>{$('#tpl-hierarchy-addgodialog').dialog('close')}, 0);
+			}  
+			},{  
+			text:'Cancel',
+			iconCls:'ui-cc-s-cancel',
+			handler: () => {
+				$('#tpl-hierarchy-addgodialog').dialog('close');
+			}
+			}]
+		});
+	}
+
+	showContextMenu(node, x : number, y : number) : void{
+		var ctxmenu = $('#tpl-hierarchy-gocontext');
+		ctxmenu.menu('show', {
+			left: x,
+			top: y
+		});
+	}
+
+	contextMenuClick(action, node) : void {
+		var goname = node.id;
+		if((action != 'new-child') && (action != 'new-sibling')){
+			var calldata = {meta: {callee: 'hierarchy', command: action}, data: {name: goname}};
+			editor.send(calldata);
+		} else {
+			this.showSetGONameDialog(goname);
+		}
 	}
 
 	test () : void {

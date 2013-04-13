@@ -349,14 +349,26 @@ bool GUI::keyReleased(const OIS::KeyEvent &evt) {
 
 bool GUI::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
   if(isInGUI(evt.state.X.abs, evt.state.Y.abs)){
-    awe_webview_inject_mouse_down(webView_,  AWE_MB_LEFT);
+    awe_mousebutton awe_mb;
+    switch (id){
+      case OIS::MB_Left : awe_mb = AWE_MB_LEFT; break;
+      case OIS::MB_Right : awe_mb = AWE_MB_RIGHT; break;
+      case OIS::MB_Middle : awe_mb = AWE_MB_MIDDLE; break;
+    }
+    awe_webview_inject_mouse_down(webView_,  awe_mb);
   }
   return false;
 }
 
 bool GUI::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
   if(isInGUI(evt.state.X.abs, evt.state.Y.abs)){
-    awe_webview_inject_mouse_up(webView_,  AWE_MB_LEFT);
+    awe_mousebutton awe_mb;
+    switch (id){
+      case OIS::MB_Left : awe_mb = AWE_MB_LEFT; break;
+      case OIS::MB_Right : awe_mb = AWE_MB_RIGHT; break;
+      case OIS::MB_Middle : awe_mb = AWE_MB_MIDDLE; break;
+    }
+    awe_webview_inject_mouse_up(webView_,  awe_mb);
   }
   return false;
 }

@@ -385,9 +385,10 @@ function Editor:select(go)
   self:hierarchy():select(go);
 end
 
-function Editor:deselect(go)
-  self:inspector():unsetGameObject(go);
-  self:hierarchy():deselect(go);
+function Editor:deselect()
+  self:manipulator():hide();
+  self:inspector():unsetGameObject();
+  self:hierarchy():deselect();
 end
 
 

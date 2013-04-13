@@ -70,7 +70,10 @@ GameObject::~GameObject(){
   }
   components_.clear();
   clearChildren();
-  delete next_;
+  if(next_){
+    delete next_;
+    next_ = NULL;
+  }
 }
 
 GameObject* GameObject::clone(){
@@ -222,7 +225,8 @@ GameObject* GameObject::find(const GameObject* go){
 }
 
 void GameObject::clearChildren(){
-  delete children_;
+  if(children_)
+    delete children_;
   children_ = NULL;
 }
 

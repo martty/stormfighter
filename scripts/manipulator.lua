@@ -40,7 +40,7 @@ function Manipulator:init(editor)
   self.rotateFactor2D = 1;
   self.scaleFactor1D = 0.1;
   self.scaleFactor2D = 0.0001;
-  self.scaleFactor3D = 0.00001;
+  self.scaleFactor3D = 0.001;
 end
 
 function Manipulator:update()
@@ -56,7 +56,7 @@ function Manipulator:update()
           self.editor:select(go);
         end
       else
-        self:hide();
+        self.editor:deselect();
       end
     end
     if(self.editor:isMouseDragged()) then
@@ -660,7 +660,6 @@ function Manipulator:hide()
   go:reParent();
   go:transform().scale = SVector3(0,0,0);
   go:transform():setVisible(false, true);
-  self.editor:deselect();
 end
 
 function Manipulator:setMode(mode)

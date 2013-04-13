@@ -74,11 +74,14 @@ GameObject* Hierarchy::getRoot(){
 }
 
 void Hierarchy::destroyGameObject(SString name){
-  return;
+  destroyGameObject(find(name));
 }
 
-void Hierarchy::destroyGameObject(GameObject* obj){
-  return;
+void Hierarchy::destroyGameObject(GameObject* go){
+  // first remove from parent
+  go->parent()->removeChild(go);
+  // and now delete
+  delete go;
 }
 
 GameObject* Hierarchy::loadGameObjectFromFile(SString filename){

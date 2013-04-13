@@ -16,10 +16,29 @@ function HierarchyW:receive(calldata)
   if (cmd == "reparent") then
     self:reparent(calldata.data);
   elseif (cmd == "destroy") then
-
-  elseif (cmd == "create") then
-
+    self:destroy(calldata.data);
+  elseif (cmd == "new-go") then
+    self:newGO(calldata.data);
   end
+end
+
+-- creates a new GO
+function HierarchyW:newGO(data)
+  local ngoname = data.name;
+  local parentname = data.parentname;
+  local parent = Hierarchy:find(parentname);
+  local ngo = Hierarchy:createGameObject(ngoname);
+  if(parent) then
+    parent:addChild(ngo);
+  end
+end
+
+-- destroys GO
+function HierarchyW:destroy(data)
+  local goname = data.name;
+  local go = Hierarchy:find(goname);
+  Editor:deselect(go);
+  Hierarchy:destroyGameObject(go);
 end
 
 

@@ -50,7 +50,7 @@ function Inspector:setGameObject(go)
 end
 
 -- unset our GO object and notify for update
-function Inspector:unsetGameObject(go)
+function Inspector:unsetGameObject()
   self.go = nil;
   self:update();
 end
