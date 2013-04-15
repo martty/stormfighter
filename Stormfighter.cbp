@@ -186,6 +186,7 @@
 		<Unit filename="scripts/showcase_rotator.lua" />
 		<Unit filename="scripts/system.lua" />
 		<Unit filename="scripts/terrain_test.lua" />
+		<Unit filename="scripts/testscene.lua" />
 		<Unit filename="scripts/world.lua" />
 		<Unit filename="src/BoxCollider.cc" />
 		<Unit filename="src/BulletOgreDebugDraw.cc" />

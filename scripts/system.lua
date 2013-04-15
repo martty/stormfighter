@@ -19,6 +19,14 @@ SSphere = Ogre.Sphere;
 SColourValue = Ogre.ColourValue;
 SAxisAlignedBox = Ogre.AxisAlignedBox;
 OIS.Modifier = OIS.Keyboard;
+
+SF.GameObject.__tostring = function (go)
+  return 'GameObject:'..go:name();
+end
+--[[
+SF.LuaScript.__tostring = function (ls)
+  return 'LS:'..ls.type;--..'of'..ls:object();
+end--]]
 -- ...
 
 function empty_function()
@@ -54,11 +62,15 @@ end
 function tprint (tbl, indent)
   if not indent then indent = 0 end
   for k, v in pairs(tbl) do
-    formatting = string.rep("  ", indent) .. k .. ": "
+    formatting = string.rep("  ", indent) .. tostring(k) .. ": "
     if type(v) == "table" then
       print(formatting)
       tprint(v, indent+1)
     elseif type(v) == 'boolean' then
+      print(formatting .. tostring(v))
+    elseif type(v) == 'userdata' then
+      print(formatting .. tostring(v))
+    elseif type(v) == 'function' then
       print(formatting .. tostring(v))
     else
       print(formatting .. v)
@@ -101,11 +113,8 @@ System.n_active_components = 0;
 
 System.annotations = {};
 
-System.tracked_objects = {};
---setmetatable(System.tracked_objects, { __mode = 'v' }); -- tracking is done with weak tables - we don't prevent GC
-System.object_counter = 0;
-
 Components = {};
+References = {};
 
 System.defers = {};
 System.deferred_functions = {};
@@ -156,49 +165,30 @@ function System.stripped_type(object)
 end
 
 function System:loadComponent(filename)
+  print('loading component');
   local f = assert(loadfile(filename));
-  component = f();
-  return self:_addComponent(component);
+  local component = f();
+  self:_addComponent(component);
 end
 
-function System:_addComponent(component)
-  self.n_active_components = self.n_active_components + 1;
-  local ac = self.active_components;
-  local type = component.meta.type or error('set name for component!');
-  component.type = type;
-  new_component = LuaScript:new(type);
-  --'System.active_components['..self.n_active_components..']'
-  new_component._onInit = component.onInit or empty_function;
-  new_component._onUpdate = component.onUpdate or empty_function;
-  new_component._onPhysicsUpdate = component.onPhysicsUpdate or empty_function;
-  new_component._onCollisionEnter = component.onCollisionEnter or empty_function;
-  new_component._onCollisionExit = component.onCollisionExit or empty_function;
-  new_component._onCollisionStay = component.onCollisionStay or empty_function;
-  component.onInit = nil; component.onUpdate = nil; component.onPhysicsUpdate = nil;
-  component.onCollisionEnter = nil; component.onCollisionExit = nil; component.onCollisionStay = nil;
-  for key, value in pairs(component) do
-    new_component[key] = value;
+-- cmpconf is the declaration of a LuaScript component(the script part)
+-- it has been read from a file and parsed+loaded
+function System:_addComponent(cmpconf)
+  local ctype = cmpconf.meta.type or error('set name for component!');
+  -- create Components[] entry
+  Components[ctype] = {};
+  local cdef = Components[ctype];
+  -- copy cmpconf to cdef
+  for key, value in pairs(cmpconf) do
+    cdef[key] = value;
   end
-  ac[self.n_active_components] = {};
-  ac[self.n_active_components] = new_component;
-  return new_component;
-end
-
-function System._fireComponentEvent(tracking_id, event_name, param)
-  local obj = System:getObject(tracking_id);
-  if(event_name == "onCollisionStay") then
-    obj:_onCollisionStay(param);
-  elseif(event_name == "onCollisionEnter") then
-    obj:_onCollisionEnter(param);
-  elseif(event_name == "onCollisionExit") then
-    obj:_onCollisionExit(param);
-  elseif(event_name == "onInit") then
-    obj:_onInit();
-  elseif(event_name == "onUpdate") then
-    obj:_onUpdate();
-  elseif(event_name == "onPhysicsUpdate") then
-    obj:_onPhysicsUpdate();
-  end
+  -- set event function defaults
+  cdef.onInit = cmpconf.onInit or empty_function;
+  cdef.onUpdate = cmpconf.onUpdate or empty_function;
+  cdef.onPhysicsUpdate = cmpconf.onPhysicsUpdate or empty_function;
+  cdef.onCollisionEnter = cmpconf.onCollisionEnter or empty_function;
+  cdef.onCollisionExit = cmpconf.onCollisionExit or empty_function;
+  cdef.onCollisionStay = cmpconf.onCollisionStay or empty_function;
 end
 
 function System.type(var)
@@ -236,11 +226,12 @@ function System:_initialise()
   end
   setfenv(0, global_env);
   self.JSON = (loadfile "scripts/JSON.lua")() -- load JSON library
+
+  --References = setmetatable({}, {__mode = 'k'}); -- set up References as weak keyed
   self:_hijackGameObject();
   self:_hijackModules();
   self:_setupSFSerialise();
   self:_annotateCoreComponents();
-  self:_registerComponents();
   self:_setupDeferredFunctions();
 end
 
@@ -248,15 +239,15 @@ function System:_hijackModules()
   local old = Hierarchy.createGameObject;
   Hierarchy.createGameObject = function (hie, goname)
     local go = old(hie, goname);
-    self:track(go);
-    self:track(go:transform());
+    --References[go] = {};
+    --table.insert(References[go],go:transform());
     return go;
   end
 end
 
 function System:_hijackGameObject()
-  local old = GameObject.component;
   -- add automatic casting to component get
+  local old = GameObject.component;
   GameObject.component = function (go, otype)
     local cmp = old(go, otype);
     if(cmp.group == "LuaScript") then
@@ -266,15 +257,19 @@ function System:_hijackGameObject()
     end
   end
   -- annotate gameobject
-  -- add component tracking + syntactic sugar for chaining
+  -- syntactic sugar for chaining
   local old2 = GameObject.addComponent;
   GameObject.addComponent = function (go, cmp)
     old2(go, cmp);
-    self:track(cmp);
-    if(tolua.type(cmp) == "SF::LuaScript") then -- we need to add events
-      cmp:setTrackingId(cmp.tracking_id);
-    end
     return cmp;
+  end
+
+  local _des = GameObject.destroyComponent;
+  GameObject.destroyComponent = function (go, cmpname)
+    local cmp = go:component(cmpname);
+    tolua.setpeer(cmp, {});
+    References[cmp] = nil;
+    _des(go, cmpname);
   end
 
   local old3 = GameObject.clone;
@@ -285,32 +280,41 @@ function System:_hijackGameObject()
     else
       ngo = old3(go);
     end
-    self:track(ngo);
     local cmps = ngo:allComponents();
-    print("Cloned and now tracking:");
     for i=0,cmps:size()-1 do
-      self:track(cmps[i]);
       --print(cmps[i].type);
-      if(cmps[i].group == "LuaScript") then -- we need to add events
+      if(cmps[i].group == "LuaScript") then -- we need to copy peer table
         local script = tolua.cast(cmps[i], "SF::LuaScript");
-        script:setTrackingId(cmps[i].tracking_id);
         local old_script = go:component(script.type);
         local old_peer = tolua.getpeer(old_script);
         local new_peer = System.deepcopy(old_peer);
         tolua.setpeer(script, new_peer);
+        References[script] = new_peer;
       end
     end
     return ngo;
   end
+
+  local old4 = LuaScript.new;
+  LuaScript.new = function (l,typename)
+    local ls = old4(l,typename);
+    self:bindContext(ls);
+    return ls;
+  end
 end
 
-function System:_registerComponents()
-  self:registerComponent('Transform', Transform.new);
-  self:registerComponent('Primitive', Primitive.new);
-end
-
-function System:registerComponent(cname, newfun)
-  Components[cname] = newfun;
+-- bind a script definition to script instance
+function System:bindContext(ls)
+  local typename = ls.type;
+  local npeer = System.deepcopy(Components[typename]);
+  -- remember to use setpeer, otherwise we might get garbage collected
+  tolua.setpeer(ls,npeer);
+  -- we need to keep a reference to the peer table though, since it will get garbage collected
+  -- the LuaScript component is not gc'd by lua
+  References[ls] = npeer;
+  print('Context bound to '..typename);
+  print('Context is:');
+  tprint(tolua.getpeer(ls));
 end
 
 -- Annotations
@@ -440,18 +444,6 @@ function System:_annotateCoreComponents()
 
   self:annotateProperty('Mesh', 'meshName', 'SString');
   self:annotateProperty('Primitive', 'meshName', 'SString');
-end
-
--- assigns a unique id (ID) for an object (eg. gameobject, component..)
-function System:track(object)
-  self.object_counter = self.object_counter + 1;
-  object.tracking_id = self.object_counter;
-  self.tracked_objects[self.object_counter] = object;
-end
-
--- retrieves an objects based on its unique id (ID)
-function System:getObject(tracking_id)
-  return self.tracked_objects[tracking_id];
 end
 
 -- sets an annotated object's field to the given value

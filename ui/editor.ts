@@ -121,7 +121,8 @@ class Editor {
 	}
 
 	resetVM() : void {
-
+		var calldata = {meta: {callee: 'editor', command: 'resetVM'}, data: ''};
+		this.send(calldata);
 	}
 
 	hiefileSwitch(title, index) : void {

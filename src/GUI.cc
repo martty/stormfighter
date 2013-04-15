@@ -37,8 +37,9 @@ GUI::GUI(StormfighterApp* app) : Module(app){
   LOG("Creating WV:"+STRING(viewTexture_->getWidth())+","+STRING(viewTexture_->getHeight()));
   OverlayPosition pos(0, 0);
   overlay_ = new ViewportOverlay("AWE_overlay", viewport, viewTexture_->getWidth(), viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
-  /*if(compensateNPOT_)
-      overlay_->panel->setUV(0, 0, (Real)viewWidth/(Real)texWidth_, (Real)viewHeight/(Real)texHeight_);*/
+  // if we can't use NPOT, then strech the texture onto the viewport
+  if(compensateNPOT_)
+      overlay_->panel->setUV(0, 0, width_/viewTexture_->getWidth(), height_/viewTexture_->getHeight());
   // init sdktraymanager
   trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", Graphics::getSingletonPtr()->defaultRenderWindow(), application()->input()->mouse_, this);
   trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);

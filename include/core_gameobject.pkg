@@ -26,9 +26,12 @@ class GameObject {
   bool hasComponent(const SString& type) const;   /// Returns true if GameObject has component with type "type"
   Transform* transform();   /// Returns the transform component of the GameObject, alias for component("Transform")
 
-  // Advanced components
   Component* firstComponentInChildren(const SString& type); /// Get the first component of type, searched first in this GameObject, then children
+  Component* firstComponentGroupInChildren(const SString& group); /// Get the first component of group, searched first in this GameObject, then children
   ComponentVector allComponentInChildren(const SString& type); /// Get all components of type, searched first in this GameObject, then children
+  ComponentVector allComponentGroupInChildren(const SString& group); /// Get all components of group, searched first in this GameObject, then children
+
+  ComponentVector allScriptInChildren(); /// Returns all Script group components in this and descendant GOs
 
   // Game object list managament
   ///Add equal level member to GameObject list

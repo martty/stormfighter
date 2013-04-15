@@ -111,6 +111,14 @@ var Editor = (function () {
     Editor.prototype.loadSceneDialog = function () {
     };
     Editor.prototype.resetVM = function () {
+        var calldata = {
+            meta: {
+                callee: 'editor',
+                command: 'resetVM'
+            },
+            data: ''
+        };
+        this.send(calldata);
     };
     Editor.prototype.hiefileSwitch = function (title, index) {
         if(title == "Hierarchy") {

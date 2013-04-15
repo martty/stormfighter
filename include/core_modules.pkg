@@ -198,6 +198,12 @@ class Hierarchy {
   SString serialiseStructureJSON();
 };
 
+class Scripting : public Module{
+ public:
+  /// Resets the VM
+  void reset();
+};
+
 class Resources : public Module{
  public:
 

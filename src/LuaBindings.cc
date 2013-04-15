@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Stormfighter
-** Generated automatically by tolua++-1.0.92 on 04/10/13 23:56:25.
+** Generated automatically by tolua++-1.0.92 on 04/15/13 09:45:56.
 */
 
 #ifndef __cplusplus
@@ -383,9 +383,10 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Terrain::ImportData");
  tolua_usertype(tolua_S,"Ogre::TerrainLayerDeclaration");
  tolua_usertype(tolua_S,"SF::StormfighterApp");
- tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlotDefinition");
  tolua_usertype(tolua_S,"SF::Resources");
+ tolua_usertype(tolua_S,"Ogre::TerrainGroup::TerrainSlotDefinition");
  tolua_usertype(tolua_S,"SF::Hierarchy");
+ tolua_usertype(tolua_S,"SF::Scripting");
  tolua_usertype(tolua_S,"Ogre::TerrainPagedWorldSection");
  tolua_usertype(tolua_S,"SF::TerrainPagedWorldSection");
  tolua_usertype(tolua_S,"Ogre::TerrainGroup");
@@ -28630,6 +28631,40 @@ static int tolua_Stormfighter_SF_GameObject_firstComponentInChildren00(lua_State
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: firstComponentGroupInChildren of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_firstComponentGroupInChildren00
+static int tolua_Stormfighter_SF_GameObject_firstComponentGroupInChildren00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+  const std::string group = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'firstComponentGroupInChildren'", NULL);
+#endif
+  {
+   SF::Component* tolua_ret = (SF::Component*)  self->firstComponentGroupInChildren(group);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"SF::Component");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'firstComponentGroupInChildren'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: allComponentInChildren of class  SF::GameObject */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_allComponentInChildren00
 static int tolua_Stormfighter_SF_GameObject_allComponentInChildren00(lua_State* tolua_S)
@@ -28669,6 +28704,92 @@ static int tolua_Stormfighter_SF_GameObject_allComponentInChildren00(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'allComponentInChildren'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: allComponentGroupInChildren of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_allComponentGroupInChildren00
+static int tolua_Stormfighter_SF_GameObject_allComponentGroupInChildren00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+  const std::string group = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'allComponentGroupInChildren'", NULL);
+#endif
+  {
+    std::vector<SF::Component*> tolua_ret = (  std::vector<SF::Component*>)  self->allComponentGroupInChildren(group);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((std::vector<SF::Component*>)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"std::vector<SF::Component*>");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::vector<SF::Component*>));
+     tolua_pushusertype(tolua_S,tolua_obj,"std::vector<SF::Component*>");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'allComponentGroupInChildren'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: allScriptInChildren of class  SF::GameObject */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_GameObject_allScriptInChildren00
+static int tolua_Stormfighter_SF_GameObject_allScriptInChildren00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::GameObject",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::GameObject* self = (SF::GameObject*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'allScriptInChildren'", NULL);
+#endif
+  {
+    std::vector<SF::Component*> tolua_ret = (  std::vector<SF::Component*>)  self->allScriptInChildren();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((std::vector<SF::Component*>)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"std::vector<SF::Component*>");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(std::vector<SF::Component*>));
+     tolua_pushusertype(tolua_S,tolua_obj,"std::vector<SF::Component*>");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'allScriptInChildren'.",&tolua_err);
  return 0;
 #endif
 }
@@ -32306,6 +32427,37 @@ static int tolua_Stormfighter_SF_Hierarchy_serialiseStructureJSON00(lua_State* t
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: reset of class  SF::Scripting */
+#ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Scripting_reset00
+static int tolua_Stormfighter_SF_Scripting_reset00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"SF::Scripting",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  SF::Scripting* self = (SF::Scripting*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reset'", NULL);
+#endif
+  {
+   self->reset();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'reset'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: createResourceGroup of class  SF::Resources */
 #ifndef TOLUA_DISABLE_tolua_Stormfighter_SF_Resources_createResourceGroup00
 static int tolua_Stormfighter_SF_Resources_createResourceGroup00(lua_State* tolua_S)
@@ -34392,7 +34544,10 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"hasComponent",tolua_Stormfighter_SF_GameObject_hasComponent00);
     tolua_function(tolua_S,"transform",tolua_Stormfighter_SF_GameObject_transform00);
     tolua_function(tolua_S,"firstComponentInChildren",tolua_Stormfighter_SF_GameObject_firstComponentInChildren00);
+    tolua_function(tolua_S,"firstComponentGroupInChildren",tolua_Stormfighter_SF_GameObject_firstComponentGroupInChildren00);
     tolua_function(tolua_S,"allComponentInChildren",tolua_Stormfighter_SF_GameObject_allComponentInChildren00);
+    tolua_function(tolua_S,"allComponentGroupInChildren",tolua_Stormfighter_SF_GameObject_allComponentGroupInChildren00);
+    tolua_function(tolua_S,"allScriptInChildren",tolua_Stormfighter_SF_GameObject_allScriptInChildren00);
     tolua_function(tolua_S,"addSibling",tolua_Stormfighter_SF_GameObject_addSibling00);
     tolua_function(tolua_S,"addChild",tolua_Stormfighter_SF_GameObject_addChild00);
     tolua_function(tolua_S,"setParent",tolua_Stormfighter_SF_GameObject_setParent00);
@@ -34539,6 +34694,10 @@ TOLUA_API int tolua_Stormfighter_open (lua_State* tolua_S)
     tolua_function(tolua_S,"loadGameObjectFromFile",tolua_Stormfighter_SF_Hierarchy_loadGameObjectFromFile00);
     tolua_function(tolua_S,"serialiseJSON",tolua_Stormfighter_SF_Hierarchy_serialiseJSON00);
     tolua_function(tolua_S,"serialiseStructureJSON",tolua_Stormfighter_SF_Hierarchy_serialiseStructureJSON00);
+   tolua_endmodule(tolua_S);
+   tolua_cclass(tolua_S,"Scripting","SF::Scripting","Module",NULL);
+   tolua_beginmodule(tolua_S,"Scripting");
+    tolua_function(tolua_S,"reset",tolua_Stormfighter_SF_Scripting_reset00);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Resources","SF::Resources","Module",NULL);
    tolua_beginmodule(tolua_S,"Resources");

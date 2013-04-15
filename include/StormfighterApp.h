@@ -38,6 +38,10 @@ class StormfighterApp : public Ogre::FrameListener{
 
   Scripting* scripting() const { return scripting_; }
 
+  GUI* gui() const { return gui_; }
+
+  Logger* logger() const {return logger_; }
+
   double inline deltaTime() const {return deltaTime_;}
 
   void setPhysicsDeltaTime(SReal pdt) {physicsDeltaTime_ = pdt; }

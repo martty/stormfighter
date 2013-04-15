@@ -20,11 +20,20 @@ fcc.camera_ = {};
 
 function fcc:onInit()
   print("fcc: init");
-  if(not self:object():hasComponent("Camera")) then
+  --tprint(tolua.getpeer(self));
+  --[[if(not self:object():hasComponent("Camera")) then
     error('no camera!');
   end
-  self.camera_ = self:object():component("Camera");
-  print("fcc: inited");
+  self.camera_ = self:object():component("Camera");--]]
+  --print("fcc: inited");
+  --[[print(collectgarbage("count"));
+  print("allocating large mem");
+  self.largemem = {};
+  for i = 1,1000000 do self.largemem[i] = 3*i+4; end
+  print(collectgarbage("count"));
+  collectgarbage("collect");
+  print("collecting");
+  print(collectgarbage("count"));--]]
 end
 
 function fcc:onUpdate()

@@ -61,16 +61,20 @@ function Editor:init()
   self:addKey(OIS.KC_3); --rotate
   self:addKey(OIS.KC_4); --scale
   self:manipulator():init(self);
-  self.cameraGO = Hierarchy:createGameObject("editorCamera");
-  self.cameraGO:addTag("no-serialise");
-  self.camera = Camera:new();
-  self.camera:activate();
-  self.cameraGO:addComponent(self.camera);
-  local fcc = System:loadComponent('scripts/freecameracontroller.lua');
-  self.cameraGO:addComponent(fcc);
-  self.cameraGO:transform().position = SVector3(0,0,300);
+  if(not Hierarchy:find("editorCamera")) then
+    self.cameraGO = Hierarchy:createGameObject("editorCamera");
+    self.cameraGO:addTag("no-serialise");
+    self.camera = Camera:new();
+    self.camera:activate();
+    self.cameraGO:addComponent(self.camera);
+    local fcc = LuaScript:new("FreeLookCameraControllerLUA");
+    self.cameraGO:addComponent(fcc);
+    self.cameraGO:transform().position = SVector3(0,0,300);
+  else
+    self.cameraGO = Hierarchy:find("editorCamera");
+  end
+  self:focus("viewport");
   -- note: camera looks down -z
-  --self.cameraGO:transform():lookAt(SVector3(0,0,0));
 end
 
 function Editor:manipulator()
@@ -321,6 +325,9 @@ function Editor:receive(calldata)
     if(calldata.data.name) then
       self:select(Hierarchy:find(calldata.data.name));
     end
+  elseif (command == "resetVM") then
+    print('Trashing VM');
+    Scripting:reset();
   end
 end
 

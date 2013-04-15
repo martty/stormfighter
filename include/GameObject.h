@@ -50,8 +50,11 @@ class GameObject {
 
   // Advanced components
   Component* firstComponentInChildren(const SString& type); /// Get the first component of type, searched first in this GameObject, then children
-  Component* firstComponentGroupInChildren(const SString& group); /// Get the first component of type, searched first in this GameObject, then children
+  Component* firstComponentGroupInChildren(const SString& group); /// Get the first component of group, searched first in this GameObject, then children
   ComponentVector allComponentInChildren(const SString& type); /// Get all components of type, searched first in this GameObject, then children
+  ComponentVector allComponentGroupInChildren(const SString& group); /// Get all components of group, searched first in this GameObject, then children
+
+  ComponentVector allScriptInChildren(); /// Returns all Script group components in this and descendant GOs
 
   // Component management
   /// sends onInit to core components, will follow list if recursive is true
@@ -138,6 +141,7 @@ class GameObject {
   Component* _firstComponentInChildren(const SString& type); /// internal helper
   Component* _firstComponentGroupInChildren(const SString& group); /// internal helper
   void _allComponentInChildren(const SString& type, ComponentVector* vec); /// internal helper
+  void _allComponentGroupInChildren(const SString& type, ComponentVector* vec); /// internal helper
 
   GameObject* _find(const SString& name);
 

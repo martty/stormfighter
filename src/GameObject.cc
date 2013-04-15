@@ -473,6 +473,43 @@ void GameObject::_allComponentInChildren(const SString& type, ComponentVector* v
     children_->_allComponentInChildren(type,vec);
 }
 
+ComponentVector GameObject::allComponentGroupInChildren(const SString& type){
+  ComponentVector vec;
+  if(hasComponentGroup(type))
+    vec.push_back(componentGroup(type));
+  if(children_){
+    children_->_allComponentGroupInChildren(type, &vec);
+  }
+  return vec;
+}
+
+void GameObject::_allComponentGroupInChildren(const SString& type, ComponentVector* vec){
+  if(hasComponentGroup(type))
+    vec->push_back(componentGroup(type));
+  if(next_)
+    next_->_allComponentGroupInChildren(type, vec);
+  if(children_)
+    children_->_allComponentGroupInChildren(type,vec);
+}
+
+ComponentVector GameObject::allScriptInChildren(){
+  ComponentVector vec;
+  for(ComponentMap::iterator it=components_.begin(); it!=components_.end(); it++ ){
+      if( (*it).second->group() == "LuaScript" )
+        vec.push_back((*it).second);
+  }
+  if(next_){
+    ComponentVector vec2 = next_->allScriptInChildren();
+    vec.insert(vec.end(), vec2.begin(), vec2.end());
+  }
+  if(children_){
+    ComponentVector vec2 = children_->allScriptInChildren();
+    vec.insert(vec.end(), vec2.begin(), vec2.end());
+  }
+  return vec;
+}
+
+
 void GameObject::addCollision(CollisionData* colld){
   CollisionMap::iterator it = collisionmap_.find(colld->other->name_);
   CollisionData* old;

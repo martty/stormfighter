@@ -75,10 +75,12 @@ void StormfighterApp::startStormfighter(){
   log("Initializing physics");
   physics_ = new Physics(this);
   log("Physics initialized!");
-  scripting_ = new Scripting();
-  log("Scripting initialized!");
+  scripting_ = new Scripting(this);
   //physics_->setDebugDraw(true);
   graphics_->addFrameListener(this);
+  if(!scripting_->initialise())
+    exit(1);
+  log("Scripting initialized!");
   logger_->logMessage("Stormfighter initialized!");
   setupStormfighterScene();
   runStormfighter();
@@ -88,31 +90,9 @@ void StormfighterApp::setupStormfighterScene(){
   graphics_->setSkyBoxMaterial("Examples/EarlyMorningSkyBox");
   graphics_->setSkyBoxEnabled(true);
 
-  // export globals to lua
-  scripting_->setGlobal(input_, "SF::Input", "Input");
-  scripting_->setGlobal(hierarchy_, "SF::Hierarchy", "Hierarchy");
-  scripting_->setGlobal(gui_, "SF::GUI", "GUI");
-  scripting_->setGlobal(physics_, "SF::Physics", "Physics");
-  scripting_->setGlobal(logger_, "SF::Logger", "Logger");
-  scripting_->setGlobal(resources_, "SF::Resources", "Resources");
-  scripting_->setGlobal(graphics_, "SF::Graphics", "Graphics");
-  scripting_->setGlobal(this, "SF::StormfighterApp", "Application");
-
-  if(!scripting_->parseFile("scripts/init.lua"))
+  if(!scripting_->parseFile("scripts/testscene.lua"))
     exit(1);
 
-  GameObject* go = hierarchy_->getRoot();
-  //Component* c = go->component("Transform");
-  LOG("saving..");
-  //c->save();
-  //go->serialise();
-  LOG("save done.");
-  //LOG(c->serialise());
-  //resources_->writeObjectFile("test.object.json", go->serialise(true));
-  //GameObject* doppelganger = GameObject::deserialise(go->serialise(true));
-  //resources_->writeObjectFile("test2.object.json", doppelganger->serialise(true));
-  //hierarchy_->loadGameObjectFromFile("test.sf_object");
-  LOG("that was it.");
   physics_->addCollisionGroup("terrain");
   physics_->addCollisionGroup("player");
   physics_->addCollisionGroup("faller");

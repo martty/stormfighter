@@ -8,7 +8,7 @@ LuaScript::LuaScript(SString type):Script(type){
 }
 
 LuaScript::~LuaScript(){
-  LOG("i'm dead (LS)");
+  LOG("~LuaScript");
 }
 
 void LuaScript::setTrackingId(int id){
@@ -16,67 +16,28 @@ void LuaScript::setTrackingId(int id){
 }
 
 void LuaScript::onInit(){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onInit");
-  application()->scripting()->executeFunctionCall(2,0);
+  application()->scripting()->callOnInit(mytype_, this);
   setState(READY);
 }
 
 void LuaScript::onUpdate(){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onUpdate");
-  application()->scripting()->executeFunctionCall(2,0);
+  application()->scripting()->callOnUpdate(mytype_, this);
 }
 
 void LuaScript::onPhysicsUpdate(){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onPhysicsUpdate");
-  application()->scripting()->executeFunctionCall(2,0);
+  application()->scripting()->callOnPhysicsUpdate(mytype_, this);
 }
 
 void LuaScript::onCollisionEnter(const CollisionData* collisionData){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onCollisionEnter");
-  application()->scripting()->pushLightUserType(collisionData, "SF::CollisionData");
-  application()->scripting()->executeFunctionCall(3,0);
+  application()->scripting()->callOnCollisionEnter(mytype_, this, collisionData);
 }
 
 void LuaScript::onCollisionExit(const CollisionData* collisionData){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onCollisionExit");
-  application()->scripting()->pushLightUserType(collisionData, "SF::CollisionData");
-  application()->scripting()->executeFunctionCall(3,0);
+  application()->scripting()->callOnCollisionExit(mytype_, this, collisionData);
 }
 
 void LuaScript::onCollisionStay(const CollisionData* collisionData){
-  if(id_ < 0)
-    return;
-  application()->scripting()->selectGlobal("System");
-  application()->scripting()->index("_fireComponentEvent");
-  application()->scripting()->pushNumber(id_);
-  application()->scripting()->pushString("onCollisionStay");
-  application()->scripting()->pushLightUserType(collisionData, "SF::CollisionData");
-  application()->scripting()->executeFunctionCall(3,0);
+  application()->scripting()->callOnCollisionStay(mytype_, this, collisionData);
 }
 
 }; // namespace SF
