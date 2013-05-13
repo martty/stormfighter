@@ -58,6 +58,9 @@ var Editor = (function () {
     Editor.prototype.hierarchy = function () {
         return this.widgets['hierarchy'];
     };
+    Editor.prototype.filebrowser = function () {
+        return this.widgets['filebrowser'];
+    };
     Editor.prototype.send = function (data) {
         this.queue.push(data);
     };

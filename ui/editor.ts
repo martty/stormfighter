@@ -74,6 +74,10 @@ class Editor {
 		return this.widgets['hierarchy'];
 	}
 
+	filebrowser() : FileBrowser {
+		return this.widgets['filebrowser'];
+	}
+
 	send(data : CallData) : void {
 		this.queue.push(data);
 	}

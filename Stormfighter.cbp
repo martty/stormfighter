@@ -175,6 +175,7 @@
 		<Unit filename="scripts/chasecameracontroller.lua" />
 		<Unit filename="scripts/console.lua" />
 		<Unit filename="scripts/editor.lua" />
+		<Unit filename="scripts/filebrowser.lua" />
 		<Unit filename="scripts/freecameracontroller.lua" />
 		<Unit filename="scripts/hierarchy.lua" />
 		<Unit filename="scripts/init.lua" />

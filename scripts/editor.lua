@@ -32,6 +32,7 @@ Editor.internal.ui = {};
 Editor.internal.ui.inspector = {};
 Editor.internal.ui.console = {};
 Editor.internal.ui.hierarchy = {};
+Editor.internal.ui.filebrowser = {};
 
 Editor.UI = Editor.internal.ui;
 
@@ -51,7 +52,9 @@ HierarchyW = Editor.internal.ui.hierarchy;
 dofile('scripts/hierarchy.lua');
 HierarchyW = nil;
 
-
+FileBrowser = Editor.internal.ui.filebrowser;
+dofile('scripts/filebrowser.lua');
+FileBrowser = nil;
 
 function Editor:init()
   self.internal.time_started = os.time();
@@ -93,11 +96,16 @@ function Editor:hierarchy()
   return self.UI.hierarchy;
 end
 
+function Editor:filebrowser()
+  return self.UI.filebrowser;
+end
+
 function Editor.UI:init()
   --self.inspector:init();
   --self.console:init();
   --Editor:openHierarchyBrowser();
   --Editor:openFileBrowser('media/objects');
+  Editor:filebrowser():init();
   Editor.internal.time_ui_loaded = os.time();
   Editor.internal.time_to_ui_load = Editor.internal.time_ui_loaded - Editor.internal.time_started;
   print(tostring(Editor.internal.time_to_ui_load));
@@ -286,6 +294,8 @@ function Editor:updateUI()
   self:inspector():update();
   -- update Hierarchy
   self:hierarchy():update();
+  -- update FileBrowser
+  self:filebrowser():update();
 end
 
 function Editor:dispatchUIMessage(msg)
@@ -296,6 +306,8 @@ function Editor:dispatchUIMessage(msg)
       self:inspector():receive(datas[i]);
     elseif(callee == "hierarchy") then
       self:hierarchy():receive(datas[i]);
+    elseif(callee == "filebrowser") then
+      self:filebrowser():receive(datas[i]);
     elseif(callee == "editor") then
       self:receive(datas[i]);
     else

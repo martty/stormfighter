@@ -358,6 +358,7 @@ bool GUI::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
       case OIS::MB_Left : awe_mb = AWE_MB_LEFT; break;
       case OIS::MB_Right : awe_mb = AWE_MB_RIGHT; break;
       case OIS::MB_Middle : awe_mb = AWE_MB_MIDDLE; break;
+      default: awe_mb = AWE_MB_LEFT;
     }
     awe_webview_inject_mouse_down(webView_,  awe_mb);
   }
@@ -371,6 +372,7 @@ bool GUI::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
       case OIS::MB_Left : awe_mb = AWE_MB_LEFT; break;
       case OIS::MB_Right : awe_mb = AWE_MB_RIGHT; break;
       case OIS::MB_Middle : awe_mb = AWE_MB_MIDDLE; break;
+      default: awe_mb = AWE_MB_LEFT;
     }
     awe_webview_inject_mouse_up(webView_,  awe_mb);
   }
@@ -379,6 +381,7 @@ bool GUI::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id) {
 
 bool GUI::mouseMoved(const OIS::MouseEvent& evt) {
   awe_webview_inject_mouse_move(webView_, evt.state.X.abs, evt.state.Y.abs);
+  awe_webview_inject_mouse_wheel(webView_, evt.state.Z.rel);
   return false;
 }
 

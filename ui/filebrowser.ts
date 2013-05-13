@@ -50,6 +50,8 @@ class FileBrowser extends Widget {
 	receive(calldata : CallData) : void {
 		if(calldata.meta.command == "update"){
 			this.update(calldata.data)
+		} else if (calldata.meta.command == "load-subdir"){
+			this.loadSubdirectory(calldata.data.path, calldata.data.content);
 		}
 	}
 
@@ -57,7 +59,7 @@ class FileBrowser extends Widget {
 		for (var i = 0; i < data.length; i++){
 			if(data[i].name){
 				data[i].attributes = _.extend({}, data[i]);
-				data[i].id = data[i].name;
+				data[i].id = data[i].path.replace(/\//g, '');
 				data[i].text = data[i].name;
 				data[i].iconCls = 'ui-icon ';
 				if(data[i].extension == '.lua')
@@ -70,8 +72,10 @@ class FileBrowser extends Widget {
 					data[i].iconCls += 'ui-icon-image';
 				else 
 					data[i].iconCls += 'ui-icon-document';
-				if(data[i].type == "directory")
+				if(data[i].type == "directory"){
 					data[i].state = "closed";
+					data[i].attributes.loaded = false;
+				}
 			}
 			if(data[i].children){
 				this.changeKeys(data[i].children)
@@ -89,24 +93,42 @@ class FileBrowser extends Widget {
 			//dnd: true,
 			data: data,
 			onSelect: (node) => {console.log('select')},
-			onBeforeExpand: (node) => {this.requestSubDirectory(node)},
+			onBeforeExpand: (node) => {return this.requestSubDirectory(node)},
 			onDrop: (target, source, point) => {this.sendDrop(target, source, point);},
 			onContextMenu: (e, node) => {
-				e.preventDefault();
+				//e.preventDefault();
 				// select the node
 				this.tree.tree('select', node.target);
 				// display context menu
-				this.showContextMenu(node, e.pageX, e.pageY);
+				//this.showContextMenu(node, e.pageX, e.pageY);
 			}
 			});
 		this.autoSize();
+	}
+
+	loadSubdirectory(path : any, data : GOData) : void {
+		this.changeKeys(data);
+		var node = this.tree.tree('find', path.replace(/\//g, ''));
+		if(!node.attributes.loaded){
+			this.tree.tree('append', {
+				parent: node.target,
+				data: data
+			});
+			node.attributes.loaded = true;
+			this.tree.tree('expand', node.target);
+		}
 	}
 	
 	// OUTGOING
 
 	requestSubDirectory(node: any) : void {
-		var calldata = {meta : {callee: "filebrowser", command: "request-subdir"}, data: node.attributes.path};
-		editor.send(calldata);
+		if(node.attributes.loaded == false){
+			console.log('reqsubdir');
+			var calldata = {meta : {callee: "filebrowser", command: "request-subdir"}, data: node.attributes.path };
+			editor.send(calldata);
+			return false;
+		}
+		return true;
 	}
 
 	sendDrop(target: any, source : any, point : any) : void {
@@ -154,7 +176,7 @@ class FileBrowser extends Widget {
 		});
 	}
 
-	showContextMenu(node, x : number, y : number) : void{
+	/*showContextMenu(node, x : number, y : number) : void{
 		var ctxmenu = $('#tpl-hierarchy-gocontext');
 		ctxmenu.menu('show', {
 			left: x,
@@ -170,11 +192,12 @@ class FileBrowser extends Widget {
 		} else {
 			this.showSetGONameDialog(goname);
 		}
-	}
+	}*/
 
 	test () : void {
 		console.log('test');
 		var data = [{"size":"66564","extension":".f32","type":"file","path":"media\/PageX0Y0.f32","name":"PageX0Y0.f32"},{"type":"directory","path":"media\/common","name":"common"},{"type":"directory","path":"media\/fonts","name":"fonts"},{"type":"directory","path":"media\/materials","name":"materials"},{"type":"directory","path":"media\/models","name":"models"},{"type":"directory","path":"media\/objects","name":"objects"},{"type":"directory","path":"media\/packs","name":"packs"},{"type":"directory","path":"media\/particle","name":"particle"},{"type":"directory","path":"media\/save","name":"save"},{"size":"2419","extension":".cfg","type":"file","path":"media\/terrain.cfg","name":"terrain.cfg"},{"size":"103088","extension":".png","type":"file","path":"media\/terrain.png","name":"terrain.png"},{"size":"9620660","extension":".dat","type":"file","path":"media\/terrain_00000000.dat","name":"terrain_00000000.dat"},{"type":"directory","path":"media\/test","name":"test"},{"size":"12333224","extension":".dat","type":"file","path":"media\/testTerrain_00000000.dat","name":"testTerrain_00000000.dat"},{"size":"12333224","extension":".dat","type":"file","path":"media\/testTerrain_00000001.dat","name":"testTerrain_00000001.dat"},{"size":"204","extension":".groupdef","type":"file","path":"media\/tg0.groupdef","name":"tg0.groupdef"},{"type":"directory","path":"media\/thumbnails","name":"thumbnails"},{"type":"directory","path":"media\/tmp","name":"tmp"},{"type":"directory","path":"media\/ui","name":"ui"},{"type":"directory","path":"media\/worlds","name":"worlds"}];
 		this.update(data);
+		this.loadSubdirectory('media/packs', [{"size":"66564","extension":".f32","type":"file","path":"media\/PageX0Y0.f32","name":"PageX0Y0.f32"}]);
 	}
 }

@@ -43,6 +43,10 @@ var FileBrowser = (function (_super) {
     FileBrowser.prototype.receive = function (calldata) {
         if(calldata.meta.command == "update") {
             this.update(calldata.data);
+        } else {
+            if(calldata.meta.command == "load-subdir") {
+                this.loadSubdirectory(calldata.data.path, calldata.data.content);
+            }
         }
     };
     FileBrowser.prototype.changeKeys = function (data) {
@@ -50,7 +54,7 @@ var FileBrowser = (function (_super) {
             if(data[i].name) {
                 data[i].attributes = _.extend({
                 }, data[i]);
-                data[i].id = data[i].name;
+                data[i].id = data[i].path.replace(/\//g, '');
                 data[i].text = data[i].name;
                 data[i].iconCls = 'ui-icon ';
                 if(data[i].extension == '.lua') {
@@ -79,6 +83,7 @@ var FileBrowser = (function (_super) {
                 }
                 if(data[i].type == "directory") {
                     data[i].state = "closed";
+                    data[i].attributes.loaded = false;
                 }
             }
             if(data[i].children) {
@@ -96,28 +101,43 @@ var FileBrowser = (function (_super) {
                 console.log('select');
             },
             onBeforeExpand: function (node) {
-                _this.requestSubDirectory(node);
+                return _this.requestSubDirectory(node);
             },
             onDrop: function (target, source, point) {
                 _this.sendDrop(target, source, point);
             },
             onContextMenu: function (e, node) {
-                e.preventDefault();
                 _this.tree.tree('select', node.target);
-                _this.showContextMenu(node, e.pageX, e.pageY);
             }
         });
         this.autoSize();
     };
+    FileBrowser.prototype.loadSubdirectory = function (path, data) {
+        this.changeKeys(data);
+        var node = this.tree.tree('find', path.replace(/\//g, ''));
+        if(!node.attributes.loaded) {
+            this.tree.tree('append', {
+                parent: node.target,
+                data: data
+            });
+            node.attributes.loaded = true;
+            this.tree.tree('expand', node.target);
+        }
+    };
     FileBrowser.prototype.requestSubDirectory = function (node) {
-        var calldata = {
-            meta: {
-                callee: "filebrowser",
-                command: "request-subdir"
-            },
-            data: node.attributes.path
-        };
-        editor.send(calldata);
+        if(node.attributes.loaded == false) {
+            console.log('reqsubdir');
+            var calldata = {
+                meta: {
+                    callee: "filebrowser",
+                    command: "request-subdir"
+                },
+                data: node.attributes.path
+            };
+            editor.send(calldata);
+            return false;
+        }
+        return true;
     };
     FileBrowser.prototype.sendDrop = function (target, source, point) {
         var action = "";
@@ -176,30 +196,6 @@ var FileBrowser = (function (_super) {
                 }
             ]
         });
-    };
-    FileBrowser.prototype.showContextMenu = function (node, x, y) {
-        var ctxmenu = $('#tpl-hierarchy-gocontext');
-        ctxmenu.menu('show', {
-            left: x,
-            top: y
-        });
-    };
-    FileBrowser.prototype.contextMenuClick = function (action, node) {
-        var goname = node.id;
-        if((action != 'new-child') && (action != 'new-sibling')) {
-            var calldata = {
-                meta: {
-                    callee: 'hierarchy',
-                    command: action
-                },
-                data: {
-                    name: goname
-                }
-            };
-            editor.send(calldata);
-        } else {
-            this.showSetGONameDialog(goname);
-        }
     };
     FileBrowser.prototype.test = function () {
         console.log('test');
@@ -320,6 +316,15 @@ var FileBrowser = (function (_super) {
             }
         ];
         this.update(data);
+        this.loadSubdirectory('media/packs', [
+            {
+                "size": "66564",
+                "extension": ".f32",
+                "type": "file",
+                "path": "media\/PageX0Y0.f32",
+                "name": "PageX0Y0.f32"
+            }
+        ]);
     };
     return FileBrowser;
 })(Widget);
