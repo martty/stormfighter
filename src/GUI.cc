@@ -196,17 +196,21 @@ bool GUI::keyPressed(const OIS::KeyEvent& evt){
   wke.is_system_key = false;
 
   // MODIFIERS (ALT, SHIFT, ...)
-  int modifiers = 0;
-  if (evt.key == OIS::KC_LMENU || evt.key == OIS::KC_RMENU)
+  bool isCtrlDown = application()->input()->isModifierDown(OIS::Keyboard::Ctrl);
+  bool isShiftDown = application()->input()->isModifierDown(OIS::Keyboard::Shift);
+  bool isAltDown = application()->input()->isModifierDown(OIS::Keyboard::Alt);
+
+  unsigned modifiers = 0;
+  if (isAltDown)
       modifiers = modifiers | AWE_WKM_ALT_KEY;
-  if (evt.key == OIS::KC_LCONTROL || evt.key == OIS::KC_RCONTROL)
+  if (isCtrlDown)
       modifiers = modifiers | AWE_WKM_CONTROL_KEY;
-  if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
-      modifiers = modifiers | AWE_WKM_META_KEY;
-  if (evt.key == OIS::KC_LSHIFT || evt.key == OIS::KC_RSHIFT)
+  /*if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
+      modifiers = modifiers | AWE_WKM_META_KEY;*/
+  if (isShiftDown)
       modifiers = modifiers | AWE_WKM_SHIFT_KEY;
-  if (evt.key == OIS::KC_NUMLOCK)
-      modifiers = modifiers | AWE_WKM_IS_KEYPAD;
+  /*if (evt.key == OIS::KC_NUMLOCK)
+      modifiers = modifiers | AWE_WKM_IS_KEYPAD;*/
   wke.modifiers = (_awe_webkey_modifiers)modifiers;
 
   wke.virtual_key_code = getWebKeyFromOISKey(evt.key);
@@ -217,8 +221,16 @@ bool GUI::keyPressed(const OIS::KeyEvent& evt){
     awe_webview_inject_keyboard_event( webView_, wke );
   }
   wke.type = AWE_WKT_KEYDOWN;
-  awe_webview_inject_keyboard_event( webView_, wke );
 
+  if(isCtrlDown && evt.key == OIS::KC_C){
+    awe_webview_copy(webView_);
+  } else if (isCtrlDown && evt.key == OIS::KC_X){
+    awe_webview_cut(webView_);
+  } else if (isCtrlDown && evt.key == OIS::KC_V){
+    awe_webview_paste(webView_);
+  } else {
+    awe_webview_inject_keyboard_event( webView_, wke );
+  }
   return false;
 }
 
@@ -330,18 +342,22 @@ bool GUI::keyReleased(const OIS::KeyEvent &evt) {
   wke.native_key_code = evt.key;
   wke.is_system_key = false;
 
-  // MODIFIERS (ALT, SHIFT, ...)
-  int modifiers = 0;
-  if (evt.key == OIS::KC_LMENU || evt.key == OIS::KC_RMENU)
+   // MODIFIERS (ALT, SHIFT, ...)
+  bool isCtrlDown = application()->input()->isModifierDown(OIS::Keyboard::Ctrl);
+  bool isShiftDown = application()->input()->isModifierDown(OIS::Keyboard::Shift);
+  bool isAltDown = application()->input()->isModifierDown(OIS::Keyboard::Alt);
+
+  unsigned modifiers = 0;
+  if (isAltDown)
       modifiers = modifiers | AWE_WKM_ALT_KEY;
-  if (evt.key == OIS::KC_LCONTROL || evt.key == OIS::KC_RCONTROL)
+  if (isCtrlDown)
       modifiers = modifiers | AWE_WKM_CONTROL_KEY;
-  if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
-      modifiers = modifiers | AWE_WKM_META_KEY;
-  if (evt.key == OIS::KC_LSHIFT || evt.key == OIS::KC_RSHIFT)
+  /*if (evt.key == OIS::KC_LWIN || evt.key == OIS::KC_RWIN)
+      modifiers = modifiers | AWE_WKM_META_KEY;*/
+  if (isShiftDown)
       modifiers = modifiers | AWE_WKM_SHIFT_KEY;
-  if (evt.key == OIS::KC_NUMLOCK)
-      modifiers = modifiers | AWE_WKM_IS_KEYPAD;
+  /*if (evt.key == OIS::KC_NUMLOCK)
+      modifiers = modifiers | AWE_WKM_IS_KEYPAD;*/
   wke.modifiers = (_awe_webkey_modifiers)modifiers;
 
   wke.virtual_key_code = getWebKeyFromOISKey(evt.key);
