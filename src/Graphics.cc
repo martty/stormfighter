@@ -40,7 +40,7 @@ bool Graphics::initialise(){
   pluginsCfg_ = "plugins.cfg";
   #endif
   root_ = new Ogre::Root(pluginsCfg_);
-  if(!root_->showConfigDialog())
+  if(!root_->restoreConfig() && !root_->showConfigDialog())
     return false;
 
   renderWindow_ = root_->initialise(true, windowTitle_);
