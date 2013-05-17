@@ -181,10 +181,30 @@ void GUI::displayWebView(){
   // NULL if the WebView process has crashed.
   if(renderBuffer_ != NULL ){
    // LOG("RENDER_WEBVIEW");
-    Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
+    /*Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
     //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
     Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer_), awe_renderbuffer_get_height(renderBuffer_), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer_)));
-    //pixelBuffer->blitFromMemory(pbox);
+    //pixelBuffer->blitFromMemory(pbox);*/
+  Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
+	pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+	const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+	unsigned texDepth = Ogre::PixelUtil::getNumElemBytes(pixelBox.format);
+	unsigned texPitch = (pixelBox.rowPitch*texDepth);
+
+	Ogre::uint8* destBuffer = static_cast<Ogre::uint8*>(pixelBox.data);
+
+	awe_renderbuffer_copy_to(renderBuffer_, destBuffer, texPitch, texDepth, false, false);
+	//texWidth = viewTexture_->getWidth();
+	//texHeight = viewTexture_->getHeight();
+
+	/*if(true)
+	{
+		for(int row = 0; row < texHeight; row++)
+			for(int col = 0; col < texWidth; col++)
+				alphaCache[row * alphaCachePitch + col] = destBuffer[row * texPitch + col * 4 + 3];
+	}*/
+
+	pixelBuffer->unlock();
     // write texture to file
     Ogre::TexturePtr tp = viewTexture_;
 
