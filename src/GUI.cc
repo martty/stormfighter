@@ -177,6 +177,27 @@ void GUI::displayWebView(){
     //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
     Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer_), awe_renderbuffer_get_height(renderBuffer_), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer_)));
     pixelBuffer->blitFromMemory(pbox);
+    // write texture to file
+    Ogre::TexturePtr tp = viewTexture_;
+
+    // Declare buffer
+    const size_t buffSize = (tp->getWidth() * tp->getHeight() * 4);
+    unsigned char *data = OGRE_ALLOC_T(unsigned char,buffSize,Ogre::MEMCATEGORY_GENERAL);
+
+    // Clear buffer
+    memset(data, 0, buffSize);
+
+    // Setup Image with correct settings
+    Ogre::Image i;
+    i.loadDynamicImage(data, tp->getWidth(), tp->getHeight(), 1, Ogre::PF_R8G8B8A8, true);
+
+    // Copy Texture buffer contents to image buffer
+    Ogre::HardwarePixelBufferSharedPtr buf = tp->getBuffer();
+    const Ogre::PixelBox destBox = i.getPixelBox();
+    buf->blitToMemory(destBox);
+
+    // Save to disk!
+    i.save("debugGUI.png");
   }
 }
 
