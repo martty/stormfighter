@@ -153,9 +153,9 @@ void GUI::createMaterial(){
   for(size_t i=0; i<length; i+=4){
       // fill the buffer with white pixels and fully transparent alpha channel
       data[i]   = 255;    // Blue
-      data[i+1] = 255;    // Green
+      data[i+1] = 0;    // Green
       data[i+2] = 255;    // Red
-      data[i+3] = 0;      // Alpha
+      data[i+3] = 100;      // Alpha
   }
 
   pixelBuffer->unlock();
@@ -184,7 +184,7 @@ void GUI::displayWebView(){
     Ogre::HardwarePixelBufferSharedPtr pixelBuffer = viewTexture_->getBuffer();
     //awe_renderbuffer_copy_to(renderBuffer, temp_, awe_renderbuffer_get_width(renderBuffer)*4, 4,  false);
     Ogre::PixelBox pbox(awe_renderbuffer_get_width(renderBuffer_), awe_renderbuffer_get_height(renderBuffer_), 1, Ogre::PF_A8R8G8B8, const_cast<unsigned char*>(awe_renderbuffer_get_buffer(renderBuffer_)));
-    pixelBuffer->blitFromMemory(pbox);
+    //pixelBuffer->blitFromMemory(pbox);
     // write texture to file
     Ogre::TexturePtr tp = viewTexture_;
 
