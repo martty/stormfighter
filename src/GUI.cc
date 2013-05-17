@@ -143,23 +143,31 @@ void GUI::createMaterial(){
 	Ogre::HardwarePixelBufferSharedPtr pixelBuffer = texture->getBuffer();
 	pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 	const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-	unsigned int texDepth = Ogre::PixelUtil::getNumElemBytes(pixelBox.format);
-	unsigned int texPitch = (pixelBox.rowPitch*texDepth);
+	//unsigned int texDepth = Ogre::PixelUtil::getNumElemBytes(pixelBox.format);
+	//unsigned int texPitch = (pixelBox.rowPitch*texDepth);
 
-  uint_fast8_t* pDest = static_cast<uint_fast8_t*>(pixelBox.data);
+  //uint_fast8_t* pDest = static_cast<uint_fast8_t*>(pixelBox.data);
 
-  memset(pDest, 0, texHeight*texPitch);
+  unsigned char *data = static_cast<unsigned char*>(pixelBox.data);
+  size_t length = pixelBox.getHeight() * pixelBox.getWidth() * 4;
+  for(size_t i=0; i<length; i+=4){
+      // fill the buffer with white pixels and fully transparent alpha channel
+      data[i]   = 255;    // Blue
+      data[i+1] = 255;    // Green
+      data[i+2] = 255;    // Red
+      data[i+3] = 0;      // Alpha
+  }
 
   pixelBuffer->unlock();
   Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("awesomium_mat", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   Ogre::Pass* matPass = material->getTechnique(0)->getPass(0);
+  Ogre::TextureUnitState* texunit = matPass->createTextureUnitState("awesomium_tex");
+  material->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
   //matPass->setSeparateSceneBlending (Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
-  matPass->setSeparateSceneBlending (Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_ZERO, Ogre::SBF_ZERO);
+  //matPass->setSeparateSceneBlending (Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_ZERO, Ogre::SBF_ZERO);
   //material->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
-  matPass->setDepthWriteEnabled(false);
-
-  Ogre::TextureUnitState* texunit = matPass->createTextureUnitState("awesomium_tex");
+  //matPass->setDepthWriteEnabled(false);
 
   /*baseTexUnit->setTextureFiltering(texFiltering, texFiltering, FO_NONE);
   if(texFiltering == FO_ANISOTROPIC)
