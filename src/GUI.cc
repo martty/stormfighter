@@ -39,7 +39,7 @@ GUI::GUI(StormfighterApp* app) : Module(app){
   overlay_ = new ViewportOverlay("AWE_overlay", viewport, viewTexture_->getWidth(), viewTexture_->getHeight(), pos, "awesomium_mat", 0, TIER_FRONT);
   // if we can't use NPOT, then strech the texture onto the viewport
   if(compensateNPOT_)
-      overlay_->panel->setUV(0, 0, width_/viewTexture_->getWidth(), height_/viewTexture_->getHeight());
+      overlay_->panel->setUV(0, 0, (SReal)width_/(SReal)viewTexture_->getWidth(), 1/((SReal)height_/(SReal)viewTexture_->getHeight()));
   // init sdktraymanager
   trayManager_ = new OgreBites::SdkTrayManager("TrayMgr", Graphics::getSingletonPtr()->defaultRenderWindow(), application()->input()->mouse_, this);
   trayManager_->showFrameStats(OgreBites::TL_BOTTOMLEFT);
@@ -122,10 +122,12 @@ void GUI::createMaterial(){
 		if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_NON_POWER_OF_2_TEXTURES)){
 			if(Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNonPOW2TexturesLimited()){
         LOG("Limited nonPOW2");
-        compensateNPOT_ = true;
+        // we may use nonPOW2, since: 1) no compression, 2) address mode is TAM_CLAMP, 3) explicitly loaded and no mips
+        compensateNPOT_ = false;
 			}
 		} else {
 		  LOG("No nonPOW2");
+      // not handled at the moment
       compensateNPOT_ = true;
 		}
 		if(compensateNPOT_){
@@ -137,7 +139,7 @@ void GUI::createMaterial(){
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual("awesomium_tex",
                                                                   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                                                   Ogre::TEX_TYPE_2D, texWidth, texHeight, 0, Ogre::PF_A8R8G8B8,
-                                                                  Ogre::TU_DYNAMIC, this);
+                                                                  Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE, this);
   this->viewTexture_ = texture;
   LOG("DIMENSIONS:"+STRING(texture->getWidth())+","+STRING(texture->getHeight()));
 	Ogre::HardwarePixelBufferSharedPtr pixelBuffer = texture->getBuffer();
@@ -153,24 +155,25 @@ void GUI::createMaterial(){
   for(size_t i=0; i<length; i+=4){
       // fill the buffer with white pixels and fully transparent alpha channel
       data[i]   = 255;    // Blue
-      data[i+1] = 0;    // Green
+      data[i+1] = 255;    // Green
       data[i+2] = 255;    // Red
-      data[i+3] = 100;      // Alpha
+      data[i+3] = 0;      // Alpha
   }
 
   pixelBuffer->unlock();
   Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("awesomium_mat", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   Ogre::Pass* matPass = material->getTechnique(0)->getPass(0);
   Ogre::TextureUnitState* texunit = matPass->createTextureUnitState("awesomium_tex");
+  texunit->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
   material->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
   //matPass->setSeparateSceneBlending (Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
   //matPass->setSeparateSceneBlending (Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, Ogre::SBF_ZERO, Ogre::SBF_ZERO);
   //material->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
-  //matPass->setDepthWriteEnabled(false);
+  matPass->setDepthWriteEnabled(false);
 
-  /*baseTexUnit->setTextureFiltering(texFiltering, texFiltering, FO_NONE);
-  if(texFiltering == FO_ANISOTROPIC)
+  //texunit->setTextureFiltering(Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_NONE);
+  /*if(texFiltering == FO_ANISOTROPIC)
      baseTexUnit->setTextureAnisotropy(4);*/
 }
 
@@ -205,7 +208,7 @@ void GUI::displayWebView(){
 	}*/
 
 	pixelBuffer->unlock();
-    // write texture to file
+  /*  // write texture to file
     Ogre::TexturePtr tp = viewTexture_;
 
     // Declare buffer
@@ -225,7 +228,7 @@ void GUI::displayWebView(){
     buf->blitToMemory(destBox);
 
     // Save to disk!
-    i.save("debugGUI.png");
+    i.save("debugGUI.png");*/
   }
 }
 
